@@ -1,0 +1,390 @@
+\normalsize
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+\chapter{Formulation}
+
+\section*{Nomenclature}
+\subsection*{Indexes}
+\begin{labeling}{alligator}
+\item [$i$, $j$] Gas nodes.
+\item [$m$, $n$] Electric nodes (buses). 
+\item [$o$] Gas pipeline.
+\item [$c$] Compressor.
+\item [$l$] Transmission line.
+\item [$w$] Gas well.
+\item [$e$] Power generator.
+\item [$ref$] Reference bus.
+\item [$r$] Spinning reserve.
+\item [$\sigma$] Type of gas load.
+\end{labeling}
+
+\subsection*{Parameters}
+
+\begin{labeling}{alligator}
+
+\item [$\alpha^{i}_{\pi_+}, \alpha^{i}_{\pi _-}$] Penalties for over-pressure and under-pressure at node $i$.
+\item [$\alpha_{\gamma}$] Penalties for non-supplied gas.
+\item [$\alpha_{\epsilon}$] Penalties for non-supplied electricity.
+\item [$C^{w}_{G}$] Gas cost at the well $w$.
+\item [$C^{oij}_{O}$] Transport cost of pipeline $o$, from node $i$ to node $j$.
+\item [$C^{cij}_{C}$] Compression cost of compressor $c$, from node $i$ to node $j$.
+\item [$C^{i}_{S}$] Storage cost at node $i$.
+\item [$C^{i}_{S_+}$] Storage outflow price at node $i$.
+\item [$C^{i}_{S_-}$] Storage inflow price at node $i$.
+\item [$C^{e}_{E}$] Power cost generation (excluding gas cost).
+\item [$\eta^{q}_{e}$] Thermal efficiency at generator $q$ \textit{[MMSCF/MW]}.
+\item [$D_{g}^{i \sigma}$] Gas demand of type $\sigma$ at node $i$.
+\item [$D_{e}^{tm}$] Electricity demand in the bus $m$ at time $t$.
+\item [$\bar{g}^{w}$, $\underline{g}^{w}$] Gas production limits.
+\item [$\overline{\pi}^{i}$, $\underline{\pi}^{i}$] Quadratic pressure limits at node $i$.
+\item [$S^{i}_{0}$] Initial stored gas at node $i$.
+\item [$\overline{S}^{i}$, $\underline{S}^{i}$] Storage limits at node $i$.
+\item [$\kappa^{oij}$] Weymouth constant of pipeline $o$.
+\item [$\delta^{oij}$] Width for gas flow capacities.
+\item [$\beta^{cij}$] Compression ratio of compressor $c$.
+\item [$Z^{c}$] Ratio parameter of compressor $c$.
+\item [$B^{c}$] Compressor design parameter of compressor $c$.
+\item [$x$, $y$, $z$] Gas consumption parameters of gas-fired compressors.
+\item [$\overline{f}^{oij}_{g}$] Gas transport capacity of pipeline $o$, from node $i$ to node $j$.
+\item [$\overline{f}^{cij}_{g}$] Gas flow capacity of compressor $c$, from node $i$ to node $j$.
+\item [$\overline{f}^{i}_{s}$,$\underline{f}^{i}_{s}$] Storage outflow capacities at node $i$.
+\item [$\overline{p}_{g}^{e}$, $\underline{p}_{g}^{e}$] Active power generation limits of generator $e$.
+\item [$\overline{q}_{g}^{e}$, $\underline{q}_{g}^{e}$] Reactive power generation limits of generator $e$.
+\item [$\overline{V}^{tm} \underline{V}^{tm}$] Voltage limits for every bus $m$ at time $t$.
+\item [$\mathbb{S}^{l}$] Transmission capacity of power line $l$.
+%\item [$x^{mn}_{l}$] Reactance of line $l$, from bus $m$ to bus $n$.
+\item [$R^{tr}$]  Spinning reserve in the $r$-th spinning reserve zone at time $t$.
+\item [$M$] Generators assignment matrix.
+\item [$L$] Compressors assignment matrix.
+\item [$u^{te}$] Unit commitment state for generator $q$ at time $t$.
+\item [$\tau^{t}$] Energy weight related to period of time $t$.
+\item [$E^{e}$] Available energy for hydroelectric generator $e$, \break during the total analysis window.
+
+\end{labeling}
+
+\subsection*{Sets}
+
+\begin{labeling}{alligator}
+\item [$\cal{N}$] Gas nodes, $\left| \cal{N} \right|= n_{\cal{N}}$.
+\item [$\cal{N}_{S}$] Gas nodes with storage, $\cal{N}_{S} \subset \cal{N} $, $\left| \cal{N}_{S} \right|= n_{\cal{S}}$.
+\item [${\cal{O}}$] Gas pipelines, $\left| \cal{O}  \right| = n_{\cal{O}}$
+\item [${\cal{C}}$] Compressors, $\left| \cal{C}  \right| = n_{\cal{C}}$ 
+\item [${\cal{C}}_{G}$] Compressors based on natural gas, ${\cal{C}}_{G} \subseteq {\cal{C}}$,   \hspace{5mm}   $\left| {\cal{C}}_{G}  \right| = n_{{\cal{C}}_{G}}$ 
+\item [${\cal{C}}_{E}$] Compressors based on electric power, ${\cal{C}}_{E} \subseteq {\cal{C}}$,   \hspace{5mm}  $\left| {\cal{C}}_{E}  \right| = n_{{\cal{C}}_{P}}$ 
+\item [${\cal{W}}$] Gas wells, $\left| \cal{W} \right|= n_{\cal{W}}$.
+\item [${\cal{W}}^{i}$] Gas wells at node $i$, ${\cal{W}}^{i} \subset \cal{W} $, $\left| {\cal{W}}^{i} \right|= n_{{\cal{W}}^{i}}$.
+\item [$\cal{B}$] Power buses, $\left| \cal{B} \right|= n_{\cal{B}}$.
+\item [$\cal{L}$] Power lines, $\left| \cal{L} \right|= n_{\cal{L}}$.
+\item [$\cal{E}$] Power unit generators, $\left| \cal{E} \right|= n_{\cal{E}}$.
+\item [${\cal{E}}_{H}$] Hydroelectric power units, ${\cal{E}}_{H} \subseteq \cal{E} $, $\left| {\cal{E}}_{H} \right|= n_{{\cal{E}}_{H}}$.
+\item [${\cal{E}}^{i}_{G}$] Gas-fired power units connected to gas node $i$, \break ${\cal{E}}^{i}_{G} \subseteq \cal{E}$, $\left| {\cal{E}}^{i}_{G} \right|= n_{{\cal{E}}_{G}}$.
+\item [${\cal{Z}}_{r}$] Spinning reserve zones. 
+\item [${\cal{F}}^{i}_{G}$, ${\cal{T}}^{i}_{G}$] Connected pipelines to node $i$ at side \textit{From} or \textit{To}.
+\item [${\cal{F}}^{i}_{C}$, ${\cal{T}}^{i}_{C}$] Connected compressors to node $i$ at side \textit{From} or \textit{To}.
+\item [${\cal{F}}^{m}_{E}$, ${\cal{T}}^{m}_{E}$] Connected power lines to bus $m$ at side \textit{From} or \textit{To}. 
+\item [$\cal{T}$] Total periods of analysis.
+\item [$\Sigma$] Different types of gas loads.
+\end{labeling}
+
+
+\subsection*{Variables}
+
+\begin{labeling}{alligator}
+\item [${f}_{g}^{oij}$] Gas flow in pipeline $o$, from node $i$ to node $j$.
+\item [${f}_{g_+}^{oij}$ ${f}_{g_-}^{oij}$] Positive and negative gas flow in pipeline $o$.
+\item [${f}_{g}^{cij}$] Gas flow in compressor $c$, from node $i$ to node $j$.
+\item [$\psi^{c}$] Power consumed by compressor $c$.
+\item [$\phi^{c}$] Gas consumed by compressor $c$, connected to node $i$ at side \textit{From}.
+\item [$\gamma^{i \sigma}$] Non-served gas of type $\sigma$ at node $i$.
+\item [$\pi^{i}$] Quadratic pressure.
+\item [${\pi}^{i}_{+}$, ${\pi}^{i}_{-}$] Over/Under quadratic pressures at node $i$.
+\item [$g^{w}$] Gas production at well $w$.
+\item [$f_{s}^{i}$] Storage outflow difference.
+\item [$f_{s_+}^{i}$, $f_{s_-}^{i}$] Storage outflow and inflow.
+\item [$p_{g}^{te}$] Active power production at generator $q$ at time $t$.
+\item [$q_{g}^{te}$] Reactive power production at generator $q$ at time $t$.
+\item [$V^{tm}$] Voltage magnitude at bus $m$ at time $t$.
+\item [$\theta^{tm}$] Voltage angle at bus $m$ at time $t$.
+\item [$\epsilon^{tm}$] Non-served active power at bus $m$ at time $t$.
+\end{labeling}
+
+
+
+
+
+
+We made a toolbox and we want to explain how it works.
+
+\section{Formulation}
+
+\subsection{Objective function}
+
+%The cost function is represented by the equation \ref{obj_func} and is composed by several linear components. The first component is the gas production cost at each of the wells. As well as the first component, the second one is the power generation cost for every power plant, for the complete period. \color{red}The third component is the cost of the storage flow at every node with storage availability. \color{black}The fourth  expression is the storage cost, having into account the previous storage level and the outing flow. The fifth component is the gas transport cost for each pipeline. Finally, the last three component are the penalties cost for over/under pressure, non-supply gas and non-supply power, respectively. Related to the non-gas supply, is important to clarify that the non-supply cost depends on the type of user. 
+
+\begin{equation}
+\begin{aligned}
+C \left( x \right) = & \sum_{w \in \cal{W}}{C^{w}_{G} g^{w}} + \sum_{t \in \cal{T}} {\tau}^{t}  \sum_{e \in \cal{E}} {C^{e}_{E} p_{g}^{te}}\\ 
+				& + \sum_{i \in {\cal{N}}_{S}}{\left({C^{i}_{S_+} f^{i}_{s_+}} - {C^{i}_{S_-} f^{i}_{s_-}}  \right)}\\
+				& + \sum_{i \in {\cal{N}}_{S}}{C^{i}_{S} \left( S^{i}_{0} - f^{i}_{s} \right)} \\
+				& + \sum_{o \in \cal{O}}{C^{oij}_{O} f^{oij}_{g_+}} - \sum_{o \in \cal{O}}{C^{oij}_{O} f^{oij}_{g_-}} \\
+				& + \sum_{c \in \cal{C}}{C^{cij}_{C} f^{cij}_{g}} \\ 
+				& + \sum_{i \in \cal{N}}{\alpha^{i}_{\pi_+} \pi^{i}_{+}} + \sum_{i \in \cal{N}}{ \alpha^{i}_{\pi_-} \pi^{i}_{-}} \\
+				& + \sum_{i \in \cal{N}}\sum_{\sigma \in \Sigma} {\alpha_{\gamma}^{i \sigma}\gamma^{i \sigma}} + \alpha_{\epsilon} \sum_{t \in \cal{T}} {\tau}^{t} \sum_{m \in \cal{B}} {\epsilon^{tm}}  
+\end{aligned}
+\label{obj_func}
+\end{equation}
+
+\subsection{Constraints}
+
+\subsubsection{Gas network}
+
+%The equation \ref{node_gas_balance} shows the gas balance for a specific node $k$ during a day. This gas balance is composed by the ingoing and outgoing flows at the node $k$, the related generation to that node, the outgoing stored flow in the available storage, and the total gas demand. The gas demand is composed by the demand required in the gas-fired power plants, and the total gas demand of the rest of the consumers, but excluding the non-supply gas. 
+
+\begin{equation}
+\begin{aligned}
+& \sum_{o \in {\cal{T}}^{k}_{G}}{{f}_{g}^{oij}} - \sum_{o \in {\cal{F}}^{k}_{G}}{{f}_{g}^{oij}} + \sum_{c \in {\cal{T}}^{k}_{C}}{{f}_{g}^{cij}} - \sum_{c \in {\cal{F}}^{k}_{C}}{ \left({f}_{g}^{cij} + \phi^{c}\right)} \\
+& + \sum_{w \in {\cal{W}}^{k}}{g^{w}}  + {f}^{k}_{s} - \sum_{t \in \cal{T}} {\tau}^{t} \sum_{e \in {\cal{E}}^{k}_{G}}\left({\eta^{q}_{e}}\cdot {p_{g}^{te}}\right) = {\sum_{\sigma \in \Sigma}\left( D^{\sigma k}_{g} - \gamma^{\sigma k}\right)} \\
+& \forall k \in \cal{N}
+\end{aligned}
+\label{node_gas_balance}
+\end{equation}
+
+The non-supply gas demand in every node of the system can only be as most as the total demand at the same node. This constraint is represented as follows:
+
+\begin{equation}
+{0 \le \gamma^{\sigma k} \le D^{\sigma k}_{g} \quad \forall \sigma \in \Sigma \quad \forall k \in \cal{N}}
+\label{nsg_limits}
+\end{equation}
+
+%The storage outflow difference is the subtraction between the storage outflow and the storage inflow at the storage nodes, this relationship is represented by equation \ref{fs}. Additionally, the outflow storage difference is restricted by the maximum and minimum amount of gas that is allowed to be injected into the network in every storage node, which is formulated in equation \ref{fs_limits}. As the storage can be either an injection or a demand for the network, equations \ref{fs+} and \ref{fs-} represent the behavior of the fluxes as follows, the maximum amount of natural gas that can be injected into the network by the storage, is the difference between the available natural gas and the minimum possible amount of gas that can remain. In the same sense, the maximum amount of natural gas that can be delivered by the network to the storage deposit, is the difference between the maximum natural gas that can be stored and the available natural gas.
+
+\textbf{Storage}
+
+\begin{equation}
+f_{s}^{k} = f_{s_+}^{k}  - f_{s_-}^{k}\quad \forall k \in \cal{N}
+\label{fs}
+\end{equation}
+\begin{equation}
+\underline{f}^{k}_{s} \le f^{k}_{s} \le \overline{f}^{k}_{s} \quad \forall k \in \cal{N}
+\label{fs_limits}
+\end{equation}
+\begin{equation}
+0 \le f_{s_+}^{i} \le S^{k}_{0}  - \underline{S}^{k} \quad \forall k \in \cal{N}
+\label{fs+}
+\end{equation}
+\begin{equation}
+0 \le f_{s_-}^{i} \le \overline{S}^{k} - S^{k}_{0} \quad \forall k \in \cal{N}
+\label{fs-}
+\end{equation}
+
+\textbf{Wells}\\
+
+The constraints related to the gas wells production depends on each well specific characteristics, these constraints are represented by:
+
+\begin{equation}
+\underline{g}^{w} \le g^{w} \le \overline{g}^{w} \quad \forall w \in \cal{W}
+\label{g_limits}
+\end{equation}
+%\vspace{5cm}
+
+\textbf{Pipelines:} \\
+%Equations \ref{gf_limits} to \ref{presa_rel} correspond to the constraints in passive and  pipelines. Weymouth equation is represented by \ref{wey_eq} and it determines the flow between two nodes, $i$ and $j$, in function of its pressure differences. The gas flow limits for passive pipelines are represented by \ref{gf_limits}. Otherwise, for active pipelines in which their flows is restricted to go only in one direction, the constraints are represented by \ref{gfa_limits}. Equation \ref{presa_rel} shows the linear relation between the pressure in two nodes connected by an active pipeline, this relation is modeled by a linear factor which depends on the characteristics of the compressor pipeline. 
+
+\begin{equation}
+{f}^{oij}_{g} = {{\kappa}^{oij}} sgn \left(\pi^{i}-\pi^{j}\right) {\sqrt{\left|\pi^{i}-\pi^{j}\right|}} \quad \forall o \in {\cal{O}}
+\label{wey_eq}
+\end{equation}
+
+And the gas flow limits for every pipeline:
+
+\begin{equation}
+{f}^{oij}_{g} =  f^{oij}_{g_+} + {f}^{oij}_{g_-} \quad \forall o \in {\cal{O}}
+\label{fgo}
+\end{equation}
+\begin{equation}
+ - \overline{f}^{oij}_{g}  \le f^{oij}_{g} \le  \overline{f}^{oij}_{g}  \quad \forall o \in {\cal{O}}
+\label{fgo_limits}
+\end{equation}
+\begin{equation}
+0 \le f^{oij}_{g_+} \le \delta^{oij} \cdot \overline{f}^{oij}_{g} \quad \forall o \in {\cal{O}}
+\label{fgopos_limits}
+\end{equation}
+\begin{equation}
+- \delta^{oij} \cdot \overline{f}^{oij}_{g} \le f^{oij}_{g_-} \le 0 \quad \forall o \in {\cal{O}}
+\label{fgoneg_limits}
+\end{equation}
+
+
+
+\textbf{Compressors:}\\
+
+The power consumed by the compressors depend on its gas flow:\\
+
+\begin{equation}
+\psi^{c} = {B^{c}}{f}^{cij}_{g} \cdot \left( {\left( \frac{\pi^{j}}{\pi^{i}} \right)}^{Z^{c} / 2} - 1 \right)   \quad \forall c \in {\cal{C}}
+\label{hp_fc}
+\end{equation}
+\begin{equation} 
+{\phi}^{c} = x + y \psi^{c} +  z {\psi^{c}}^{2}  \quad \forall c \in {\cal{C}}_{G}
+\label{g_fc}
+\end{equation}
+\begin{equation}
+0 \le {f}^{cij}_{g} \le \overline{f}^{cij}_{g}  \quad \forall c \in {\cal{C}}
+\label{gfa_limits}
+\end{equation}
+\begin{equation}
+\begin{aligned}
+&\pi^{i} \le \pi^{j} \le \beta^{cij} \pi^{i}\\
+&\beta^{cij} \ge 1 \\
+\end{aligned}
+\quad \forall i,j \in {\cal{N}} \quad \forall c \in {\cal{C}}
+\label{presa_rel}
+\end{equation}
+\\
+
+The equations \ref{overp} and \ref{underp} are the constraints that characterize the quadratic overpressure and underpressure at every node of the system, respectively. 
+
+\begin{equation}
+\begin{array}{l}
+ \pi^{k} \le \overline{\pi}^{k} + \pi^{k}_{+}\\
+ 0 \le \pi^{k}_{+}\\
+\end{array} 
+\quad \forall k  \in {\cal{N}}\\ 
+\label{overp}
+\end{equation}
+
+\begin{equation}
+\begin{array}{l}
+\underline{\pi}^{k} - \pi^{k}_{-} \le \pi^{k}\\
+0 \le \pi^{k}_{-}\\
+\end{array} 
+\quad \forall k  \in {\cal{N}}\\ 
+\label{underp}
+\end{equation}
+\\
+
+\subsubsection{Power network}
+
+Equation \ref{power_balance} could be explained in an appendix section.
+ 
+\begin{equation}
+\begin{array}{l}
+g_{p_m}\left(\theta^{tm}, V^{tm}, p_{g}^{te}, \epsilon^{te}, \psi^{c}\right) = 0\\
+g_{q_m}\left(\theta^{tm}, V^{tm}, q_{g}^{te}\right) = 0\\
+\\
+\quad \forall m \in {\cal{B}} \quad \forall t  \in {\cal{T}} \quad \forall c  \in {\cal{C}}_{E}  
+\end{array}
+\label{power_balance}
+\end{equation}
+
+Variables limits:
+
+\begin{equation}
+\begin{aligned}
+&\theta^{tref} = 0\\
+&\underline{V}^{tm} \le V^{tm}  \le \overline{V}^{tm}\\
+\end{aligned} 
+\quad \forall m \in {\cal{B}} \quad \forall t  \in {\cal{T}}  
+\label{ang_lims}
+\end{equation}
+
+\begin{equation}
+\begin{aligned}
+&\underline{p}_{g}^{e} \le p_{g}^{te}  \le \overline{p}_{g}^{e}\\
+&\underline{q}_{g}^{e} \le q_{g}^{te}  \le \overline{q}_{g}^{e}\\
+\end{aligned} 
+\quad \forall q \in {\cal{E}} \quad \forall t  \in {\cal{T}}  
+\label{power_lims}
+\end{equation}
+
+Power flow limits:
+
+\begin{equation}
+\begin{aligned}
+&\abs{\mathbb{S}_{fl}\left(\theta,V\right)} \le \overline{\mathbb{S}}_{fl}\\
+&\abs{\mathbb{S}_{tl}\left(\theta,V\right)} \le \overline{\mathbb{S}}_{tl}\\
+\end{aligned} 
+\quad \forall l \in {\cal{L}}
+\label{power_lims}
+\end{equation}
+
+Non-supplied active power limits:
+\begin{equation}
+0 \le \epsilon^{tm} \le D^{tm}_{e} \quad \forall m \in {\cal{B}} \quad \forall t  \in {\cal{T}}  
+\label{nsd_limits}
+\end{equation}
+
+Reserve constraint:
+\begin{equation}
+\begin{array}{l}
+\sum_{e \in {\cal{Z}}_{r}}{u^{te} \left( \overline{p}_{g}^{e} - p_{g}^{te} \right)} \ge R^{tr}\\
+{}\\
+ \quad \forall r \in {\cal{Z}}_{r} \quad \forall t  \in {\cal{T}}
+\end{array}
+\label{reserve}
+\end{equation}
+
+Hydro-energy constraint:
+\begin{equation}
+\sum_{t \in {\cal{T}}}{{\tau}^{t} p_{g}^{te}} \le E^{e} \quad \forall e \in {\cal{E}}_{H}
+\label{hidro_energy}
+\end{equation}
+
+
+%\begin{equation}
+%\begin{aligned}
+%- \overline{f}_{e} \le B_{DC} \theta^{t} + I_{L0} \le \overline{f}_{e} \quad \forall t  \in {\cal{T}}
+%\end{aligned}
+%\label{pf_limits}
+%\end{equation}
+
+
+
+
+
+
+%\begin{equation}
+%\begin{array}{l}
+%M e^{t} - I_0 - D_{e}^{t} - L\psi + \epsilon^{t} = B_{DC} \theta^{t}\\
+%\theta^{tref} = 0\\
+%\end{array} 
+%\quad \forall t  \in {\cal{T}}\\ 
+%\label{bus_balance}
+%\end{equation}
+%
+%\begin{equation}
+%\begin{aligned}
+%0 \le \epsilon^{t} \le D^{t}_{e} \quad \forall t  \in {\cal{T}}
+%\end{aligned}
+%\label{nsp_limits}
+%\end{equation}
+%
+%\begin{equation}
+%\begin{aligned}
+%- \overline{f}_{e} \le B_{DC} \theta^{t} + I_{L0} \le \overline{f}_{e} \quad \forall t  \in {\cal{T}}
+%\end{aligned}
+%\label{pf_limits}
+%\end{equation}
+%
+%\begin{equation}
+%\begin{aligned}
+%u^{t}. * \underline{e} \le e^{t} \le u^{t}. * \overline{e} \quad \forall t  \in \cal{T}
+%\end{aligned}
+%\label{e_limits}
+%\end{equation}
+%
+%\begin{equation}
+%\begin{aligned}
+%\sum_{q \in {\cal{Z}}_{r}}{u^{tq} \left( \overline{e}^{q} - e^{tq} \right)} \ge R^{tr} \quad \forall r, \quad \forall t  \in {\cal{T}}
+%\end{aligned} 
+%\label{reserva}
+%\end{equation}
+%
+%
+%\begin{equation}
+%\sum_{t \in {\cal{T}}}{{\tau}^{t} e^{tq}} \le E^{q} \quad \forall q \in {\cal{E}}_{H}
+%\label{hidro_energy}
+%\end{equation}
+
+\newpage
