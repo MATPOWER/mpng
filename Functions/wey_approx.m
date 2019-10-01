@@ -1,13 +1,11 @@
 function [f,df,d2f] = wey_approx(K,pi,pj,p_approx)
-%% ========================================================================
 %% Aproximación de la ecuación de Weymouth y sus derivadas de primer y
 % segundo orden para un conjunto de gasoductos dados en función de la 
 % variable p=pi-pj, empleando la aproximación polinomial propuesta
-% ========================================================================
+
 % Autor: Wilson González Vanegas M.Sc(c)
 % Grupo de investigación Automática, Universidad Tencnológica de Pereira
 % GIPEM, Universidad Nacional de Colombia - sede Manizales
-% ========================================================================
 
 %   MPNG: Matpower - Natural Gas
 %   Copyright (c) 2019 - v0.99alpha
