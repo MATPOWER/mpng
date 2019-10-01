@@ -19,8 +19,16 @@ function [STO_NODE, STO, STO_0, STOMAX, STOMIN, FSTO, FSTO_OUT, FSTO_IN,...
 %   COST_STO	= 12;	%% storage cost 
 %   COST_OUT	= 13;   %% storage outflow cost
 %   COST_IN     = 14;   %% storage inflow cost
-% %
+% 
 %   See also DEFINE_CONSTANTS_GAS.
+
+%   MPNG: Matpower - Natural Gas
+%   Copyright (c) 2019 - v0.99alpha
+%   Sergio García Marín - Universidad Nacional de Colombia - Sede Manizales
+%   Wilson González Vanegas - Universidad Tecnológica de Pereira
+%   Carlos E. Murillo Sánchez - Universidad Nacional de Colombia - Sede Manizales
+
+%   3-clause bsd license 
 
 %% define the indices
 STO_NODE	= 1;    %% storage node

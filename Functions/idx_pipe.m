@@ -27,6 +27,14 @@ function [F_NODE, T_NODE, FG_O, K_O, DIAM, LNG, FMAX_O, FMIN_O, COST_O] = idx_pi
 %
 %   See also DEFINE_CONSTANTS_GAS.
 
+%   MPNG: Matpower - Natural Gas
+%   Copyright (c) 2019 - v0.99alpha
+%   Sergio García Marín - Universidad Nacional de Colombia - Sede Manizales
+%   Wilson González Vanegas - Universidad Tecnológica de Pereira
+%   Carlos E. Murillo Sánchez - Universidad Nacional de Colombia - Sede Manizales
+
+%   3-clause bsd license 
+
 %% define the indices
 F_NODE      = 1;    %% f, from node number
 T_NODE      = 2;    %% t, to node number

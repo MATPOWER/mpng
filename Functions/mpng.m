@@ -71,7 +71,7 @@ function results = mpng(mpgc,mp)
 %   Carlos E. Murillo Sánchez - Universidad Nacional de Colombia - Sede
 %   Manizales
 
-%   3-clause bsd license                                                      <------- Añadí la licencia
+%   3-clause bsd license                                                      
 
 %% ------------------------------------------------------------------------
 %

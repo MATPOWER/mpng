@@ -17,6 +17,14 @@ function mpc_out = multi_period(mpc_in,time,pd,qd)
 %                          represents the reactive power demand in all buses for 
 %                          each period of time.
 
+%   MPNG: Matpower - Natural Gas
+%   Copyright (c) 2019 - v0.99alpha
+%   Sergio García Marín - Universidad Nacional de Colombia - Sede Manizales
+%   Wilson González Vanegas - Universidad Tecnológica de Pereira
+%   Carlos E. Murillo Sánchez - Universidad Nacional de Colombia - Sede Manizales
+
+%   3-clause bsd license 
+
 %%
 [PQ, PV, REF, NONE, BUS_I, BUS_TYPE, PD, QD, GS, BS, BUS_AREA, VM, ...
     VA, BASE_KV, ZONE, VMAX, VMIN, LAM_P, LAM_Q, MU_VMAX, MU_VMIN] = idx_bus;

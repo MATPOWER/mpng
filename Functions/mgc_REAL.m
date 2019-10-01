@@ -3,6 +3,14 @@ function mgcREAL = mgc_REAL(mgc)
 %   to PU) into conventional units. This function is used in the final
 %   stage of MPEG, where the data is reorganize and printed.
 
+%   MPNG: Matpower - Natural Gas
+%   Copyright (c) 2019 - v0.99alpha
+%   Sergio García Marín - Universidad Nacional de Colombia - Sede Manizales
+%   Wilson González Vanegas - Universidad Tecnológica de Pereira
+%   Carlos E. Murillo Sánchez - Universidad Nacional de Colombia - Sede Manizales
+
+%   3-clause bsd license 
+
 %% define constants
 [DEM, WELL, NODE_I, NODE_TYPE, PR, PRMAX, PRMIN, OVP, UNP, COST_OVP, ...
     COST_UNP, GD, NGD] = idx_node;

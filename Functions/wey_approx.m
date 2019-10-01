@@ -1,3 +1,4 @@
+function [f,df,d2f] = wey_approx(K,pi,pj,p_approx)
 %% ========================================================================
 %% Aproximación de la ecuación de Weymouth y sus derivadas de primer y
 % segundo orden para un conjunto de gasoductos dados en función de la 
@@ -8,7 +9,15 @@
 % GIPEM, Universidad Nacional de Colombia - sede Manizales
 % ========================================================================
 
-function [f,df,d2f] = wey_approx(K,pi,pj,p_approx)
+%   MPNG: Matpower - Natural Gas
+%   Copyright (c) 2019 - v0.99alpha
+%   Sergio García Marín - Universidad Nacional de Colombia - Sede Manizales
+%   Wilson González Vanegas - Universidad Tecnológica de Pereira
+%   Carlos E. Murillo Sánchez - Universidad Nacional de Colombia - Sede Manizales
+
+%   3-clause bsd license 
+
+%%
 if nargin < 4
    p_approx = 0.005*ones(numel(K),1); 
 end

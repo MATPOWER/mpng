@@ -3,7 +3,15 @@ function mpc = nsd2gen(mpc,ndc)
 %   (negative generation). 
 % 
 %   There are some things taken from MATPOWER fcn 'load2disp'.
-%
+
+%   MPNG: Matpower - Natural Gas
+%   Copyright (c) 2019 - v0.99alpha
+%   Sergio García Marín - Universidad Nacional de Colombia - Sede Manizales
+%   Wilson González Vanegas - Universidad Tecnológica de Pereira
+%   Carlos E. Murillo Sánchez - Universidad Nacional de Colombia - Sede Manizales
+
+%   3-clause bsd license 
+
 %% 
 if nargin == 1
     ndcost = 1000;
