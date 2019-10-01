@@ -59,6 +59,9 @@ mgcPU.comp(:,COST_C) = mgcPU.comp(:,COST_C)*fbase;
 mgcPU.sto(:,STO_0) = mgcPU.sto(:,STO_0)/fbase;
 mgcPU.sto(:,STOMAX) = mgcPU.sto(:,STOMAX)/fbase;
 mgcPU.sto(:,STOMIN) = mgcPU.sto(:,STOMIN)/fbase;
+mgcPU.sto(:,FSTO) = mgcPU.sto(:,FSTO)/fbase;
+mgcPU.sto(:,FSTO_OUT) = mgcPU.sto(:,FSTO_OUT)/fbase;
+mgcPU.sto(:,FSTO_IN) = mgcPU.sto(:,FSTO_IN)/fbase;
 mgcPU.sto(:,FSTOMAX) = mgcPU.sto(:,FSTOMAX)/fbase;
 mgcPU.sto(:,FSTOMIN) = mgcPU.sto(:,FSTOMIN)/fbase;
 %cost

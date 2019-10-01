@@ -1,39 +1,159 @@
-function results = mpeg(mpgc,mp)
-% MPEG (MatPower Electricity and Gas) runs an optimal power and natural gas 
-%   flow.
-%
-%   RESULTS = mpeg(MPGC,MP)   
-%   Runs an optimal power and natural gas flow and returns a RESULTS
-%   struct. 
-%
-%   Inputs:
-%       MPGC: a Matpower struct where the natural gas case (MGC) and a
-%          connection struct (CONNECT) must be included to define the 
-%          interconection between the systems.
-
-% =========================================================================
-% mpeg Matpower electricity and gas runs an optimal power and natural gas flow.
-%   results = run_matpowergas(mpgc,mp)
-%   
-%   Runs an optimal power and natural gas flow and returns a RESULTS
-%   structs. 
-%
-%   Imputs:
-%       MPGC : a matpower case, where the natural gas case (MGC) and a
-%           connection struct (CONNECT) must be included to define the 
-%           interconection between the systems.
+function results = mpng(mpgc,mp)
+% MPNG (MatPower - Natural Gas) Solves an optimal power and natural gas flow. 
+%   RESULTS = mpng(MPGC,MP)
 % 
-% =========================================================================
-% Authors:  (1) Wilson González Vanegas, M.Sc 
-%           (2) Sergio García Marín, M.Sc(c)  
-% (1) Automatics Research Group, Universidad Tecnológica de Pereira.
-% (2) GIPEM, Universidad Nacional de Colombia - Sede Manizales.
-% =========================================================================
+%   Runs an optimal power and natural gas flow and returns a RESULTS
+%   struct. MPGC corresponds to the input structure cas and MP to the
+%   classical MATPOWER option structure.
+%
+%   The input case data for the problem expects to have an additional two
+%   fields where the gas case and the intecconection information must be
+%   specified. These two fields correspond to MPGC.mgc and MPGC.connect
+%   structures, they are constructed as follows: 
+% 
+%       MPGC.mgc: This structure must contain the information related to
+%       the natural gas case, which has to have the following fields:
+%                   
+%           .version    current version of gas cases.
+%           .fbase      base for the natural gas volumes, (MMSCFD)    
+%           .pbase      base for the natural gas pressures,(PSI)
+%           .wbase      base for the active power in the gas system,
+%                       usually the same as in the power system, (MW) 
+%           .node
+%               .info   information related to the nodes of the natural 
+%                       gas case, excluding costs.
+%               .dem    matrix where the gas demand is specified for every
+%                       node and every type.
+%               .demcost matrix that specifies the cost of the non-supplied
+%                        gas for every node and every type of demand.
+%           .well       information related to the wells of the natural gas
+%                       case, including extraction costs.
+%           .pipe       information ralated to the pipelines of the natural
+%                       gas case, including transport costs.
+%           .comp       information related with the compressors of the
+%                       natural gas case, including compression costs.
+%           .sto        information related with the storage units of the
+%                       natural gas system.
+% 
+%       MPGC.connect: This structure must contain the information related
+%       to the interconection case, which specifies how the power and the natural 
+%       gas systems are related. It has the following fields:
+% 
+%           .version    current version for connect struct.
+%           .power
+%               .time   vector which specifies the number of hours for each
+%                       period or time taking into considaration. Sum has
+%                       to be 24.
+%               .demands
+%                   .pd     matrix for active power demands in every bus
+%                           for every period of t   ime.
+%                   .qd     matrix for reactive power demands in every bus
+%                           for every period of time.
+%               .cost   general cost of non-supplied active power ($/MW)
+%               .sr     matrix specifying the reserve for every zone and 
+%                       every period of time. 
+%               .energy matrix with two colums to specify the daily energy
+%                       available for certain generators.
+%           .interc
+%                   .comp   matrix with two colums to specify which compressors 
+%                           are connected to which nodes of the power system.
+%                   .term   matrix with three colums to specify which power
+%                           plants work with natural gas, where are
+%                           connected and their efficiency.
+%
+%   See also DEFINE_CONSTANTS_GAS for a fully undestanding of the information in
+%   these two structures.
+
+%   MPNG Matpower - Natural Gas
+%   Copyright (c) 2019 - v0.99alpha
+%   Sergio García Marín - Universidad Nacional de Colombia - Sede Manizales
+%   Wilson González Vanegas - Universidad Tecnológica de Pereira
+%   Carlos E. Murillo Sánchez - Universidad Nacional de Colombia - Sede
+%   Manizales
+
+%   3-clause bsd license                                                      <------- Añadí la licencia
+
+%% ------------------------------------------------------------------------
+%
+% MPNG (MATPOWER - Natural Gas) solves an optimal power and natural gas flow.  <--- solves en minúscula; MATPOWER en mayúscula      
+%
+%   RESULTS = mneg(MPGC,MP)
+% 
+%   Runs an optimal power and natural gas flow and returns a RESULTS
+%   struct. MPGC corresponds to the input struct case while MP is the       <---  Hablar siempre de 'struct'; 'case' y no 'cas'
+%   classical MATPOWER options struct.
+%
+%   The input case (MPGC) must contain two additional fields where a gas    <--- aquí pulí algunas cosas        
+%   case (MPGC.mgc) and an intecconection case (MPGC.connect) must be 
+%   included as follows: 
+% 
+%       MPGC.mgc: this struct contains the information related to the 
+%                 natural gas case using the field as below:
+%                   
+%           .version        current version of the gas case.
+%           .fbase          base natural gas flow [MMSCFD].    
+%           .pbase          base pressure [PSI]
+%           .wbase          base active power for the natural gas system;
+%                           usually the same as in the power system, [MW] 
+%           .node.info      information related to the nodes of the natural  <--- pienso que es mejor dejar todo el campo anidado 
+%                           gas case, excluding costs.
+%           .node.dem       a nodal information matrix for all nodes and
+%                           demand types.
+%           .node.demcost   a non-suplied demand costs matrix for all nodes
+%                           and demand types.
+%           .well           information related to the wells of the natural gas
+%                           case, including extraction costs.
+%           .pipe           information ralated to the pipelines of the natural
+%                           gas case, including transport costs.
+%           .comp           information related to the compressors of the     <--- related to
+%                           natural gas case, including compression costs.
+%           .sto            information related to the storage units of the   <--- related to
+%                           natural gas system, including storage cost        <------ including storage costs?
+% 
+%       MPGC.connect: this struct contains the information related to the 
+%                     interconection case, which specifies how the power 
+%                     and natural gas systems are connected, using the fields 
+%                     as below:
+% 
+%           .version            current version for connect struct.
+%           .power.time.        time vector with the hour definition for each   <---- algunos cambios en toda la sección, qué opina?
+%                               time-period of analysis. Sum of elements in 
+%                               the vector must equal 24.
+%           .power.demands.pd   an active power demand matrix for all buses and 
+%                               periods of time.
+%           .power.demands.qd   a reactive power demand matrix for all buses and
+%                               periods of time.
+%           .power.cost         cost value for non-supplied active power [$/MW]
+%           .power.sr           spinning reserve matrix for all zones and 
+%                               periods of time. 
+%           .power.energy       a two-colum matrix for specifying the daily energy
+%                               available for specific generators.
+%           .interc.comp        a two-colum index matrix for locating compressors
+%                               in specific buses.                               
+%           .interc.term        a three-column matrix for locating thermal plants 
+%                               in specific gas nodes and fixing their corresponding
+%                               efficiencies. 
+%
+%   For a better undestanding on all contained information in this two structs:   %. <-- Aquí un cambiecito para que
+%
+%   See also define_constant_gas.                                                   
+%                                                                                    haga enlace a la función mencionada
+%                                                                                    dando click, qué opina?. Para esto habría
+%                                                                                    que volver define_constant_gas una función
+%                                                                                    ¿se puede?
+
+%   MPNG Matpower - Natural Gas
+%   Copyright (c) 2019 - v0.99alpha
+%   Sergio García Marín - Universidad Nacional de Colombia - Sede Manizales
+%   Wilson González Vanegas - Universidad Tecnológica de Pereira
+%   Carlos E. Murillo Sánchez - Universidad Nacional de Colombia - Sede Manizales 
+
+%   3-clause bsd license                                                      <------- Añadí la licencia
 
 %% check for proper gas inputs
 verbose = mp.verbose;
 if verbose
-    fprintf(1,'Matpower Electricity and Gas - Version 1.0 \n')
+    fprintf(1,'MPNG: MATPOWER-Natural Gas - Version 0.99alpha  \n')
     fprintf(1,'     - Thanks to UNAL-Mz & UTP \n\n')
 end
 if ~isfield(mpgc, 'connect') || ...
@@ -453,7 +573,7 @@ om.add_quad_cost('unpcost',[],unpcost,0,{'unp'});
 om.add_quad_cost('gammacost',[],gammacost,0,{'gamma'});
 om.add_quad_cost('sto_cost',[],-sto_cost,k_sto_cost,{'sto_diff'});
 om.add_quad_cost('sto_out_cost',[],sto_out_cost,0,{'sto_out'});
-om.add_quad_cost('sto_in_cost',[],sto_in_cost,0,{'sto_in'});
+om.add_quad_cost('sto_in_cost',[],-sto_in_cost,0,{'sto_in'});
 om.add_quad_cost('fgoposcost',[],fgocost,0,{'fgopos'});
 om.add_quad_cost('fgonegcost',[],-fgocost,0,{'fgoneg'});
 if any(iscomp_g)  
