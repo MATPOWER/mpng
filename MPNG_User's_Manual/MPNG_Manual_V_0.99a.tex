@@ -1,66 +1,81 @@
-\documentclass[11pt,a4paper]{book}
+\documentclass[12pt,a4paper]{book}
 \usepackage{float}
 \usepackage{booktabs}
 \usepackage{scrextend}
 \usepackage[utf8]{inputenc}
-\usepackage{amsmath,amsfonts,amssymb,bm,dsfont}	%Math fonts
-\usepackage{amsthm}                         % Soporte matemático adicional
-\usepackage{graphics}                       % Soporte gráfico
-\usepackage{graphicx}                       % Soporte gráfico adicional
-\usepackage{color,colortbl}                 % Creación de fondo y texto en color
-\usepackage{geometry}                       % Soporte gr?fico
-\usepackage{rotating}                       % Soporte gr?fico
+\usepackage{amsmath,amsfonts,amssymb,bm,dsfont}	
+\usepackage{amsthm}                         
+\usepackage{graphics}                       
+\usepackage{graphicx}                       
+\usepackage[usenames]{color}
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}  
+\usepackage{xr-hyper}              
+\usepackage{geometry}                      
+\usepackage{rotating}                      
 \usepackage{enumerate}
 \usepackage{textcomp}
 \usepackage{cite}
 \usepackage{subcaption}
 \usepackage{titlesec}
 \usepackage{fancyhdr}
-\usepackage[T1]{fontenc}
 \usepackage{epsfig}
 \usepackage[percent]{overpic}
 \usepackage{listings}
-\usepackage[normalem]{ulem}
-\usepackage[bottom]{footmisc}
-\usepackage{pifont}
+\usepackage{footmisc}
 \usepackage[pdfstartview=FitB,pdfstartpage=1,backref=true]{hyperref}
 \hypersetup{
-	colorlinks=true,
-	pdfborder={0 0 0},	    
+	colorlinks=true,	
 	linkcolor={red},
-	citecolor={blue!85!black},
-	urlcolor={blue!80!black}
-}
+	citecolor={LimeGreen},
+	urlcolor={blue}}
 \usepackage{makeidx}
-\usepackage[nottoc,notlot,notlof]{tocbibind} %Para incluir la bibliografía y el índice
-\usepackage{times}  
+\usepackage[nottoc,notlot,notlof]{tocbibind} 
 \usepackage{float}
 \usepackage{epsfig}
 \usepackage[percent]{overpic}
 \usepackage{listings}
-\usepackage[normalem]{ulem}
-\usepackage[bottom]{footmisc}
-\usepackage{pifont}
-
-\documentclass{report}
-
 \usepackage{titlesec}
-\titleformat{\chapter} % Not to print Chapter headings
-  {\Large\bfseries} 
-  {}                
-  {0pt}             
-  {\huge}
+\titleformat{\chapter} % No print chapter headings
+{\Large\bfseries} 
+{}                
+{0pt}             
+{\huge}
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% Some new commands %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\mpng}[0]{{\tt MPNG}}
+\newcommand{\mpngurl}[0]{https://github.com/MATPOWER/mpng.git}
+\newcommand{\mpngversion}[0]{0.99a}
+\newcommand{\matlab}[0]{{\sc Matlab}}
+\newcommand{\matpower}[0]{{\sc Matpower}}
+\newcommand{\doi}[1]{doi:~\href{https://doi.org/#1}{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% Main document  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pagenumbering{roman}  
 \begin{document}
 	\include{Chapters/Front_matter}
 	\addtocontents{toc}{\vspace{-4ex}}
 	\tableofcontents                            
 	\listoffigures
-	\listoftables
-	
+	\listoftables	
 	\include{Chapters/Introduction}
 	\include{Chapters/Getting_started}
 	\include{Chapters/Formulation}
 	\include{Chapters/Examples}
+	
+	
+	\clearpage
+	%\addcontentsline{toc}{section}{References}
+	\begin{thebibliography}{99}
+	\bibitem{zimmerman2011}
+	R.~D. Zimmerman, C.~E. Murillo-S{\'a}nchez, and R.~J. Thomas, ``\matpower{}: Steady-State Operations, Planning and Analysis Tools for Power Systems Research and Education,'' \emph{Power Systems, IEEE Transactions on}, vol.~26, no.~1, pp.~12--19, Feb.~2011.
+	\doi{10.1109/TPWRS.2010.2051168}
+	
+	\bibitem{matpower}
+	R.~D. Zimmerman, C.~E. Murillo-S{\'a}nchez (2019). \matpower{}\\~
+	[Software]. Available: \url{https://matpower.org}\\
+	\doi{10.5281/zenodo.3236535}	
+    \end{thebibliography}
 	
 \end{document}

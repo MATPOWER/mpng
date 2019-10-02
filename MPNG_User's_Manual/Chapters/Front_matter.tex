@@ -1,41 +1,30 @@
 \thispagestyle{empty}
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[scale=0.9]{MPNG_logo.eps}
-\end{figure}
-
-\vspace{0.5cm}
-
-\begin{center}
-	\LARGE \textbf{User's Manual}
-\end{center}
-
-\vspace{0.5cm}
-
-\begin{center}
-	\Large Version 0.99a
-\end{center}
-
-\vspace{1cm}
-
-
-\begin{table}[H]
-	\centering
-	\begin{tabular}{lcr}
-		Sergio García-Marín & Wilson González-Vanegas & Carlos E. Murillo-Sánchez
-	\end{tabular}
-\end{table}
-
-\vspace{0.5cm}
-\begin{center}
-	\today
-\end{center}
-		
-\vspace{9cm}
-
-\begin{center}
-	{\footnotesize \textcopyright $\;$ Definir con el profe qué va aquí.}
-\end{center}
+\makeatletter
+\begin{titlepage}
+	\begin{center}
+		\includegraphics[width=0.75\textwidth]{./Figures/MPNG_logo}
+		\vskip 0.5ex
+		{\huge \bfseries{Users's Manual} \par}%\\[2ex]
+		\vskip 2em%
+		{\LARGE Version \mpngversion{} \par}%\\[2ex]
+		\vskip 3em%
+		{\large
+			\lineskip .75em%
+			\begin{table}[H]
+				\centering
+				\begin{tabular}{lcr}
+					Sergio García-Marín & Wilson González-Vanegas & Carlos E. Murillo-Sánchez
+				\end{tabular}
+			\end{table}}
+		\vskip 1.5em%
+		{\large \today \par}%
+		\vfill
+		{\scriptsize
+			\copyright $\;$ Define final affiliation (ask C.Murillo)\\
+			All Rights Reserved}
+	\end{center}
+\end{titlepage}
+\makeatother
 
 \newpage

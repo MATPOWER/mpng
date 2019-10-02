@@ -1,7 +1,3 @@
-\normalsize
-\pagenumbering{arabic}
-\setcounter{page}{1}
-
 \chapter{Formulation}
 
 \section*{Nomenclature}
@@ -116,9 +112,7 @@
 
 We made a toolbox and we want to explain how it works.
 
-\section{Formulation}
-
-\subsection{Objective function}
+\section{Objective function}
 
 %The cost function is represented by the equation \ref{obj_func} and is composed by several linear components. The first component is the gas production cost at each of the wells. As well as the first component, the second one is the power generation cost for every power plant, for the complete period. \color{red}The third component is the cost of the storage flow at every node with storage availability. \color{black}The fourth  expression is the storage cost, having into account the previous storage level and the outing flow. The fifth component is the gas transport cost for each pipeline. Finally, the last three component are the penalties cost for over/under pressure, non-supply gas and non-supply power, respectively. Related to the non-gas supply, is important to clarify that the non-supply cost depends on the type of user. 
 
@@ -135,9 +129,9 @@ C \left( x \right) = & \sum_{w \in \cal{W}}{C^{w}_{G} g^{w}} + \sum_{t \in \cal{
 \label{obj_func}
 \end{equation}
 
-\subsection{Constraints}
+\section{Constraints}
 
-\subsubsection{Gas network}
+\subsection{Gas network}
 
 %The equation \ref{node_gas_balance} shows the gas balance for a specific node $k$ during a day. This gas balance is composed by the ingoing and outgoing flows at the node $k$, the related generation to that node, the outgoing stored flow in the available storage, and the total gas demand. The gas demand is composed by the demand required in the gas-fired power plants, and the total gas demand of the rest of the consumers, but excluding the non-supply gas. 
 
@@ -264,7 +258,7 @@ The equations \ref{overp} and \ref{underp} are the constraints that characterize
 \end{equation}
 \\
 
-\subsubsection{Power network}
+\subsection{Power network}
 
 Equation \ref{power_balance} could be explained in an appendix section.
  
@@ -302,8 +296,8 @@ Power flow limits:
 
 \begin{equation}
 \begin{aligned}
-&\abs{\mathbb{S}_{fl}\left(\theta,V\right)} \le \overline{\mathbb{S}}_{fl}\\
-&\abs{\mathbb{S}_{tl}\left(\theta,V\right)} \le \overline{\mathbb{S}}_{tl}\\
+&|\mathbb{S}_{fl}\left(\theta,V\right) \le \overline{\mathbb{S}}_{fl}\\
+&|\mathbb{S}_{tl}\left(\theta,V\right)| \le \overline{\mathbb{S}}_{tl}\\
 \end{aligned} 
 \quad \forall l \in {\cal{L}}
 \label{power_lims}
@@ -330,61 +324,5 @@ Hydro-energy constraint:
 \sum_{t \in {\cal{T}}}{{\tau}^{t} p_{g}^{te}} \le E^{e} \quad \forall e \in {\cal{E}}_{H}
 \label{hidro_energy}
 \end{equation}
-
-
-%\begin{equation}
-%\begin{aligned}
-%- \overline{f}_{e} \le B_{DC} \theta^{t} + I_{L0} \le \overline{f}_{e} \quad \forall t  \in {\cal{T}}
-%\end{aligned}
-%\label{pf_limits}
-%\end{equation}
-
-
-
-
-
-
-%\begin{equation}
-%\begin{array}{l}
-%M e^{t} - I_0 - D_{e}^{t} - L\psi + \epsilon^{t} = B_{DC} \theta^{t}\\
-%\theta^{tref} = 0\\
-%\end{array} 
-%\quad \forall t  \in {\cal{T}}\\ 
-%\label{bus_balance}
-%\end{equation}
-%
-%\begin{equation}
-%\begin{aligned}
-%0 \le \epsilon^{t} \le D^{t}_{e} \quad \forall t  \in {\cal{T}}
-%\end{aligned}
-%\label{nsp_limits}
-%\end{equation}
-%
-%\begin{equation}
-%\begin{aligned}
-%- \overline{f}_{e} \le B_{DC} \theta^{t} + I_{L0} \le \overline{f}_{e} \quad \forall t  \in {\cal{T}}
-%\end{aligned}
-%\label{pf_limits}
-%\end{equation}
-%
-%\begin{equation}
-%\begin{aligned}
-%u^{t}. * \underline{e} \le e^{t} \le u^{t}. * \overline{e} \quad \forall t  \in \cal{T}
-%\end{aligned}
-%\label{e_limits}
-%\end{equation}
-%
-%\begin{equation}
-%\begin{aligned}
-%\sum_{q \in {\cal{Z}}_{r}}{u^{tq} \left( \overline{e}^{q} - e^{tq} \right)} \ge R^{tr} \quad \forall r, \quad \forall t  \in {\cal{T}}
-%\end{aligned} 
-%\label{reserva}
-%\end{equation}
-%
-%
-%\begin{equation}
-%\sum_{t \in {\cal{T}}}{{\tau}^{t} e^{tq}} \le E^{q} \quad \forall q \in {\cal{E}}_{H}
-%\label{hidro_energy}
-%\end{equation}
 
 \newpage
