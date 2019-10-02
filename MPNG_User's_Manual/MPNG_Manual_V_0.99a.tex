@@ -35,11 +35,32 @@
 \usepackage[percent]{overpic}
 \usepackage{listings}
 \usepackage{titlesec}
+\usepackage{fancyvrb}
+\usepackage{relsize}
+
 \titleformat{\chapter} % No print chapter headings
 {\Large\bfseries} 
 {}                
 {0pt}             
 {\huge}
+
+% define my verbatim environment, requires packages fancyvrb & relsize
+\renewcommand{\FancyVerbFormatLine}[1]{\makebox[2mm][l]{}#1}
+\DefineVerbatimEnvironment%
+{Code}{Verbatim}
+{fontsize=\relsize{-1.5},
+	samepage=true,
+	frame=single}
+
+% define my verbatim environment, requires packages fancyvrb & relsize
+\renewcommand{\FancyVerbFormatLine}[1]{\makebox[2mm][l]{}#1}
+\DefineVerbatimEnvironment%
+{Notice}{Verbatim}
+{fontsize=\relsize{-2.0},
+	samepage=true,
+	xleftmargin=15mm,
+	framesep=1mm,
+	frame=single}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% Some new commands %%%%%%%%%%%%%%%%%%%%%%%%%%%%
