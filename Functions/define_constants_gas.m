@@ -1,5 +1,10 @@
 %DEFINE_CONSTANTS_GAS  Defines useful constants for indexing data in the 
-%   additional cases for the matpower-gas formulation.
+%   additional cases of the Matpower-Natural Gas formulation.
+%
+%   This is simply a convenience script that defines the constants
+%   listed below, consisting primarily of named indices for the
+%   columns of the data matrices: node, pipe, comp, well, sto and the
+%   connection struct.
 %
 %   node:
 %      DEM, WELL, NODE_I, NODE_TYPE, PR, PRMAX, PRMIN, OVP, UNP, COST_OVP,
@@ -20,12 +25,14 @@
 %       FSTOMAX, FSTOMIN, S_STATUS, COST_STO, COST_OUT, COST_IN
 % 
 %   connection struct
-%       GEN_ID, MAX_ENER, COMP_ID, BUS_ID, NODE_ID, EF
+%       GEN_ID, MAX_ENER, COMP_ID, BUS_ID, NODE_ID, EFF
 %
-%   DEFINE_CONSTANTS calls IDX_NODE, IDX_PLINE, IDX_WELL, IDX_STO and IDX_CONNECT.
+%   Internally DEFINE_CONSTANTS calls IDX_NODE, IDX_PIPE, IDX_WELL, 
+%   IDX_STO and IDX_CONNECT.
 % 
-%   See also IDX_NODE, IDX_PLINE, IDX_WELL, IDX_STO and IDX_CONNECT. 
-%
+%   See IDX_NODE, IDX_PIPE, IDX_WELL, IDX_STO and IDX_CONNECT for
+%   details on the meaning of these constants.
+% 
 %   This script is included for convenience for interactive use or
 %   for high-level code where maximum performance is not a concern.
 
@@ -34,8 +41,9 @@
 %   Sergio García Marín - Universidad Nacional de Colombia - Sede Manizales
 %   Wilson González Vanegas - Universidad Tecnológica de Pereira
 %   Carlos E. Murillo Sánchez - Universidad Nacional de Colombia - Sede Manizales
-
-%   3-clause bsd license     
+% 
+%   This file is part of MPNG.
+%   Covered by the 3-clause BSD License (see LICENSE file for details).
 %% define named indices into data matrices
 [DEM, WELL, NODE_I, NODE_TYPE, PR, PRMAX, PRMIN, OVP, UNP, COST_OVP, ...
     COST_UNP, GD, NGD] = idx_node;

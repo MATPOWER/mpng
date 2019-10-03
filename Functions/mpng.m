@@ -71,8 +71,9 @@ function results = mpng(mpgc,mp)
 %   Wilson González Vanegas - Universidad Tecnológica de Pereira
 %   Carlos E. Murillo Sánchez - Universidad Nacional de Colombia - Sede
 %   Manizales
-
-%   3-clause bsd license                                                     
+% 
+%   This file is part of MPNG.
+%   Covered by the 3-clause BSD License (see LICENSE file for details).                                                   
 
 %% check for proper gas inputs
 verbose = mp.verbose;
@@ -429,7 +430,7 @@ parcomp.idfrom = from_c;              % |
 parcomp.idto = to_c;                  % | 
 parcomp.x = mgc.comp(idcomp_g,ALPHA); % | 
 parcomp.y = mgc.comp(idcomp_g,BETA);  % | 
-parcomp.z = mgc.comp(idcomp_g,GAMMA); % | <------ [WGV]: Create structure with compressors parameters
+parcomp.z = mgc.comp(idcomp_g,GAMMA); % | <------ Create structure with compressors parameters
 parcomp.Bc = mgc.comp(:,B_C);         % | 
 parcomp.Zc = mgc.comp(:,Z_C);         % | 
 parcomp.other.nn = nn;                % |
