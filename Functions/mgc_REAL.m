@@ -24,6 +24,8 @@ function mgcREAL = mgc_REAL(mgc)
 [F_NODE, T_NODE, FG_O, K_O, DIAM, LNG, FMAX_O, FMIN_O, COST_O] = idx_pipe;
 [COMP_G, COMP_P, F_NODE, T_NODE, TYPE_C, RATIO_C, B_C, Z_C, ALPHA, BETA, ...
     GAMMA, FMAX_C, COST_C, FG_C, GC_C, PC_C] = idx_comp;
+[STO_NODE, STO, STO_0, STOMAX, STOMIN, FSTO, FSTO_OUT, FSTO_IN,...
+    FSTOMAX, FSTOMIN, S_STATUS, COST_STO, COST_OUT, COST_IN] = idx_sto;
 
 %%
 mgcREAL = mgc;
@@ -72,7 +74,16 @@ mgcREAL.comp(:,GAMMA) = mgcREAL.comp(:,GAMMA)*(fbase/wbase^2);
 mgcREAL.comp(:,FMAX_C) = mgcREAL.comp(:,FMAX_C)*fbase;
 % cost
 mgcREAL.comp(:,COST_C) = mgcREAL.comp(:,COST_C)/fbase;
-
-
 %% -------------------------------- Storage --------------------------------
-%% This will be analyzed later
+mgcREAL.sto(:,STO_0)    = mgcREAL.sto(:,STO_0)*fbase;
+mgcREAL.sto(:,STOMAX)   = mgcREAL.sto(:,STOMAX)*fbase;
+mgcREAL.sto(:,STOMIN)   = mgcREAL.sto(:,STOMIN)*fbase;
+mgcREAL.sto(:,FSTO)     = mgcREAL.sto(:,FSTO)*fbase;
+mgcREAL.sto(:,FSTO_OUT) = mgcREAL.sto(:,FSTO_OUT)*fbase;
+mgcREAL.sto(:,FSTO_IN)  = mgcREAL.sto(:,FSTO_IN)*fbase;
+mgcREAL.sto(:,FSTOMAX)  = mgcREAL.sto(:,FSTOMAX)*fbase;
+mgcREAL.sto(:,FSTOMIN)  = mgcREAL.sto(:,FSTOMIN)*fbase;
+%cost
+mgcREAL.sto(:,COST_STO) = mgcREAL.sto(:,COST_STO)/fbase;
+mgcREAL.sto(:,COST_OUT) = mgcREAL.sto(:,COST_OUT)/fbase;
+mgcREAL.sto(:,COST_IN)  = mgcREAL.sto(:,COST_IN)/fbase;
