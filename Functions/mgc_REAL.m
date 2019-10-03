@@ -1,15 +1,21 @@
 function mgcREAL = mgc_REAL(mgc)
-%% mgc_REAL converts the natural gas case (which had been previously changed 
-%   to PU) into conventional units. This function is used in the final
-%   stage of MPEG, where the data is reorganize and printed.
+%% mgc_REAL converts the natural gas case into conventional units. 
+%
+%   This function is used in the final stage of MPNG, where the results are
+%   reorganized and printed. The whole information of the natural case is
+%   converted into conventional values, this includes the constants and the
+%   final values of the variables.
+%
+%   See also MGC_PU
 
 %   MPNG: Matpower - Natural Gas
 %   Copyright (c) 2019 - v0.99alpha
 %   Sergio García Marín - Universidad Nacional de Colombia - Sede Manizales
 %   Wilson González Vanegas - Universidad Tecnológica de Pereira
 %   Carlos E. Murillo Sánchez - Universidad Nacional de Colombia - Sede Manizales
-
-%   3-clause bsd license 
+% 
+%   This file is part of MPNG.
+%   Covered by the 3-clause BSD License (see LICENSE file for details). 
 
 %% define constants
 [DEM, WELL, NODE_I, NODE_TYPE, PR, PRMAX, PRMIN, OVP, UNP, COST_OVP, ...

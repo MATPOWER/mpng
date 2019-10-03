@@ -1,12 +1,33 @@
 function mgcPU = mgc_PU(mgc)
+% MGC_PU converts the matrices inside the MGC to per unit (p.u.) data. 
+% 
+%   This function gets the whole information of the natural case and
+%   converts it into normalized values, it includes the constants and the
+%   initial values of the variables.
+%
+%   The bases must be specified inside the case, however they have the 
+%   following default values:
+%       pressure base =     500 (psi)       
+%       gas flow      =     50  (MMSCF)
+%       wbase         =     100 (MVA)
+%
+%   After several tries we found that an accurate selection of the bases
+%   will improve the perfomance of the optimal power and natural gas flow.
+%   As the problems might differ according to the topology of the gas
+%   network we recommend that the user find its own bases. It is also 
+%   recomended that the power base in the gas case agrees with the power
+%   base of the power case.
+%
+%   See also MGC_REAL
 
 %   MPNG: Matpower - Natural Gas
 %   Copyright (c) 2019 - v0.99alpha
 %   Sergio García Marín - Universidad Nacional de Colombia - Sede Manizales
 %   Wilson González Vanegas - Universidad Tecnológica de Pereira
 %   Carlos E. Murillo Sánchez - Universidad Nacional de Colombia - Sede Manizales
-
-%   3-clause bsd license 
+% 
+%   This file is part of MPNG.
+%   Covered by the 3-clause BSD License (see LICENSE file for details).
 
 %% define constants
 [DEM, WELL, NODE_I, NODE_TYPE, PR, PRMAX, PRMIN, OVP, UNP, COST_OVP, ...
@@ -19,10 +40,25 @@ function mgcPU = mgc_PU(mgc)
     FSTOMAX, FSTOMIN, S_STATUS, COST_STO, COST_OUT, COST_IN] = idx_sto;
 %%
 mgcPU = mgc;
-pbase = mgc.pbase;
-fbase = mgc.fbase;
-wbase = mgc.wbase;
-
+%% get the bases
+if isempty(mgcPU.pbase) 
+    pbase = 500;
+    mgcPU.pbase = pbase;
+else
+    pbase = mgcPU.pbase;
+end
+if isempty(mgcPU.fbase) 
+    fbase = 50;
+    mgcPU.fbase = fbase;
+else
+    fbase = mgcPU.fbase;
+end
+if isempty(mgcPU.wbase)
+    wbase = 100;
+    mgcPU.wbase = wbase;
+else 
+    wbase = mgcPU.wbase;
+end 
 %% ------------------------------ Node data ------------------------------
 mgcPU.node.info(:,PR) = mgcPU.node.info(:,PR).^2/pbase^2;
 mgcPU.node.info(:,PRMAX) = mgcPU.node.info(:,PRMAX).^2/pbase^2;
