@@ -1,0 +1,135 @@
+\begin{appendix}
+\chapter{Appendix A: Gas Case Data File Format}
+\label{app:gas_format}
+
+%---------------------- Appendix A ----------------------
+\begin{table}[!ht]	
+	\centering
+	\begin{threeparttable}
+		\caption{Node Information Data (\code{mgc.node.info})}
+		\label{tab:nodedata}
+		\footnotesize
+		\begin{tabular}{lcl}
+			\toprule
+			name & column & description \\
+			\midrule
+			\code{NODE\_I}	& 1	& node number (positive integer)\\	
+			\code{NODE\_TYPE}	& 2	& node type (1 = demand node, 2 = extraction node)\\
+			\code{PR}	& 3	& pressure [psia]\\
+			\code{PRMAX}	& 4	& maximum pressure [psia]\\
+			\code{PRMIN}	& 5	& minimum pressure [psia]\\
+			\code{OVP}	& 6	& over-pressure [psia]\\
+			\code{UNP}	& 7	& under-pressure [psia]\\
+			\code{COST\_OVP}	& 8	& over-pressure cost [\$/psia$^2$]\\
+			\code{COST\_UNP}	& 9	& under-pressure cost [\$/psia$^2$]\\
+			\code{GD}	& 10	& full nodal demand [MSCFD]\\
+			\code{NGD}	& 11	& Number of different nodal users (positive integer)\\
+			\bottomrule
+		\end{tabular}
+%		\begin{tablenotes}
+%			\scriptsize
+%			\item [\dag] {Included in OPF output, typically not included (or ignored) in input matrix. Here we assume the objective function has units $u$.}
+%		\end{tablenotes}
+	\end{threeparttable}
+\end{table}
+
+\begin{table}[!ht]	
+	\centering
+	\begin{threeparttable}
+		\caption{Node Demand Data (\code{mgc.node.dem})}
+		\label{tab:nodedem}
+		\footnotesize
+		\begin{tabular}{lcl}
+			\toprule
+			name & column & description \\
+			\midrule
+			\code{RES}	& 1	& residential demand [MSCFD]\\	
+			\code{IND}	& 2	& industrial demand [MSCFD]\\
+			\code{COM}	& 3	& commercial demand [MSCFD]\\
+			\code{NGV}	& 4	& natural gas vehicle demand [MSCFD]\\
+			\code{REF}	& 5	& refinery demand [MSCFD]\\
+			\code{PET}	& 6	& petrochemical demand [MSCFD]\\			
+			\bottomrule
+		\end{tabular}
+	\end{threeparttable}
+\end{table}
+
+\begin{table}[!ht]	
+	\centering
+	\begin{threeparttable}
+		\caption{Node Non-supplied Demand Data (\code{mgc.node.demcost})}
+		\label{tab:nodal_costs}
+		\footnotesize
+		\begin{tabular}{lcl}
+			\toprule
+			name & column & description \\
+			\midrule
+			\code{AL\_RES}	& 1	& residential non-supplied demand cost [\$/MMSCFD]\\	
+			\code{AL\_IND}	& 2	& industrial non-supplied demand cost [\$/MMSCFD]\\
+			\code{AL\_COM}	& 3	& commercial non-supplied demand cost [\$/MMSCFD]\\
+			\code{AL\_NGV}	& 4	& natural gas vehicle non-supplied demand cost [\$/MMSCFD]\\
+			\code{AL\_REF}	& 5	& refinery non-supplied demand cost [\$/MMSCFD]\\
+			\code{AL\_PET}	& 6	& petrochemical non-supplied demand cost [\$/MMSCFD]\\			
+			\bottomrule
+		\end{tabular}
+	\end{threeparttable}
+\end{table}
+
+\begin{table}[!ht]	
+	\centering
+	\begin{threeparttable}
+		\caption{Well Data (\code{mgc.well})}
+		\label{tab:well_info}
+		\footnotesize
+		\begin{tabular}{lcl}
+			\toprule
+			name & column & description \\
+			\midrule
+			\code{WELL\_NODE}	& 1	& well id-node (positive integer)\\	
+			\code{G}	& 2	& well injection [MMSCFD]\\
+			\code{PW}	& 3	& known well pressure [psia]\\
+			\code{GMAX}	& 4	& maximum gas injection [MMSCFD]\\
+			\code{GMIN}	& 5	& minimum gas injection [MMSCFD]\\
+			\code{WELL\_STATUS}	& 6	& well status (0 = disable, 1 = enable)\\
+			\code{COST\_G}	& 7	& production cost [\$/MMSCFD]\\			
+			\bottomrule
+		\end{tabular}
+	\end{threeparttable}
+\end{table}
+
+% ----------------------- Appendix B -----------------------
+\chapter{Appendix B: Interconnection Case Data File Format}
+\label{app:connect_format}
+
+\begin{table}[!ht]	
+	\centering
+	\begin{threeparttable}
+		\caption{Node Demand Data (\code{mgc.node.dem})}
+		\label{tab:atag}
+		\footnotesize
+		\begin{tabular}{lcl}
+			\toprule
+			name & column & description \\
+			\midrule
+			\code{NODE\_I}	& 1	& node number (positive integer)\\	
+			\code{NODE\_TYPE}	& 2	& node type (1 = demand node, 2 = extraction node)\\
+			\code{PR}	& 3	& pressure []\\
+			\code{PRMAX}	& 4	& maximum pressure []\\
+			\code{PRMIN}	& 5	& minimum pressure []\\
+			\code{OVP}	& 6	& over-pressure []\\
+			\code{UNP}	& 7	& under-pressure []\\
+			\code{COST\_OVP}	& 8	& over-pressure cost (positive integer)\\
+			\code{COST\_UNP}	& 9	& under-pressure cost (positive integer)\\
+			\code{GD}	& 10	& full nodal demand [MSCFD]\\
+			\code{NGD}	& 11	& Number of different nodal users (positive integer)\\
+			\bottomrule
+		\end{tabular}
+		\begin{tablenotes}
+			\scriptsize
+			\item [\dag] {Included in OPF output, typically not included (or ignored) in input matrix. Here we assume the objective function has units $u$.}
+		\end{tablenotes}
+	\end{threeparttable}
+\end{table}
+
+
+\end{appendix}
