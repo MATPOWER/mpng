@@ -14,7 +14,7 @@ function install_mpng
 
 %% Add current MPNG directory the the MATLAB path
 
-fprintf('\n ---------- MPNG installation routine ---------- \n\n')
+fprintf('\n ----------- MPNG installation routine ----------- \n\n')
 
 base_dir = pwd(); 
 file_sep = filesep();
