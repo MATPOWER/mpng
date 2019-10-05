@@ -1,6 +1,6 @@
 function install_mpng
-% INSTALL_MPNG is a quick routine for aading all MPNG distribution files to
-%   the Matlab path.
+% INSTALL_MPNG is a quick installer for adding all MPNG distribution files 
+%   to the Matlab path.
 
 %   MPNG Matpower - Natural Gas
 %   Copyright (c) 2019 - v0.99alpha
@@ -13,11 +13,14 @@ function install_mpng
 %   Covered by the 3-clause BSD License (see LICENSE file for details). 
 
 %% Add current MPNG directory the the MATLAB path
+
+fprintf('\n ---------- MPNG installation routine ---------- \n\n')
+
 base_dir = pwd(); 
 file_sep = filesep();
 addpath(pwd);
 
-%% Internal MPNG folders to be added to the MATLAB path
+%% Add internal MPNG folders and files to the MATLAB path
 folders = {'Functions',...
            'Cases'...
            'Examples'
