@@ -37,6 +37,7 @@
 \usepackage{titlesec}
 \usepackage{fancyvrb}
 \usepackage{relsize}
+\usepackage{threeparttable}
 
 \titleformat{\chapter} % No print chapter headings
 {\Large\bfseries} 
@@ -56,21 +57,28 @@
 \renewcommand{\FancyVerbFormatLine}[1]{\makebox[2mm][l]{}#1}
 \DefineVerbatimEnvironment%
 {Notice}{Verbatim}
-{fontsize=\relsize{-2.0},
+{fontsize=\relsize{-1.5},
 	samepage=true,
-	xleftmargin=15mm,
-	framesep=1mm,
+	xleftmargin=10mm,
+	framesep=5mm,
 	frame=single}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% Some new commands %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newcommand{\mpng}[0]{{\tt MPNG}}
+\newcommand{\mpgc}[0]{{\tt MPGC}}
+\newcommand{\mpngpath}[1]{\textsf{\textsl{{\relsize{-1.0}\textless{}\mbox{MPNG}\textgreater{}}}}\code{{#1}}} 
 \newcommand{\mpngurl}[0]{https://github.com/MATPOWER/mpng.git}
 \newcommand{\mpngversion}[0]{0.99a}
 \newcommand{\matlab}[0]{{\sc Matlab}}
 \newcommand{\matpower}[0]{{\sc Matpower}}
+\newcommand{\pserc}[0]{{\sc PSerc}}
 \newcommand{\doi}[1]{doi:~\href{https://doi.org/#1}{#1}}
+\newcommand{\Real}{\mathbb{R}}
+\newcommand{\code}[1]{{\relsize{-0.5}{\tt{{#1}}}}}  % requires package relsize
+% Note: to get straight single quotes in \code you have to use one of the
+%       following: \char13 \char'15 \char"0D \textquotesingle
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% Main document  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \pagenumbering{roman}  
@@ -84,6 +92,8 @@
 	\include{Chapters/Getting_started}
 	\include{Chapters/Formulation}
 	\include{Chapters/Examples}
+	\part*{Appendixes}
+	\include{Chapters/Appendixes}
 	
 	
 	\clearpage
@@ -96,7 +106,14 @@
 	\bibitem{matpower}
 	R.~D. Zimmerman, C.~E. Murillo-S{\'a}nchez (2019). \matpower{}\\~
 	[Software]. Available: \url{https://matpower.org}\\
-	\doi{10.5281/zenodo.3236535}	
+	\doi{10.5281/zenodo.3236535}
+	
+	\bibitem{bsd}
+	The BSD 3-Clause License. [Online]. Available: \url{https://opensource.org/licenses/BSD-3-Clause}.
+	
+	\bibitem{matpower_manual}
+	\matpower{} User's Manual. [Online]. Available: \url{https://matpower.org/doc/manuals/}.
+		
     \end{thebibliography}
 	
 \end{document}
