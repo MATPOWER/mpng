@@ -1,29 +1,43 @@
-function mpc_out = multi_period(mpc_in,time,pd,qd)
+function mpc_out = multi_period(mpc0,time,pd,qd)
 % MULTI_PERIOD constructs a matpower case for multiple periods of analysis 
-%   through the creation of islands for every period of time.
+%   through the creation of islands for every period of time inside the 
+%   same case.
 % 
-%   mpc_out = multi_period_mpc(mpc_in,factors)
-%   mpc_out = multi_period_mpc(mpc_in,time,pd,qd)
+%   MPC_OUT = MULTI_PERIOD(MPC0,TIME,PD,QD)
+%   MPC_OUT = MULTI_PERIOD(MPC0,FACTORS)
 % 
-%   Inputs:     mpc_in  -> Matpower original case
-%               factors -> Factor which multiplies the demands in every period 
-%                          of time. Lenght of "factors" determines the
-%                          number of periods. 
-%               times   -> A vector with the factors for every period of analysis.          
-%               pd      -> A matrix with nb rows and nt columns. Every column
-%                          represents the active power demand in all buses for 
-%                          each period of time.
-%               qd      -> A matrix with nb rows and nt columns. Every column
-%                          represents the reactive power demand in all buses for 
-%                          each period of time.
+%   This function takes a MATPOWER case file or struct, a vector time which
+%   defines the number of periods and their length, and the active and
+%   reactive demand, to constructs multiple islands inside the case. It is
+%   also possible to not define explicitly the demands, but defining a
+%   FACTORS vector which multiplies the original demands and divides the
+%   day in same intervals of time. Inputs are as follows:   
+% 
+%   MPC0 - File name or struct with original MATPOWER case.
+%   
+%   TIMES - Vector which specifies the number of hours for each period of
+%       time taking into considaration. Sum of elements in the vector must 
+%       equal 24.
+%   
+%   PD - Active power demand matrix for all buses and periods of time.
+% 
+%   QD - Rective power demand matrix for all buses and periods of time.
+% 
+%   FACTORS - Vector factor which multiplies the demands in every periods 
+%       of time. Lenght of FACTORS determines the number of periods in the 
+%       day, all with the same length. 
+%
+%   See also MPC2GAS_PREP
 
-%   MPNG: Matpower - Natural Gas
+
+%   MPNG Matpower - Natural Gas
 %   Copyright (c) 2019 - v0.99alpha
 %   Sergio García Marín - Universidad Nacional de Colombia - Sede Manizales
 %   Wilson González Vanegas - Universidad Tecnológica de Pereira
 %   Carlos E. Murillo Sánchez - Universidad Nacional de Colombia - Sede Manizales
-
-%   3-clause bsd license 
+% 
+%   This file is part of MPNG.
+%   Covered by the 3-clause BSD License (see LICENSE file for details).
 
 %%
 [PQ, PV, REF, NONE, BUS_I, BUS_TYPE, PD, QD, GS, BS, BUS_AREA, VM, ...
@@ -36,7 +50,7 @@ function mpc_out = multi_period(mpc_in,time,pd,qd)
     QC2MIN, QC2MAX, RAMP_AGC, RAMP_10, RAMP_30, RAMP_Q, APF] = idx_gen;
 [PW_LINEAR, POLYNOMIAL, MODEL, STARTUP, SHUTDOWN, NCOST, COST] = idx_cost;
 
-mpc = mpc_in;
+mpc = mpc0;
 
 [nb,cb]= size(mpc.bus);
 [ng,cg]= size(mpc.gen);
@@ -52,6 +66,8 @@ elseif nargin == 2
     pd = factors.*pd;
     qd = mpc.bus(:,QD);
     qd = factors.*qd;
+    nt = length(factors);
+    time = ones(1,nt)*(24/nt);
 elseif nargin > 2
     if nb ~= size(pd,1) || nb ~= size(qd,1)
         error('multi_period: Input demands must agree with number of buses.');

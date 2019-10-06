@@ -1,12 +1,12 @@
-function results = mpng(mpgc,mp)
+function results = mpng(mpgc,mpopt)
 % MPNG (MatPower - Natural Gas) Solves an optimal power and natural gas flow. 
 %   RESULTS = mpng(MPGC,MP)
 % 
 %   Runs an optimal power and natural gas flow and returns a RESULTS
-%   struct. MPGC corresponds to the input struct case while MP is the       
-%   classical MATPOWER options struct.
+%   struct. MPGC corresponds to the input struct case while MPOPT is the       
+%   default MATPOWER options struct.
 %
-%   The input case (MPGC) must contain two additional fields where a gas 
+%   The input case (MPGC) must contain two additional fields, where a gas 
 %   case (MPGC.mgc) and an interconnection case (MPGC.connect) must be 
 %   included as follows: 
 % 
@@ -75,8 +75,14 @@ function results = mpng(mpgc,mp)
 %   This file is part of MPNG.
 %   Covered by the 3-clause BSD License (see LICENSE file for details).                                                   
 
+%% check for Matpower options or set default
+if nargin == 1
+    mpopt = mpoption;
+    mpopt.opf.ac.solver = 'IPOPT';     % set the default solver
+    mpopt.ipopt.opts.max_iter = 1e5;   % default max number of iterations
+end
+verbose = mpopt.verbose;
 %% check for proper gas inputs
-verbose = mp.verbose;
 if verbose
     fprintf(1,'MPNG: MATPOWER-Natural Gas - Version 0.99alpha  \n')
     fprintf(1,'     - Thanks to UNAL-Mz & UTP \n\n')
@@ -88,27 +94,32 @@ if ~isfield(mpgc, 'connect') || ...
         ~isfield(mpgc.connect, 'interc') 
     error('matpowergas: case must contain a ''connect'' and a ''matgas case'' field');
 else %% add user functions
-    mpgc = add_userfcn(mpgc, 'ext2int', @userfcn_matpowergas_ext2int);
-    mpgc = add_userfcn(mpgc, 'formulation', @userfcn_matpowergas_formulation);
-    mpgc = add_userfcn(mpgc, 'int2ext', @userfcn_matpowergas_int2ext);
-    mpgc = add_userfcn(mpgc, 'printpf', @userfcn_matpowergas_printpf);
-    mpgc = add_userfcn(mpgc, 'savecase', @userfcn_matpowergas_savecase);
+    mpgc = add_userfcn(mpgc, 'ext2int', @userfcn_mpng_ext2int);
+    mpgc = add_userfcn(mpgc, 'formulation', @userfcn_mpng_formulation);
+    mpgc = add_userfcn(mpgc, 'int2ext', @userfcn_mpng_int2ext);
+    mpgc = add_userfcn(mpgc, 'printpf', @userfcn_mpng_printpf);
+    mpgc = add_userfcn(mpgc, 'savecase', @userfcn_mpng_savecase);
 end
 
 %% modify the power case for special features
-%  Here we add the changes necessaries to implement:
-%       - Power demand of compressors.
-%       - Time periods analysis.
-%       - Extra negative generators to model non-supplied demand.
 if verbose
     fprintf(1,'Preparing case...\n')
 end
-mpgc = mpc2gas_prep(mpgc,mp);
+mpgc = mpc2gas_prep(mpgc,mpopt);
 %% run program
-results = runopf(mpgc,mp);
+results = runopf(mpgc,mpopt);
 end
-function mpgc = userfcn_matpowergas_ext2int(mpgc, mpopt, args)
-
+function mpgc = userfcn_mpng_ext2int(mpgc, mpopt, args)
+%
+%   mpc = userfcn_mpng_ext2int(mpc, mpopt, args)
+%
+%   This is the 'ext2int' stage userfcn callback that prepares the input
+%   data for the formulation stage. It expects to find a 'MGC' and a
+%   'CONNECT' fields in mpc as described above. The optional args are
+%	not currently used. 
+%
+%   Currently there is no change between external and internal indexing,
+%   and status is not a consideration.
 
 %% Define power and gas constants
 % power
@@ -177,23 +188,34 @@ if any(1 > ratio_c)
 elseif any(ratio_c > 2)
     error('mpge: Compressors ratio must be lower than 2.');
 end
+% Check if initial storage is in the range of max and min storage
+sto0 = mgc.sto(:,STO_0);
+sto_max = mgc.sto(:,STOMAX);
+sto_min = mgc.sto(:,STOMIN);
+sto_lim_l = (sto0 - sto_min) < -1e-4;
+sto_lim_u = (sto_max - sto0) < -1e-4;
+if any(sto_lim_l) || any(sto_lim_u)
+    error('mpge: Initial storage is not inside the storage limits.');
+end
 %% connection case
-% the indexes for generators which have max daily energy must be consistent
-%   with the genfuel 'hydro'
-
-
 % Spinning reserve (sr) must be consitent with:
 %       - rows: number of zones
 %       - columns: number of periods of time
 % Spinning reserve asked for every period of time must be lower than total
 %   demand.
 
-
 %%
 mgc = mgc_PU(mgc); 
 mpgc.mgc = mgc;
 end 
-function om = userfcn_matpowergas_formulation(om, mpopt, args)
+function om = userfcn_mpng_formulation(om, mpopt, args)
+%
+%   om = userfcn_mpng_formulation(om, mpopt, args)
+%
+%   This is the 'formulation' stage userfcn callback that defines the
+%   user costs and constraints for the optimal power and natural gas flow. 
+%   It expects to find a 'MGC' and a 'CONNECT' fields in mpc as described 
+%   above. The optional args are not currently used.
 
 %% Define power and gas constants
 % power
@@ -332,7 +354,7 @@ sto_diffmax = mgc.sto(:,FSTOMAX);
 
 sto_out0 = mgc.sto(:,FSTO_OUT);
 sto_outmin = zeros(ns,1);
-sto_outmax = sto0 - stomin;
+sto_outmax = abs(sto0 - stomin);        % abs is added to avoid lims problems
 
 sto_in0 = mgc.sto(:,FSTO_IN);
 sto_inmin = zeros(ns,1);
@@ -350,7 +372,7 @@ sto_cost = mgc.sto(:,COST_STO);
 sto_out_cost = mgc.sto(:,COST_OUT);
 sto_in_cost = mgc.sto(:,COST_IN);
 
-k_sto_cost = sto_cost'*sto0;
+k_sto_cost = sto_cost.*sto0;
 
 %% Gas flow in pipeline
 
@@ -700,10 +722,16 @@ L_ener = zeros(size(U_ener));
 om.add_lin_constraint('hydro_energy', A_ener, L_ener, U_ener , {'Pg'});    % Max hydro energy
 % 
 end
-function results = userfcn_matpowergas_int2ext(results, mpopt,args)
-%% Here we put the results into the gas case. 
-%   Changes related to status and int/ext indexing are not taking into account.
-
+function results = userfcn_mpng_int2ext(results, mpopt,args)
+%
+%   results = userfcn_mpng_int2ext(results, mpopt, args)
+%
+%   This is the 'int2ext' stage userfcn callback that packages up the 
+%   results. It expects to find a 'MGC' and a 'CONNECT' fields in mpc 
+%   as described above. The optional args are not currently used.
+%
+%   Currently there is no change between external and internal indexing,
+%   and status is not a consideration.
 
 %% define named indices into data matrices
 [GEN_BUS, PG, QG, QMAX, QMIN, VG, MBASE, GEN_STATUS, PMAX, PMIN, ...
@@ -810,12 +838,22 @@ mgc.comp(iscomp_p,GC_C) = 0;
 mgc.comp(iscomp_g,FG_C) = fgc_g;
 mgc.comp(iscomp_g,PC_C) = psi_g;
 mgc.comp(iscomp_g,GC_C) = phi;
+
+%% Storage 
+sto_diff = results.var.val.sto_diff*fbase;
+sto_out = results.var.val.sto_out*fbase;
+sto_in = results.var.val.sto_in*fbase;
+
+mgc.sto(:,STO) = mgc.sto(:,STO_0) - sto_diff;
+mgc.sto(:,FSTO) = sto_diff;
+mgc.sto(:,FSTO_OUT) = sto_out;
+mgc.sto(:,FSTO_IN) = sto_in;
 %%
 results.mgc = mgc;
 end
-function results = userfcn_matpowergas_printpf(results, fd, mpopt, args)
+function results = userfcn_mpng_printpf(results, fd, mpopt, args)
 %
-%   results = userfcn_reserves_printpf(results, fd, mpopt, args)
+%   results = userfcn_mpng_printpf(results, fd, mpopt, args)
 %
 %   This is the 'printpf' stage userfcn callback that pretty-prints the
 %   results. It expects a results struct, a file descriptor and a MATPOWER
@@ -940,11 +978,19 @@ elseif any(iscomp_g) && any(iscomp_p)
     fgccost_g = results.qdc.fgccost_g;
 end
 
-% c_type = mgc.comp
-
 % storage
-storage = results.var.val.sto_diff;
-storagetot = sum(storage);
+sto_node    = mgc.sto(:,STO_NODE);
+sto         = mgc.sto(:,STO);
+sto_0       = mgc.sto(:,STO_0);
+fsto        = mgc.sto(:,FSTO);
+fsto_out	= mgc.sto(:,FSTO_OUT);
+fsto_in     = mgc.sto(:,FSTO_IN);
+sto_tot     = sum(sto);
+
+sto_cost = results.qdc.sto_cost;
+outflow_cost = results.qdc.sto_out_cost;
+inflow_cost = results.qdc.sto_in_cost;
+
 % cost
 gcost = results.qdc.gcost;
 gcost_tot = sum(gcost);
@@ -955,8 +1001,6 @@ sto_cost = results.qdc.sto_cost;
 sto_out_cost = results.qdc.sto_out_cost;
 sto_in_cost = results.qdc.sto_in_cost;
 fgocost = (results.qdc.fgonegcost + results.qdc.fgoposcost);
-
-% gascost =  
 
 % Gas-fired units
 if ~isempty(connect.interc.term)
@@ -971,6 +1015,7 @@ if ~isempty(connect.interc.term)
     pg_gfu_day = pg_gfu_day*time';
     g_gfu = pg_gfu_day.*eff_gfu;
 end
+
 %% Power system
 % Non-supplied demand
 ndl = results.nsd.N; 
@@ -985,7 +1030,6 @@ d_supplied = reshape(d_supplied,ndl/nt,nt);
 e_supplied = d_supplied*time';
 
 e_non = e_demanded - e_supplied;
-
 
 %% print options
 isOPF           = isfield(results, 'f') && ~isempty(results.f);
@@ -1021,7 +1065,7 @@ fprintf(fd, '\nPipelines      %3d         Gas Production         %2.2f', no,  su
 fprintf(fd, '\nCompressors    %3d         Total Demand           %2.2f', nc, sum(mgc.node.info(:, GD)));
 fprintf(fd, '\n  Gas Comp.    %3d           Supplied Demand      %2.2f', nc_g, sum(mgc.node.info(:, GD))-nondem_tot);
 fprintf(fd, '\n  Power Comp.  %3d           Non-Supplied Demand  %2.2f', nc_p,nondem_tot);
-fprintf(fd, '\nStorage Units  %3d         Gas Stored             %2.2f', ns, storagetot);
+fprintf(fd, '\nStorage Units  %3d         Gas Stored             %2.2f', ns, sto_tot);
 fprintf(fd, '\n')
 
 fprintf(fd, '\nGas total extration cost =   %5.2f',gcost_tot);
@@ -1118,6 +1162,24 @@ for i = 1:nc
 
 end 
 fprintf(fd, '\n');
+fprintf(fd, '\n================================================================================');
+fprintf(fd, '\n|     Storage Units Data                                                       |');
+fprintf(fd, '\n================================================================================');
+fprintf(fd, '\n Storage  Initial   Final    Sto.     Sto.     Sto.     Sto.    Outflow   Inflow');
+fprintf(fd, '\n   Node     Sto.    Sto.     Diff.    Out      In       Cost     Cost     Cost  ');
+fprintf(fd, '\n -------  -------  -------  -------  -------  -------  -------  -------  -------');
+for i = 1:ns
+    fprintf(fd,'\n    %2d ',sto_node(i));
+    fprintf(fd,'    %5.1f',sto_0(i));
+    fprintf(fd,'    %5.1f',sto(i));
+    fprintf(fd,'   %6.2f',fsto(i));
+    fprintf(fd,'   %6.2f',fsto_out(i));
+    fprintf(fd,'   %6.2f',fsto_in(i));
+    fprintf(fd,'   %7i',round(sto_cost(i)));
+    fprintf(fd,'  %6i',round(outflow_cost(i)));
+    fprintf(fd,'   %6i',round(inflow_cost(i)));
+end 
+fprintf(fd, '\n');
 if ~isempty(connect.interc.term)
     fprintf(fd, '\n================================================================================');
     fprintf(fd, '\n|     Gas-fired Generators Data                                                |');
@@ -1137,12 +1199,13 @@ if ~isempty(connect.interc.term)
     fprintf(fd, '\n');
 end
 end
-
-function mpgc = userfcn_matpowergas_savecase(mpgc, fd, prefix, args)
-
-
-
-
+function mpgc = userfcn_mpng_savecase(mpgc, fd, prefix, args)
+%
+%   This is the 'savecase' stage userfcn callback that prints the M-file
+%   code to save the results of the optminal power and natural gas flow.
+%
+%   Not currently used.
+%
 end
 %% -------------- [WGV] Jacobian and Hessian for equation (12) --------------
 function [g, dg] = compgas_fcn(x, parcomp)
@@ -1204,18 +1267,8 @@ else
                  (1:npipe)'  to_o  ]; % Indexes for dg/d(pj)           
     vals_jac2 = [-df                  % Values for dg/d(pi)
                   df];                % Values for dg/d(pj)
-    
-    % Option 1: using sparse Matlab function 
-    jac2 = sparse(id_jac2(:,1),id_jac2(:,2),vals_jac2,npipe,nn); % Eval dg/dp
-    dg = [jac1 jac2]; % Compute Jacobian of the Lagrangian
-    
-    % Option 2: using acummaray Matlab function   
-%     jac2 = accumarray(id_jac2,vals_jac2); % Eval dg/dp
-%     if not(ismember(nn,id_jac2(:,2))) % if all nodes are not employed add zeros to the jacobian
-%         jac2 = [jac2 zeros(size(jac2,1),abs(nn-max(id_jac2(:,2))))];
-%     end
-%   dg = [full(jac1) jac2]; % Compute Jacobian of the Lagrangian
-    
+        jac2 = sparse(id_jac2(:,1),id_jac2(:,2),vals_jac2,npipe,nn); % Eval dg/dp
+    dg = [jac1 jac2]; % Compute Jacobian of the Lagrangian   
 end
 end
 function d2L = fpipe_hess(x, lambda, parpipe)
@@ -1245,15 +1298,6 @@ vals_hess2 = [-lambda.*d2f   % Values for d^2(L)/d^2(pi)
 hess2 = sparse(id_hess2(:,1),id_hess2(:,2),vals_hess2,nn,nn);
 d2L = [    hess1        spalloc(npipe,nn,npipe*nn) % Compute Hessian of the Lagrangian
        spalloc(nn,npipe,nn*npipe)       hess2    ];
-
-% Option 2: using accumarray Matlab function
-% hess2 = accumarray(id_hess2,vals_hess2); % Eval d^2(L)/d(pressures)
-% if not(ismember(nn,id_hess2(:,2))) % if all nodes are not employed add zeros to the hessian
-%     pad_size = nn - max(id_hess2(:,2));
-%     hess2 = padarray(hess2,[pad_size,pad_size],0,'post');   
-% end
-% d2L = [ full(hess1)     zeros(npipe,nn) % Compute Hessian of the Lagrangian
-%        zeros(nn,npipe)       hess2    ];
 end
 
 %% -------------- [WGV] Jacobian and Hessian for equation (11) --------------
@@ -1372,7 +1416,7 @@ end
 end
 
 function d2L = wcomppower_hess(x, lambda, parcomp)
-nc_p = parcomp.ncompp;  % Extract compressor parameters
+nc_p = parcomp.ncompp;  % Extract compressor paramet ers
 from_c = parcomp.idfrom;
 to_c = parcomp.idto;
 nn = parcomp.other.nn;
@@ -1413,4 +1457,3 @@ d2L = [ L1    L1      L2       % Compute Hessian of the Lagrangian
         L1    L1     hess2   
         L2'  hess2'  hess1];   
 end
-

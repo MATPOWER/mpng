@@ -1,23 +1,52 @@
-function mpgc = mpc2gas_prep(mpgc,mp)
-% mpc2gas_prep Changes the original matpower case in order to
-%   add multiple time scenarios and extra generators to model the
-%   compressors and the dispatchable load.
+function mpgc = mpc2gas_prep(mpgc0,mpopt)
+% mpc2gas_prep Modifies the original Matpower case to make it fulfil the 
+%   requirements of the MPNG formulation.
+%   
+%   MPGC = MPC2GAS_PREP(MPGC0,MPOPT);
+%   
+%   This function is the first step of the MPNG model, it basically creates
+%   negative generators to model power-fired compressors and dispatchable 
+%   loads, it also creates islands to simulate multiple time scenarios of 
+%   the power system. Inputs are as follow:
+% 
+%   MPGC0 -  File name or struct with initial MATPOWER-NATURAL GAS case. It
+%       must contain two additional fields, the gas case (MPGC0.mgc) and an
+%       interconnection case (MPGC0.connect).
+%
+%   MPOPT (optional) - Default MATPOWER options struct.
+%
+%   According to the formulation, the window of analysis for the natural
+%   gas model consist in one entire day, but for the power system, the user
+%   has the possibility to choose the number of periods for a day and also
+%   the number of hours for each period. This is made by creating
+%   identical islands for each period, except for the active and reactive
+%   power demand.
+% 
+%   The gas fired compressors are modeled as negative gereators which
+%   represent the demand derivated from the compressors.
+% 
+%   Finally, for the whole case including all islands, the demands are
+%   converted into dispatchable loads in order to avoid convergence 
+%   problems due to shortages.
+%   
+%   See also COMPRESSOR2GEN MULTI_PERIOD NSD2GEN
 
-%   MPNG: Matpower - Natural Gas
+%   MPNG Matpower - Natural Gas
 %   Copyright (c) 2019 - v0.99alpha
 %   Sergio García Marín - Universidad Nacional de Colombia - Sede Manizales
 %   Wilson González Vanegas - Universidad Tecnológica de Pereira
 %   Carlos E. Murillo Sánchez - Universidad Nacional de Colombia - Sede Manizales
+% 
+%   This file is part of MPNG.
+%   Covered by the 3-clause BSD License (see LICENSE file for details).
 
-%   3-clause bsd license 
-
-%% Initializing things
+%% Initializing some things
 
 [COMP_G, COMP_P, F_NODE, T_NODE, TYPE_C, RATIO_C, B_C, Z_C, ALPHA, BETA, ...
     GAMMA, FMAX_C, COST_C, FG_C, GC_C, PC_C] = idx_comp;
 [GEN_ID, MAX_ENER, COMP_ID, BUS_ID, NODE_ID, EFF] = idx_connect;
 if nargin == 2
-    verbose = mp.verbose;
+    verbose = mpopt.verbose;
 end
 %% create extra generators for power power consuption compressors
 iscomp_p = (mpgc.mgc.comp(:,TYPE_C) == COMP_P);         % compressors working with power  
