@@ -125,8 +125,7 @@ for i = 0:(nt-1)
     end
     if isfield(mpc, 'gennames') && iscell(mpc.gennames)
         gennames((ng*i + 1):(ng*j)) = mpc.gennames;
-    end
-   
+    end   
 end
 %% 
 bus(:,BUS_I) = 1:nb*nt;
@@ -151,10 +150,3 @@ mpc_out.multi_period.status = 1;
 % mpc_out.multi_period.original.ng = ng;
 % mpc_out.multi_period.original.nl = nl;
 % mpc_out = ext2int(mpc_out);
-
-
-
-
-
-
-

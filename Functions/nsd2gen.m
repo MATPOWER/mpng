@@ -44,7 +44,10 @@ end
     MU_PMAX, MU_PMIN, MU_QMAX, MU_QMIN, PC1, PC2, QC1MIN, QC1MAX, ...
     QC2MIN, QC2MAX, RAMP_AGC, RAMP_10, RAMP_30, RAMP_Q, APF] = idx_gen;
 [PW_LINEAR, POLYNOMIAL, MODEL, STARTUP, SHUTDOWN, NCOST, COST] = idx_cost;
+
 %% initialize some things
+mpc = mpc0;
+
 [~, cg] = size(mpc0.gen);
 mbase = mpc0.baseMVA;
 
@@ -92,7 +95,7 @@ if isfield(mpc0, 'genfuel') && iscell(mpc0.genfuel)
     for k = 1:ndl
         genfuel{k} = 'dl';
     end
-    mpc0.genfuel = [mpc0.genfuel; genfuel];
+    mpc.genfuel = [mpc0.genfuel; genfuel];
 end
 %% organize final info
 mpc.nsd.id_dem = id_dem;

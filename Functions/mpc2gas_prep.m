@@ -48,6 +48,7 @@ function mpgc = mpc2gas_prep(mpgc0,mpopt)
 if nargin == 2
     verbose = mpopt.verbose;
 end
+mpgc = mpgc0;
 %% create extra generators for power power consuption compressors
 iscomp_p = (mpgc.mgc.comp(:,TYPE_C) == COMP_P);         % compressors working with power  
 iscomp_p_matrix = ~isempty(mpgc.connect.interc.comp);
