@@ -1,18 +1,27 @@
 function mpgc = compressor2gen(mpgc)
-% compressor2gen Creates extra generators to model the active power demand
-%   consumed in the compressor working with power from the network.
+% compressor2gen Creates extra negative generators to model the active power
+%   consumed by the compressor working with power.
+%       
+%   MPGC = COMPRESSOR2GEN(MPGC0);
 %   
-%   The input mpgc must have the matpower case structure, the gas case
-%   structure and a connect case to work fine. There must be consistency
-%   between the inputs. 
+%   The input case (MPGC0) must contain two additional fields, the gas 
+%   case (MPGC0.mgc) and an interconnection case (MPGC0.connect).
+% 
+%   This function creates negative generators to model the demand generated
+%   by such compressors. If the MPGC0 contains the fields 'MPGC0.gennames'
+%   and 'MPGC0.genfuel' the function also creates a name and a tag for the
+%   new generators.
+% 
+%   See also MPC2GAS_PREP
 
-%   MPNG: Matpower - Natural Gas
+%   MPNG Matpower - Natural Gas
 %   Copyright (c) 2019 - v0.99alpha
 %   Sergio García Marín - Universidad Nacional de Colombia - Sede Manizales
 %   Wilson González Vanegas - Universidad Tecnológica de Pereira
 %   Carlos E. Murillo Sánchez - Universidad Nacional de Colombia - Sede Manizales
-
-%   3-clause bsd license     
+% 
+%   This file is part of MPNG.
+%   Covered by the 3-clause BSD License (see LICENSE file for details).
 %%
 [PQ, PV, REF, NONE, BUS_I, BUS_TYPE, PD, QD, GS, BS, BUS_AREA, VM, ...
     VA, BASE_KV, ZONE, VMAX, VMIN, LAM_P, LAM_Q, MU_VMAX, MU_VMIN] = idx_bus;

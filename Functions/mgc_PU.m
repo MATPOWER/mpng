@@ -1,9 +1,10 @@
-function mgcPU = mgc_PU(mgc)
+function mgc_pu = mgc_PU(mgc_real)
 % MGC_PU converts the matrices inside the MGC to per unit (p.u.) data. 
+%   MGC_PU = MGC_PU(MGC_REAL)
 % 
-%   This function gets the whole information of the natural case and
-%   converts it into normalized values, it includes the constants and the
-%   initial values of the variables.
+%   This function gets the whole information of the natural case MGC_REAL
+%   and converts it into normalized values in MGC_PU, it includes the 
+%   constants and the initial values of the variables.
 %
 %   The bases must be specified inside the case, however they have the 
 %   following default values:
@@ -39,77 +40,77 @@ function mgcPU = mgc_PU(mgc)
 [STO_NODE, STO, STO_0, STOMAX, STOMIN, FSTO, FSTO_OUT, FSTO_IN,...
     FSTOMAX, FSTOMIN, S_STATUS, COST_STO, COST_OUT, COST_IN] = idx_sto;
 %%
-mgcPU = mgc;
+mgc_pu = mgc_real;
 %% get the bases
-if isempty(mgcPU.pbase) 
+if isempty(mgc_pu.pbase) 
     pbase = 500;
-    mgcPU.pbase = pbase;
+    mgc_pu.pbase = pbase;
 else
-    pbase = mgcPU.pbase;
+    pbase = mgc_pu.pbase;
 end
-if isempty(mgcPU.fbase) 
+if isempty(mgc_pu.fbase) 
     fbase = 50;
-    mgcPU.fbase = fbase;
+    mgc_pu.fbase = fbase;
 else
-    fbase = mgcPU.fbase;
+    fbase = mgc_pu.fbase;
 end
-if isempty(mgcPU.wbase)
+if isempty(mgc_pu.wbase)
     wbase = 100;
-    mgcPU.wbase = wbase;
+    mgc_pu.wbase = wbase;
 else 
-    wbase = mgcPU.wbase;
+    wbase = mgc_pu.wbase;
 end 
 %% ------------------------------ Node data ------------------------------
-mgcPU.node.info(:,PR) = mgcPU.node.info(:,PR).^2/pbase^2;
-mgcPU.node.info(:,PRMAX) = mgcPU.node.info(:,PRMAX).^2/pbase^2;
-mgcPU.node.info(:,PRMIN) = mgcPU.node.info(:,PRMIN).^2/pbase^2;
-mgcPU.node.info(:,OVP) = mgcPU.node.info(:,OVP).^2/pbase^2;
-mgcPU.node.info(:,UNP) = mgcPU.node.info(:,UNP).^2/pbase^2;
-mgcPU.node.info(:,GD) = mgcPU.node.info(:,GD)/fbase;
-mgcPU.node.dem = mgcPU.node.dem/fbase;
+mgc_pu.node.info(:,PR) = mgc_pu.node.info(:,PR).^2/pbase^2;
+mgc_pu.node.info(:,PRMAX) = mgc_pu.node.info(:,PRMAX).^2/pbase^2;
+mgc_pu.node.info(:,PRMIN) = mgc_pu.node.info(:,PRMIN).^2/pbase^2;
+mgc_pu.node.info(:,OVP) = mgc_pu.node.info(:,OVP).^2/pbase^2;
+mgc_pu.node.info(:,UNP) = mgc_pu.node.info(:,UNP).^2/pbase^2;
+mgc_pu.node.info(:,GD) = mgc_pu.node.info(:,GD)/fbase;
+mgc_pu.node.dem = mgc_pu.node.dem/fbase;
 % cost
-mgcPU.node.info(:,COST_OVP) = mgcPU.node.info(:,COST_OVP)*pbase;
-mgcPU.node.info(:,COST_UNP) = mgcPU.node.info(:,COST_UNP)*pbase;
-mgcPU.node.demcost = mgcPU.node.demcost*fbase;
+mgc_pu.node.info(:,COST_OVP) = mgc_pu.node.info(:,COST_OVP)*pbase;
+mgc_pu.node.info(:,COST_UNP) = mgc_pu.node.info(:,COST_UNP)*pbase;
+mgc_pu.node.demcost = mgc_pu.node.demcost*fbase;
 
 %% ------------------------------ Well data ------------------------------
-mgcPU.well(:,G) = mgcPU.well(:,G)/fbase;
-mgcPU.well(:,PW) = mgcPU.well(:,PW).^2/pbase^2;
-mgcPU.well(:,GMAX) = mgcPU.well(:,GMAX)/fbase;
-mgcPU.well(:,GMIN) = mgcPU.well(:,GMIN)/fbase;
+mgc_pu.well(:,G) = mgc_pu.well(:,G)/fbase;
+mgc_pu.well(:,PW) = mgc_pu.well(:,PW).^2/pbase^2;
+mgc_pu.well(:,GMAX) = mgc_pu.well(:,GMAX)/fbase;
+mgc_pu.well(:,GMIN) = mgc_pu.well(:,GMIN)/fbase;
 % cost
-mgcPU.well(:,COST_G) = mgcPU.well(:,COST_G)*fbase;
+mgc_pu.well(:,COST_G) = mgc_pu.well(:,COST_G)*fbase;
 
 %% ---------------------------- Pipeline data ----------------------------
-mgcPU.pipe(:,FG_O) = mgcPU.pipe(:,FG_O)/fbase;
-mgcPU.pipe(:,K_O) = mgcPU.pipe(:,K_O)/(fbase/pbase);
-mgcPU.pipe(:,FMAX_O) = mgcPU.pipe(:,FMAX_O)/fbase;
-mgcPU.pipe(:,FMIN_O) = mgcPU.pipe(:,FMIN_O)/fbase;
+mgc_pu.pipe(:,FG_O) = mgc_pu.pipe(:,FG_O)/fbase;
+mgc_pu.pipe(:,K_O) = mgc_pu.pipe(:,K_O)/(fbase/pbase);
+mgc_pu.pipe(:,FMAX_O) = mgc_pu.pipe(:,FMAX_O)/fbase;
+mgc_pu.pipe(:,FMIN_O) = mgc_pu.pipe(:,FMIN_O)/fbase;
 % cost
-mgcPU.pipe(:,COST_O) = mgcPU.pipe(:,COST_O)*fbase;
+mgc_pu.pipe(:,COST_O) = mgc_pu.pipe(:,COST_O)*fbase;
 
 
 %% ---------------------------- Compressor data ----------------------------
-mgcPU.comp(:,FG_C) = mgcPU.comp(:,FG_C)/fbase;
-mgcPU.comp(:,PC_C) = mgcPU.comp(:,PC_C)/wbase;
-mgcPU.comp(:,GC_C) = mgcPU.comp(:,GC_C)/fbase;
-mgcPU.comp(:,B_C) = mgcPU.comp(:,B_C)/(wbase/fbase);
-mgcPU.comp(:,ALPHA) = mgcPU.comp(:,ALPHA)/fbase;
-mgcPU.comp(:,BETA) = mgcPU.comp(:,BETA)/(fbase/wbase);
-mgcPU.comp(:,GAMMA) = mgcPU.comp(:,GAMMA)/(fbase/wbase^2);
-mgcPU.comp(:,FMAX_C) = mgcPU.comp(:,FMAX_C)/fbase;
+mgc_pu.comp(:,FG_C) = mgc_pu.comp(:,FG_C)/fbase;
+mgc_pu.comp(:,PC_C) = mgc_pu.comp(:,PC_C)/wbase;
+mgc_pu.comp(:,GC_C) = mgc_pu.comp(:,GC_C)/fbase;
+mgc_pu.comp(:,B_C) = mgc_pu.comp(:,B_C)/(wbase/fbase);
+mgc_pu.comp(:,ALPHA) = mgc_pu.comp(:,ALPHA)/fbase;
+mgc_pu.comp(:,BETA) = mgc_pu.comp(:,BETA)/(fbase/wbase);
+mgc_pu.comp(:,GAMMA) = mgc_pu.comp(:,GAMMA)/(fbase/wbase^2);
+mgc_pu.comp(:,FMAX_C) = mgc_pu.comp(:,FMAX_C)/fbase;
 % cost
-mgcPU.comp(:,COST_C) = mgcPU.comp(:,COST_C)*fbase;
+mgc_pu.comp(:,COST_C) = mgc_pu.comp(:,COST_C)*fbase;
 %% -------------------------------- Storage --------------------------------
-mgcPU.sto(:,STO_0)      = mgcPU.sto(:,STO_0)/fbase;
-mgcPU.sto(:,STOMAX)     = mgcPU.sto(:,STOMAX)/fbase;
-mgcPU.sto(:,STOMIN)     = mgcPU.sto(:,STOMIN)/fbase;
-mgcPU.sto(:,FSTO)       = mgcPU.sto(:,FSTO)/fbase;
-mgcPU.sto(:,FSTO_OUT)   = mgcPU.sto(:,FSTO_OUT)/fbase;
-mgcPU.sto(:,FSTO_IN)    = mgcPU.sto(:,FSTO_IN)/fbase;
-mgcPU.sto(:,FSTOMAX)    = mgcPU.sto(:,FSTOMAX)/fbase;
-mgcPU.sto(:,FSTOMIN)    = mgcPU.sto(:,FSTOMIN)/fbase;
+mgc_pu.sto(:,STO_0)      = mgc_pu.sto(:,STO_0)/fbase;
+mgc_pu.sto(:,STOMAX)     = mgc_pu.sto(:,STOMAX)/fbase;
+mgc_pu.sto(:,STOMIN)     = mgc_pu.sto(:,STOMIN)/fbase;
+mgc_pu.sto(:,FSTO)       = mgc_pu.sto(:,FSTO)/fbase;
+mgc_pu.sto(:,FSTO_OUT)   = mgc_pu.sto(:,FSTO_OUT)/fbase;
+mgc_pu.sto(:,FSTO_IN)    = mgc_pu.sto(:,FSTO_IN)/fbase;
+mgc_pu.sto(:,FSTOMAX)    = mgc_pu.sto(:,FSTOMAX)/fbase;
+mgc_pu.sto(:,FSTOMIN)    = mgc_pu.sto(:,FSTOMIN)/fbase;
 %cost
-mgcPU.sto(:,COST_STO)   = mgcPU.sto(:,COST_STO)*fbase;
-mgcPU.sto(:,COST_OUT)   = mgcPU.sto(:,COST_OUT)*fbase;
-mgcPU.sto(:,COST_IN)    = mgcPU.sto(:,COST_IN)*fbase;
+mgc_pu.sto(:,COST_STO)   = mgc_pu.sto(:,COST_STO)*fbase;
+mgc_pu.sto(:,COST_OUT)   = mgc_pu.sto(:,COST_OUT)*fbase;
+mgc_pu.sto(:,COST_IN)    = mgc_pu.sto(:,COST_IN)*fbase;

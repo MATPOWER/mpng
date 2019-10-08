@@ -1,10 +1,15 @@
-function mgcREAL = mgc_REAL(mgc)
-%% mgc_REAL converts the natural gas case into conventional units. 
+function mgc_real = mgc_REAL(mgc_pu)
+%% mgc_REAL converts the natural gas case into conventional units.
+%   MGC_REAL = MGC_REAL(MGC_PU)
+% 
+%   This function gets the whole information of the natural case MGC_REAL
+%   and converts it into normalized values in MGC_PU, it includes the 
+%   constants and the initial values of the variables.
 %
 %   This function is used in the final stage of MPNG, where the results are
-%   reorganized and printed. The whole information of the natural case is
-%   converted into conventional values, this includes the constants and the
-%   final values of the variables.
+%   reorganized and printed. The whole information of the natural case 
+%   (MPC_PU) is converted into conventional values (MGC_REAL), this 
+%   includes the constants and the final values of the variables.
 %
 %   See also MGC_PU
 
@@ -28,62 +33,62 @@ function mgcREAL = mgc_REAL(mgc)
     FSTOMAX, FSTOMIN, S_STATUS, COST_STO, COST_OUT, COST_IN] = idx_sto;
 
 %%
-mgcREAL = mgc;
-pbase = mgc.pbase;
-fbase = mgc.fbase;
-wbase = mgc.wbase;
+mgc_real = mgc_pu;
+pbase = mgc_pu.pbase;
+fbase = mgc_pu.fbase;
+wbase = mgc_pu.wbase;
 
 %% ------------------------------ Node data ------------------------------
-mgcREAL.node.info(:,PR) = sqrt(mgcREAL.node.info(:,PR).*pbase^2);
-mgcREAL.node.info(:,PRMAX) = sqrt(mgcREAL.node.info(:,PRMAX).*pbase^2);
-mgcREAL.node.info(:,PRMIN) = sqrt(mgcREAL.node.info(:,PRMIN).*pbase^2);
-mgcREAL.node.info(:,OVP) = sqrt(mgcREAL.node.info(:,OVP).*pbase^2);
-mgcREAL.node.info(:,UNP) = sqrt(mgcREAL.node.info(:,UNP).*pbase^2);
-mgcREAL.node.info(:,GD) = mgcREAL.node.info(:,GD)*fbase;
-mgcREAL.node.dem = mgcREAL.node.dem*fbase;
+mgc_real.node.info(:,PR) = sqrt(mgc_real.node.info(:,PR).*pbase^2);
+mgc_real.node.info(:,PRMAX) = sqrt(mgc_real.node.info(:,PRMAX).*pbase^2);
+mgc_real.node.info(:,PRMIN) = sqrt(mgc_real.node.info(:,PRMIN).*pbase^2);
+mgc_real.node.info(:,OVP) = sqrt(mgc_real.node.info(:,OVP).*pbase^2);
+mgc_real.node.info(:,UNP) = sqrt(mgc_real.node.info(:,UNP).*pbase^2);
+mgc_real.node.info(:,GD) = mgc_real.node.info(:,GD)*fbase;
+mgc_real.node.dem = mgc_real.node.dem*fbase;
 % cost
-mgcREAL.node.info(:,COST_OVP) = mgcREAL.node.info(:,COST_OVP)/pbase;
-mgcREAL.node.info(:,COST_UNP) = mgcREAL.node.info(:,COST_UNP)/pbase;
-mgcREAL.node.demcost = mgcREAL.node.demcost/fbase;
+mgc_real.node.info(:,COST_OVP) = mgc_real.node.info(:,COST_OVP)/pbase;
+mgc_real.node.info(:,COST_UNP) = mgc_real.node.info(:,COST_UNP)/pbase;
+mgc_real.node.demcost = mgc_real.node.demcost/fbase;
 
 %% ------------------------------ Well data ------------------------------
-mgcREAL.well(:,G) = mgcREAL.well(:,G)*fbase;
-mgcREAL.well(:,PW) = sqrt(mgcREAL.well(:,PW).*pbase^2);
-mgcREAL.well(:,GMAX) = mgcREAL.well(:,GMAX)*fbase;
-mgcREAL.well(:,GMIN) = mgcREAL.well(:,GMIN)*fbase;
+mgc_real.well(:,G) = mgc_real.well(:,G)*fbase;
+mgc_real.well(:,PW) = sqrt(mgc_real.well(:,PW).*pbase^2);
+mgc_real.well(:,GMAX) = mgc_real.well(:,GMAX)*fbase;
+mgc_real.well(:,GMIN) = mgc_real.well(:,GMIN)*fbase;
 % cost
-mgcREAL.well(:,COST_G) = mgcREAL.well(:,COST_G)/fbase;
+mgc_real.well(:,COST_G) = mgc_real.well(:,COST_G)/fbase;
 
 %% ---------------------------- Pipeline data ----------------------------
-mgcREAL.pipe(:,FG_O) = mgcREAL.pipe(:,FG_O)*fbase;
-mgcREAL.pipe(:,K_O) = mgcREAL.pipe(:,K_O)*(fbase/pbase);
-mgcREAL.pipe(:,FMAX_O) = mgcREAL.pipe(:,FMAX_O)*fbase;
-mgcREAL.pipe(:,FMIN_O) = mgcREAL.pipe(:,FMIN_O)*fbase;
+mgc_real.pipe(:,FG_O) = mgc_real.pipe(:,FG_O)*fbase;
+mgc_real.pipe(:,K_O) = mgc_real.pipe(:,K_O)*(fbase/pbase);
+mgc_real.pipe(:,FMAX_O) = mgc_real.pipe(:,FMAX_O)*fbase;
+mgc_real.pipe(:,FMIN_O) = mgc_real.pipe(:,FMIN_O)*fbase;
 % cost
-mgcREAL.pipe(:,COST_O) = mgcREAL.pipe(:,COST_O)/fbase;
+mgc_real.pipe(:,COST_O) = mgc_real.pipe(:,COST_O)/fbase;
 
 
 %% ---------------------------- Compressor data ----------------------------
-mgcREAL.comp(:,FG_C) = mgcREAL.comp(:,FG_C)*fbase;
-mgcREAL.comp(:,PC_C) = mgcREAL.comp(:,PC_C)*wbase;
-mgcREAL.comp(:,GC_C) = mgcREAL.comp(:,GC_C)*fbase;
-mgcREAL.comp(:,B_C) = mgcREAL.comp(:,B_C)*(wbase/fbase);
-mgcREAL.comp(:,ALPHA) = mgcREAL.comp(:,ALPHA)*fbase;
-mgcREAL.comp(:,BETA) = mgcREAL.comp(:,BETA)*(fbase/wbase);
-mgcREAL.comp(:,GAMMA) = mgcREAL.comp(:,GAMMA)*(fbase/wbase^2);
-mgcREAL.comp(:,FMAX_C) = mgcREAL.comp(:,FMAX_C)*fbase;
+mgc_real.comp(:,FG_C) = mgc_real.comp(:,FG_C)*fbase;
+mgc_real.comp(:,PC_C) = mgc_real.comp(:,PC_C)*wbase;
+mgc_real.comp(:,GC_C) = mgc_real.comp(:,GC_C)*fbase;
+mgc_real.comp(:,B_C) = mgc_real.comp(:,B_C)*(wbase/fbase);
+mgc_real.comp(:,ALPHA) = mgc_real.comp(:,ALPHA)*fbase;
+mgc_real.comp(:,BETA) = mgc_real.comp(:,BETA)*(fbase/wbase);
+mgc_real.comp(:,GAMMA) = mgc_real.comp(:,GAMMA)*(fbase/wbase^2);
+mgc_real.comp(:,FMAX_C) = mgc_real.comp(:,FMAX_C)*fbase;
 % cost
-mgcREAL.comp(:,COST_C) = mgcREAL.comp(:,COST_C)/fbase;
+mgc_real.comp(:,COST_C) = mgc_real.comp(:,COST_C)/fbase;
 %% -------------------------------- Storage --------------------------------
-mgcREAL.sto(:,STO_0)    = mgcREAL.sto(:,STO_0)*fbase;
-mgcREAL.sto(:,STOMAX)   = mgcREAL.sto(:,STOMAX)*fbase;
-mgcREAL.sto(:,STOMIN)   = mgcREAL.sto(:,STOMIN)*fbase;
-mgcREAL.sto(:,FSTO)     = mgcREAL.sto(:,FSTO)*fbase;
-mgcREAL.sto(:,FSTO_OUT) = mgcREAL.sto(:,FSTO_OUT)*fbase;
-mgcREAL.sto(:,FSTO_IN)  = mgcREAL.sto(:,FSTO_IN)*fbase;
-mgcREAL.sto(:,FSTOMAX)  = mgcREAL.sto(:,FSTOMAX)*fbase;
-mgcREAL.sto(:,FSTOMIN)  = mgcREAL.sto(:,FSTOMIN)*fbase;
+mgc_real.sto(:,STO_0)    = mgc_real.sto(:,STO_0)*fbase;
+mgc_real.sto(:,STOMAX)   = mgc_real.sto(:,STOMAX)*fbase;
+mgc_real.sto(:,STOMIN)   = mgc_real.sto(:,STOMIN)*fbase;
+mgc_real.sto(:,FSTO)     = mgc_real.sto(:,FSTO)*fbase;
+mgc_real.sto(:,FSTO_OUT) = mgc_real.sto(:,FSTO_OUT)*fbase;
+mgc_real.sto(:,FSTO_IN)  = mgc_real.sto(:,FSTO_IN)*fbase;
+mgc_real.sto(:,FSTOMAX)  = mgc_real.sto(:,FSTOMAX)*fbase;
+mgc_real.sto(:,FSTOMIN)  = mgc_real.sto(:,FSTOMIN)*fbase;
 %cost
-mgcREAL.sto(:,COST_STO) = mgcREAL.sto(:,COST_STO)/fbase;
-mgcREAL.sto(:,COST_OUT) = mgcREAL.sto(:,COST_OUT)/fbase;
-mgcREAL.sto(:,COST_IN)  = mgcREAL.sto(:,COST_IN)/fbase;
+mgc_real.sto(:,COST_STO) = mgc_real.sto(:,COST_STO)/fbase;
+mgc_real.sto(:,COST_OUT) = mgc_real.sto(:,COST_OUT)/fbase;
+mgc_real.sto(:,COST_IN)  = mgc_real.sto(:,COST_IN)/fbase;
