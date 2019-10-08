@@ -1,8 +1,11 @@
 \begin{appendix}
+	
 \chapter{Appendix A: Gas Case Data File Format}
 \label{app:gas_format}
 
-%---------------------- Appendix A ----------------------
+All details about the gas case (\code{mgc}) format are provided in the tables below. For the sake of convenience and code portability, \code{idx\_node} defines a set of constants (positive integers) to be used as named indices into the columns of the \code{node.info} matrix. Similarly, \code{idx\_well}, \code{idx\_pipe}, \code{idx\_comp}, and \code{idx\_sto} defines names for the columns in \code{well}, \code{pipe}, \code{comp}, and \code{sto}, respectively. On the other hand, \code{mgc\_PU} converts from real to per-unit (P.U) quantities, while \code{mgc\_REAL} converts from P.U to real values. Moreover, the \code{pbase}, \code{fbase}, and \code{wbase} fields are simple scalar values to define the gas system pressure, flow and power bases, respectively. 
+
+
 \begin{table}[!ht]	
 	\centering
 	\begin{threeparttable}
@@ -23,7 +26,7 @@
 			\code{COST\_OVP}	& 8	& over-pressure cost [\$/psia$^2$]\\
 			\code{COST\_UNP}	& 9	& under-pressure cost [\$/psia$^2$]\\
 			\code{GD}	& 10	& full nodal demand [MSCFD]\tnote{\dag}\\
-			\code{NGD}	& 11	& Number of different nodal users (positive integer)\\
+			\code{NGD}	& 11	& number of different nodal users (positive integer)\\
 			\bottomrule
 		\end{tabular}
 		\begin{tablenotes}
@@ -68,7 +71,7 @@
 			\code{F\_NODE}	& 1	& from node number (positive integer)\\	
 			\code{T\_NODE}	& 2	& to node number (positive integer)\\
 			\code{FG\_O}	& 3	& known gas pipeline flow [MSCFD]\\
-			\code{K\_O}	& 4	& Weymouth constant [MSCFD\_psia]\\
+			\code{K\_O}	& 4	& Weymouth constant [MSCFD/psia]\\
 			\code{DIAM}	& 5	& diameter [inches]\\
 			\code{LNG}	& 6	& longitude [km]\\
 			\code{FMAX\_O}	& 7	& maximum flow [MSCFD]\\
@@ -102,9 +105,13 @@
 			\code{Y}	& 11	& linear approximation coefficient [MSCFD/MVA]\\
 			\code{Z}	& 12	& quadratic approximation coefficient [MSCFD/MVA$^2$]\\
 			\code{FMAX\_C}	& 13	& maximum flow through compressor [MSCFD]\\
-			\code{COST\_C}	& 14	& compressor cost?? [\$/MSCFD??]\\		
+			\code{COST\_C}	& 14	& compressor cost [\$/MSCFD]\\		
 			\bottomrule
 		\end{tabular}
+		\begin{tablenotes}
+			\scriptsize
+			\item [\dag] {Only relevant for a gas-driven compressor.}
+		\end{tablenotes}
 	\end{threeparttable}
 \end{table}
 
@@ -134,53 +141,63 @@
 			\code{COST\_IN}	& 14	& storage inflow cost [\$/MSCFD]\\		
 			\bottomrule
 		\end{tabular}
+	\begin{tablenotes}
+		\scriptsize
+		\item [\dag] {Volume in Million Standard Cubic Feet (MSCF).}
+		\item[\ddag] {Storage outflow minus storage inflow. See Section \ref{chap:formulation} for more details.}
+	\end{tablenotes}
 	\end{threeparttable}
 \end{table}
-% ----------------------- Appendix B -----------------------
+
+
+
 \chapter{Appendix B: Interconnection Case Data File Format}
 \label{app:connect_format}
+
+A detailed description about the interconnection case (\code{connect}) is provided in Table \ref{tab:connectcase}. As seen, some additional information is required for the power system besides the input data given in the \matpower{}-case. For the sake of clarity and readability, we decided to include such an additional information in the interconnection case rather than the \matpower{}-case. In short, different periods that are modeled using an island-based approach are allowed for the power system, where each island define the network conditions at each period. On the other hand, the power-driven compressors and the gas-fired generator units set the coupling features between the power and natural gas systems. The user could define any of these two coupling options as empty arrays whether they are not considered for a specific analysis. See Section \ref{chap:examples} for details.
+
 
 \begin{table}[!ht]	
 	\centering
 	\begin{threeparttable}
 		\caption{Connection Data (\code{mpgc.connect})}
-		\label{tab:atag}
+		\label{tab:connectcase}
 		\footnotesize
 		\begin{tabular}{lcp{0.6\textwidth}}
 			\toprule
 			name & domain & description \\
 			\midrule
-			\code{.power.time}	& $\Real^{n_t}$	& vector to define the number of $n_t$ periods to be considered in the power system. Each component in the vector represents the number of hours for each period such that \code{sum(power.time)=0}.\\	
+			\code{.power.time}	& $\Real^{n_t}$	& vector to define the number of $n_t$ periods to be considered in the power system. Each component in the vector represents the number of hours for each period such that \code{sum(power.time)=24}\tnote{\dag}.\\	
 			\code{.power.demands}	& 	& \\
 			\hspace{2.5cm} \code{.pd}       & $\Real^{n_b\times n_t}$  & matrix to define the active power demand for $n_b$ buses over $n_t$ periods of time.\\
 			\hspace{2.5cm} \code{.qd}       & $\Real^{n_b\times n_t}$  & matrix to define the reactive power demand for $n_b$ buses over $n_t$ periods of time.\\
 			\code{.power.cost} & $\Real^+$ & non-supplied power demand cost.\\
 			\code{.power.sr} & $\Real^{n_a\times n_t}$ & matrix to define the spinning reserve of $n_a$ areas over $n_t$ periods.\\
-			\code{.power.energy} & $\Real^{n_{g_h}\times 2}$ & matrix to define the maximum energy available for the $n_{g_h}\subseteq n_g$ hydroelectric power generators, holding columns as follows:
+			\code{.power.energy} & $\Real^{n_{g_h}\times 2}$ & matrix to define the maximum energy available for the $n_{g_h}\subseteq n_g$ hydroelectric power generators, holding columns as follows:\tnote{\ddag}
 			\begin{tabular}{c @{ -- } p{0.4\textwidth}}
 				column 1  & generator number (positive integer)\\
 				column 2  & maximum energy for hydroelectric unit [MW$\cdot$h]\\
 			\end{tabular}\\	
-			\code{.interc.comp} & $\Real^{n_{c_p}\times 2}$ & index matrix to locate the $n_{c_p}\subseteq n_c$ power-driven compressors at some specific buses, holding columns as below:
+			\code{.interc.comp} & $\Real^{n_{c_p}\times 2}$ & index matrix to locate the $n_{c_p}\subseteq n_c$ power-driven compressors at some specific buses, holding columns as below\tnote{\S}:
 			\begin{tabular}{c @{ -- } p{0.4\textwidth}}
 				column 1  & compressor number (positive integer)\\
 				column 2  & bus number to locate the power-driven compressor (positive integer)\\
 			\end{tabular}\\	
-			\code{.interc.term} & $\Real^{n_{g_g}\times 3}$	& matrix to locate the $n_{g_g} \subseteq n_g$ gas-fired generators at some specific nodes and buses, holding the following columns:
+			\code{.interc.term} & $\Real^{n_{g_g}\times 3}$	& matrix to locate the $n_{g_g} \subseteq n_g$ gas-fired generators at some specific nodes and buses, holding the following columns:\tnote{\ddag}
 			\begin{tabular}{c @{ -- } p{0.4\textwidth}}
 				column 1  & bus number to locate the gas-fired unit as generator (positive integer)\\
 				column 2  & node number to locate the gas-fired unit as demand (positive integer)\\
 				column 3  & thermal efficiency of the gas-fired unit (positive real)\\
-			\end{tabular}\\
-			
+			\end{tabular}\\			
 			\bottomrule
 		\end{tabular}
 		\begin{tablenotes}
 			\scriptsize
-			\item [\dag] {Included in OPF output, typically not included (or ignored) in input matrix. Here we assume the objective function has units $u$.}
+			\item [\dag] {The gas temporal resolution is one \textit{day}, while the electrical resolution is in terms of \textit{hours}. See Section \ref{chap:formulation} for more details.}
+			\item [\ddag] {$n_g$ is the number of all power generator units installed in the power system.}
+			\item[\S] {$n_c$ is the number of all compressors installed in the gas system.} 
 		\end{tablenotes}
 	\end{threeparttable}
 \end{table}
-
 
 \end{appendix}
