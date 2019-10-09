@@ -1,6 +1,6 @@
 function results = mpng(mpgc,mpopt)
 % MPNG (MatPower - Natural Gas) Solves an optimal power and natural gas flow. 
-%   RESULTS = mpng(MPGC,MP)
+%   RESULTS = mpng(MPGC,MPOPT)
 % 
 %   Runs an optimal power and natural gas flow and returns a RESULTS
 %   struct. MPGC corresponds to the input struct case while MPOPT is the       
@@ -123,8 +123,8 @@ function mpgc = userfcn_mpng_ext2int(mpgc, mpopt, args)
 
 %% Define power and gas constants
 % power
-% [PQ, PV, REF, NONE, BUS_I, BUS_TYPE, PD, QD, GS, BS, BUS_AREA, VM, ...
-%     VA, BASE_KV, ZONE, VMAX, VMIN, LAM_P, LAM_Q, MU_VMAX, MU_VMIN] = idx_bus;
+[PQ, PV, REF, NONE, BUS_I, BUS_TYPE, PD, QD, GS, BS, BUS_AREA, VM, ...
+    VA, BASE_KV, ZONE, VMAX, VMIN, LAM_P, LAM_Q, MU_VMAX, MU_VMIN] = idx_bus;
 % [F_BUS, T_BUS, BR_R, BR_X, BR_B, RATE_A, RATE_B, RATE_C, ...
 %     TAP, SHIFT, BR_STATUS, PF, QF, PT, QT, MU_SF, MU_ST, ...
 %     ANGMIN, ANGMAX, MU_ANGMIN, MU_ANGMAX] = idx_brch;
@@ -158,6 +158,8 @@ time = connect.power.time;
 nb = size(mpc.bus,1);
 nl = size(mpc.branch,1);
 ng = size(mpc.gen,1);
+areas = unique(mpc.bus(:,BUS_AREA));
+nareas = length(areas);
 % gas
 nn = size(mgc.node.info,1);     % number of nodes
 nw = size(mgc.well,1);          % number of wells
@@ -175,34 +177,42 @@ dem_g = mgc.node.dem;
 dem_diff = dem_tot - sum(dem_g,2);
 tol = 1e-3;
 if any(dem_diff > tol) 
-    error('mpge: Total gas demand does not correspont to the sum of the diversified demand.');
+    error('mpng: Total gas demand does not correspont to the sum of the diversified demand.');
 end
 % matrix for gas demand must be nn x ngd
 if any(size(dem_g) ~= [nn ngd])
-    error('mpge: Diversified demand gas matrix has wrong dimenssions.');
+    error('mpng: Diversified demand gas matrix has wrong dimenssions.');
 end
 % Ratio of compressors must be bigger than 1 and lower than 2
 ratio_c =  mgc.comp(:,RATIO_C);
 if any(1 > ratio_c)
-    error('mpge: Compressors ratio must be greater than 1.');
+    error('mpng: Compressors ratio must be greater than 1.');
 elseif any(ratio_c > 2)
-    error('mpge: Compressors ratio must be lower than 2.');
+    error('mpng: Compressors ratio must be lower than 2.');
 end
 % Check if initial storage is in the range of max and min storage
-sto0 = mgc.sto(:,STO_0);
-sto_max = mgc.sto(:,STOMAX);
-sto_min = mgc.sto(:,STOMIN);
-sto_lim_l = (sto0 - sto_min) < -1e-4;
-sto_lim_u = (sto_max - sto0) < -1e-4;
-if any(sto_lim_l) || any(sto_lim_u)
-    error('mpge: Initial storage is not inside the storage limits.');
+is_sto = ~isempty(mgc.sto);
+if is_sto
+    sto0 = mgc.sto(:,STO_0);
+    sto_max = mgc.sto(:,STOMAX);
+    sto_min = mgc.sto(:,STOMIN);
+    sto_lim_l = (sto0 - sto_min) < -1e-4;
+    sto_lim_u = (sto_max - sto0) < -1e-4;
+    if any(sto_lim_l) || any(sto_lim_u)
+        error('mpng: Initial storage is not inside the storage limits.');
+    end
+else
+    mgc.sto = [ 1 	0   0   0   0	0   0   0   0   0   0   0   0   0];
 end
 %% connection case
-% Spinning reserve (sr) must be consitent with:
-%       - rows: number of zones
-%       - columns: number of periods of time
+sr = connect.power.sr;
+[nsr, csr] = size(sr);
+if ~(nsr == nareas) || ~(csr == nt)
+    error('mpng: Spinning reserves zones matrix has wrong dimensions.');
+end
+
 % Spinning reserve asked for every period of time must be lower than total
-%   demand.
+%	demand.
 
 %%
 mgc = mgc_PU(mgc); 
@@ -266,6 +276,7 @@ nb = size(mpc.bus,1);
 nl = size(mpc.branch,1);
 ng = size(mpc.gen,1);
 ndl = mpc.nsd.N;
+is_power_tool = nb == 2;
 % gas
 nn = size(mgc.node.info,1);     % number of nodes
 nw = size(mgc.well,1);          % number of wells
@@ -633,94 +644,95 @@ end
 %  ------------------------------------------------------------------------
 %% Power demanded by compressors must be iqual for all periods of time and
 %   the first must be equal to psi_p
-ng = size(mpc.gen,1);
-if any(iscomp_p)
-    isgencomp = mpc.gencomp.id;
-    idgencomp = (1:ng-ndl)';
-    idgencomp = reshape(idgencomp,[length(idgencomp)/nt nt]);
-    idgencomp = idgencomp(isgencomp,:);
-    idgencomp = idgencomp(:);
-    val = [ones(nc_p*(nt-1),1); -ones(nc_p*(nt-1),1)];
-    row = [(1:nc_p*(nt-1))'; (1:nc_p*(nt-1))'];
-    col = reshape(idgencomp,[nc_p,nt]);
-    col1 = (col(:,[1:end-1]))';
-    col1 = reshape(col1,[numel(col1),1]);
-    col2 = (col(:,[2:end]))';
-    col2 = reshape(col2,[numel(col2),1]);
-    col = [col1;col2];
-
-    Agencomp = sparse(row,col,val,nc_p*(nt-1),ng);
-    Lgencomp = zeros(nc_p*(nt-1),1);
-    Ugencomp = Lgencomp;
+if ~is_power_tool
+    ng = size(mpc.gen,1);
+    if any(iscomp_p)
+        isgencomp = mpc.gencomp.id;
+        idgencomp = (1:ng-ndl)';
+        idgencomp = reshape(idgencomp,[length(idgencomp)/nt nt]);
+        idgencomp = idgencomp(isgencomp,:);
+        idgencomp = idgencomp(:);
+        val = [ones(nc_p*(nt-1),1); -ones(nc_p*(nt-1),1)];
+        row = [(1:nc_p*(nt-1))'; (1:nc_p*(nt-1))'];
+        col = reshape(idgencomp,[nc_p,nt]);
+        col1 = (col(:,[1:end-1]))';
+        col1 = reshape(col1,[numel(col1),1]);
+        col2 = (col(:,[2:end]))';
+        col2 = reshape(col2,[numel(col2),1]);
+        col = [col1;col2];
+        
+        Agencomp = sparse(row,col,val,nc_p*(nt-1),ng);
+        Lgencomp = zeros(nc_p*(nt-1),1);
+        Ugencomp = Lgencomp;
+        
+        om.add_lin_constraint('power_gencomp', Agencomp, Lgencomp, Ugencomp, {'Pg'});
+        
+        idgencomp_1 = reshape(idgencomp,[nc_p,nt]);
+        idgencomp_1 = idgencomp_1(:,1);
+        
+        row = [(1:nc_p)';(1:nc_p)'];
+        col = [(idgencomp_1); (ng+1:ng+nc_p)'];
+        val = ones(nc_p*2,1);
+        Agencomp_1 = sparse(row,col,val,nc_p,(ng+nc_p));
+        Lgencomp_1 = zeros(numel(idgencomp_1),1);
+        Ugencomp_1 = Lgencomp_1;
+        
+        om.add_lin_constraint('power_gencomp_1', Agencomp_1, Lgencomp_1, Ugencomp_1, {'Pg','psi_p'});
+    end
     
-    om.add_lin_constraint('power_gencomp', Agencomp, Lgencomp, Ugencomp, {'Pg'});
-
-    idgencomp_1 = reshape(idgencomp,[nc_p,nt]);
-    idgencomp_1 = idgencomp_1(:,1);
+    %% Spinning reserves related to zones
+    areas = mpc.bus(:,BUS_AREA);
+    areas = sort(unique(areas));    % areas in the power network
+    nareas = length(areas);         % number of areas in the power network
     
-    row = [(1:nc_p)';(1:nc_p)'];
-    col = [(idgencomp_1); (ng+1:ng+nc_p)'];
-    val = ones(nc_p*2,1);
-    Agencomp_1 = sparse(row,col,val,nc_p,(ng+nc_p));      
-    Lgencomp_1 = zeros(numel(idgencomp_1),1);
-    Ugencomp_1 = Lgencomp_1;
+    sr = connect.power.sr;
+    sr = sr/base;
     
-    om.add_lin_constraint('power_gencomp_1', Agencomp_1, Lgencomp_1, Ugencomp_1, {'Pg','psi_p'});
+    idxpgen = find(mpc.gen(:,PMAX) > 0); % find real generators (non sync non dl non comp)
+    idxpgen = reshape(idxpgen,[length(idxpgen)/nt,nt]);
+    busgen = mpc.gen(idxpgen(:,1),GEN_BUS);
+    areasgen = mpc.bus(busgen,BUS_AREA);
+    pgmax = mpc.gen(idxpgen(:,1),PMAX);
+    pgmax = pgmax/base;
+    
+    for j = 1:nareas
+        idx_area = areasgen==areas(j);
+        pgmax_area(j,1) = sum(pgmax(idx_area));
+    end
+    
+    U_sr = zeros(nt*nareas,1);
+    L_sr = U_sr;
+    A_sr = zeros(nt*nareas,ng);
+    
+    row_sr = areasgen;
+    val_sr = ones(length(areasgen),1);
+    for j = 1:nt
+        U_sr(((j-1)*nareas)+1:j*nareas) = pgmax_area - sr(:,j);
+        col_sr = idxpgen(:,j);
+        A_sr(((j-1)*nareas)+1:j*nareas,:) = sparse(row_sr,col_sr,val_sr,nareas,ng);
+    end
+    om.add_lin_constraint('SR', A_sr, L_sr, U_sr, {'Pg'});
+    
+    %% Energy available for hydro power generators
+    ng_ori = (ng-ndl)/nt;
+    ngenr = size(connect.power.energy,1);
+    genr = connect.power.energy(:,GEN_ID);
+    row = [];
+    val = [];
+    col = [];
+    for i = 1:ngenr
+        row = [row; i*ones(nt,1)];
+        col = [col; (genr(i):ng_ori:genr(i)+((nt-1)*ng_ori))'];
+        val = [val; time'];
+    end
+    A_ener = sparse(row,col,val,ngenr,ng);
+    maxenergy = connect.power.energy(:,MAX_ENER);
+    maxenergy = maxenergy/base;
+    U_ener = maxenergy;
+    L_ener = zeros(size(U_ener));
+    om.add_lin_constraint('hydro_energy', A_ener, L_ener, U_ener , {'Pg'});    % Max hydro energy
+    
 end
-
-%% Spinning reserves related to zones
-areas = mpc.bus(:,BUS_AREA);
-areas = sort(unique(areas));    % areas in the power network
-nareas = length(areas);         % number of areas in the power network
-
-sr = connect.power.sr;
-sr = sr/base;
-
-idxpgen = find(mpc.gen(:,PMAX) > 0); % find real generators (non sync non dl non comp)
-idxpgen = reshape(idxpgen,[length(idxpgen)/nt,nt]);
-busgen = mpc.gen(idxpgen(:,1),GEN_BUS);
-areasgen = mpc.bus(busgen,BUS_AREA);
-pgmax = mpc.gen(idxpgen(:,1),PMAX);
-pgmax = pgmax/base;
-
-for j = 1:nareas
-    idx_area = areasgen==areas(j);
-    pgmax_area(j,1) = sum(pgmax(idx_area));    
-end
-
-U_sr = zeros(nt*nareas,1);
-L_sr = U_sr;
-A_sr = zeros(nt*nareas,ng);
-
-row_sr = areasgen;
-val_sr = ones(length(areasgen),1);
-for j = 1:nt
-    U_sr(((j-1)*nareas)+1:j*nareas) = pgmax_area - sr(:,j);
-    col_sr = idxpgen(:,j); 
-    A_sr(((j-1)*nareas)+1:j*nareas,:) = sparse(row_sr,col_sr,val_sr,nareas,ng);
-end
-% 
-om.add_lin_constraint('SR', A_sr, L_sr, U_sr, {'Pg'});
-
-%% Energy available for hydro power generators
-ng_ori = (ng-ndl)/nt;
-ngenr = size(connect.power.energy,1);
-genr = connect.power.energy(:,GEN_ID);
-row = [];
-val = [];
-col = [];
-for i = 1:ngenr
-    row = [row; i*ones(nt,1)]; 
-    col = [col; (genr(i):ng_ori:genr(i)+((nt-1)*ng_ori))'];
-    val = [val; time'];
-end
-A_ener = sparse(row,col,val,ngenr,ng);
-maxenergy = connect.power.energy(:,MAX_ENER);
-maxenergy = maxenergy/base;
-U_ener = maxenergy;
-L_ener = zeros(size(U_ener));
-om.add_lin_constraint('hydro_energy', A_ener, L_ener, U_ener , {'Pg'});    % Max hydro energy
-% 
 end
 function results = userfcn_mpng_int2ext(results, mpopt,args)
 %
@@ -789,9 +801,9 @@ end
 p = sqrt(results.var.val.p)*pbase;
 ovp = p -(mgc.node.info(:,PRMAX));
 unp = (mgc.node.info(:,PRMIN)) - p;
-mgc.nodes.info(:,PR) = p;
-mgc.nodes.info(:,OVP) = ovp;
-mgc.nodes.info(:,UNP) = unp;
+mgc.node.info(:,PR) = p;
+mgc.node.info(:,OVP) = ovp;
+mgc.node.info(:,UNP) = unp;
 
 %% Well
 g = results.var.val.g*fbase;
@@ -848,6 +860,19 @@ mgc.sto(:,STO) = mgc.sto(:,STO_0) - sto_diff;
 mgc.sto(:,FSTO) = sto_diff;
 mgc.sto(:,FSTO_OUT) = sto_out;
 mgc.sto(:,FSTO_IN) = sto_in;
+%% extract individual periods of time for power network
+mpc.version = results.version;
+mpc.baseMVA = results.baseMVA;
+mpc.bus = results.bus;
+mpc.gen = results.gen;
+mpc.branch = results.branch;
+mpc.gencost = results.gencost;
+mpc.f = results.f;
+mpc.success = results.success;
+results.multi_period.periods = extract_islands(mpc);
+for i = 1:length(results.multi_period.periods)
+    results.multi_period.periods{i}.et = 0;
+end
 %%
 results.mgc = mgc;
 end
@@ -919,9 +944,9 @@ g = mgc.well(:,G);
 
 % nodes
 nodes_id = mgc.node.info(:,1);
-p = mgc.nodes.info(:,PR);
-ovp = mgc.nodes.info(:,OVP);
-unp = mgc.nodes.info(:,UNP);
+p = mgc.node.info(:,PR);
+ovp = mgc.node.info(:,OVP);
+unp = mgc.node.info(:,UNP);
 demg = mgc.node.info(:,GD);
 
 
