@@ -1,9 +1,9 @@
-\chapter{Formulation}
+\chapter{Optimal Power and Natural Gas Flow}
 \label{chap:formulation}
 
 \section*{Nomenclature}
 \subsection*{Indexes}
-\begin{labeling}{alligator}
+\begin{labeling}{Longer label\quad}
 \item [$i$, $j$] Gas nodes.
 \item [$m$, $n$] Electric nodes (buses). 
 \item [$o$] Gas pipeline.
@@ -18,8 +18,7 @@
 
 \subsection*{Parameters}
 
-\begin{labeling}{alligator}
-
+\begin{labeling}{Longer label\quad}
 \item [$\alpha^{i}_{\pi_+}, \alpha^{i}_{\pi _-}$] Penalties for over-pressure and under-pressure at node $i$.
 \item [$\alpha_{\gamma}$] Penalties for non-supplied gas.
 \item [$\alpha_{\epsilon}$] Penalties for non-supplied electricity.
@@ -57,12 +56,11 @@
 \item [$u^{te}$] Unit commitment state for generator $q$ at time $t$.
 \item [$\tau^{t}$] Energy weight related to period of time $t$.
 \item [$E^{e}$] Available energy for hydroelectric generator $e$, \break during the total analysis window.
-
 \end{labeling}
 
 \subsection*{Sets}
 
-\begin{labeling}{alligator}
+\begin{labeling}{Longer label\quad}
 \item [$\cal{N}$] Gas nodes, $\left| \cal{N} \right|= n_{\cal{N}}$.
 \item [$\cal{N}_{S}$] Gas nodes with storage, $\cal{N}_{S} \subset \cal{N} $, $\left| \cal{N}_{S} \right|= n_{\cal{S}}$.
 \item [${\cal{O}}$] Gas pipelines, $\left| \cal{O}  \right| = n_{\cal{O}}$
@@ -84,10 +82,9 @@
 \item [$\Sigma$] Different types of gas loads.
 \end{labeling}
 
-
 \subsection*{Variables}
 
-\begin{labeling}{alligator}
+\begin{labeling}{Longer label\quad}
 \item [${f}_{g}^{oij}$] Gas flow in pipeline $o$, from node $i$ to node $j$.
 \item [${f}_{g_+}^{oij}$ ${f}_{g_-}^{oij}$] Positive and negative gas flow in pipeline $o$.
 \item [${f}_{g}^{cij}$] Gas flow in compressor $c$, from node $i$ to node $j$.
@@ -105,9 +102,10 @@
 \item [$\theta^{tm}$] Voltage angle at bus $m$ at time $t$.
 \item [$\epsilon^{tm}$] Non-served active power at bus $m$ at time $t$.
 \end{labeling}
-
-
+%\section{~}
 \section{Objective function}
+
+The cost function represented in equation \ref{eq:obj_func} consists of several linear components, both from the power and the gas networks. It minimizes the sum of the operation cost  of the interdependent system. In the case of the natural gas network, it includes the natural gas extraction cost, the transportation cost, the storage cost, and the penalties associates with quadratic  over/sub pressures, and non-supplied natural gas. In the case of the power network it includes the generation cost and the penalties associates with non-supplied power demand.
 
 %The cost function is represented by the equation \ref{obj_func} and is composed by several linear components. The first component is the gas production cost at each of the wells. As well as the first component, the second one is the power generation cost for every power plant, for the complete period. \color{red}The third component is the cost of the storage flow at every node with storage availability. \color{black}The fourth  expression is the storage cost, having into account the previous storage level and the outing flow. The fifth component is the gas transport cost for each pipeline. Finally, the last three component are the penalties cost for over/under pressure, non-supply gas and non-supply power, respectively. Related to the non-gas supply, is important to clarify that the non-supply cost depends on the type of user. 
 
@@ -121,14 +119,16 @@ C \left( x \right) = & \sum_{w \in \cal{W}}{C^{w}_{G} g^{w}} + \sum_{t \in \cal{
 				& + \sum_{i \in \cal{N}}{\alpha^{i}_{\pi_+} \pi^{i}_{+}} + \sum_{i \in \cal{N}}{ \alpha^{i}_{\pi_-} \pi^{i}_{-}} \\
 				& + \sum_{i \in \cal{N}}\sum_{\sigma \in \Sigma} {\alpha_{\gamma}^{i \sigma}\gamma^{i \sigma}} + \alpha_{\epsilon} \sum_{t \in \cal{T}} {\tau}^{t} \sum_{m \in \cal{B}} {\epsilon^{tm}}  
 \end{aligned}
-\label{obj_func}
+\label{eq:obj_func}
 \end{equation}
 
 \section{Constraints}
 
+%The model of the optimal power and natural gas flow consists in maintain the balance in both networks. For the natural gas network the nodal balance must be has linear and non-linear constraints, which model the 
+
 \subsection{Gas network}
 
-%The equation \ref{node_gas_balance} shows the gas balance for a specific node $k$ during a day. This gas balance is composed by the ingoing and outgoing flows at the node $k$, the related generation to that node, the outgoing stored flow in the available storage, and the total gas demand. The gas demand is composed by the demand required in the gas-fired power plants, and the total gas demand of the rest of the consumers, but excluding the non-supply gas. 
+The equation \ref{eq:node_gas_balance} shows the gas balance for a specific node $k$ during a day. This gas balance is composed by the incoming and outgoing flows at the node $k$, coming from pipelines and compressors, the related generation to that node, the outgoing stored flow in the available storage, and the total gas demand. The gas demand is composed by the required gas of the gas-fired power plants and compressors, as well as the total gas demand of the rest of the consumers, excluding the non-supplied natural gas. 
 
 \begin{equation}
 \begin{aligned}
@@ -136,103 +136,20 @@ C \left( x \right) = & \sum_{w \in \cal{W}}{C^{w}_{G} g^{w}} + \sum_{t \in \cal{
 & + \sum_{w \in {\cal{W}}^{k}}{g^{w}}  + {f}^{k}_{s} - \sum_{t \in \cal{T}} {\tau}^{t} \sum_{e \in {\cal{E}}^{k}_{G}}\left({\eta^{q}_{e}}\cdot {p_{g}^{te}}\right) = {\sum_{\sigma \in \Sigma}\left( D^{\sigma k}_{g} - \gamma^{\sigma k}\right)} \\
 & \forall k \in \cal{N}
 \end{aligned}
-\label{node_gas_balance}
+\label{eq:node_gas_balance}
 \end{equation}
 
-The non-supply gas demand in every node of the system can only be as most as the total demand at the same node. This constraint is represented as follows:
+\newpage
+\textbf{Nodes}\\
+
+Constraints related to node $k$ are those which involves variables of non-supplied gas demands and its quadratic pressures. The non-supplied natural gas demand at node $k$ for a specific type $\sigma$ can not be bigger than the total demand of this type at this node. This constraint is represented by equation \ref{eq:nsg_limits}.
 
 \begin{equation}
 {0 \le \gamma^{\sigma k} \le D^{\sigma k}_{g} \quad \forall \sigma \in \Sigma \quad \forall k \in \cal{N}}
-\label{nsg_limits}
+\label{eq:nsg_limits}
 \end{equation}
 
-%The storage outflow difference is the subtraction between the storage outflow and the storage inflow at the storage nodes, this relationship is represented by equation \ref{fs}. Additionally, the outflow storage difference is restricted by the maximum and minimum amount of gas that is allowed to be injected into the network in every storage node, which is formulated in equation \ref{fs_limits}. As the storage can be either an injection or a demand for the network, equations \ref{fs+} and \ref{fs-} represent the behavior of the fluxes as follows, the maximum amount of natural gas that can be injected into the network by the storage, is the difference between the available natural gas and the minimum possible amount of gas that can remain. In the same sense, the maximum amount of natural gas that can be delivered by the network to the storage deposit, is the difference between the maximum natural gas that can be stored and the available natural gas.
-
-\textbf{Storage}
-
-\begin{equation}
-f_{s}^{k} = f_{s_+}^{k}  - f_{s_-}^{k}\quad \forall k \in \cal{N}
-\label{fs}
-\end{equation}
-\begin{equation}
-\underline{f}^{k}_{s} \le f^{k}_{s} \le \overline{f}^{k}_{s} \quad \forall k \in \cal{N}
-\label{fs_limits}
-\end{equation}
-\begin{equation}
-0 \le f_{s_+}^{i} \le S^{k}_{0}  - \underline{S}^{k} \quad \forall k \in \cal{N}
-\label{fs+}
-\end{equation}
-\begin{equation}
-0 \le f_{s_-}^{i} \le \overline{S}^{k} - S^{k}_{0} \quad \forall k \in \cal{N}
-\label{fs-}
-\end{equation}
-
-\textbf{Wells}\\
-
-The constraints related to the gas wells production depends on each well specific characteristics, these constraints are represented by:
-
-\begin{equation}
-\underline{g}^{w} \le g^{w} \le \overline{g}^{w} \quad \forall w \in \cal{W}
-\label{g_limits}
-\end{equation}
-%\vspace{5cm}
-
-\textbf{Pipelines:} \\
-%Equations \ref{gf_limits} to \ref{presa_rel} correspond to the constraints in passive and  pipelines. Weymouth equation is represented by \ref{wey_eq} and it determines the flow between two nodes, $i$ and $j$, in function of its pressure differences. The gas flow limits for passive pipelines are represented by \ref{gf_limits}. Otherwise, for active pipelines in which their flows is restricted to go only in one direction, the constraints are represented by \ref{gfa_limits}. Equation \ref{presa_rel} shows the linear relation between the pressure in two nodes connected by an active pipeline, this relation is modeled by a linear factor which depends on the characteristics of the compressor pipeline. 
-
-\begin{equation}
-{f}^{oij}_{g} = {{\kappa}^{oij}} sgn \left(\pi^{i}-\pi^{j}\right) {\sqrt{\left|\pi^{i}-\pi^{j}\right|}} \quad \forall o \in {\cal{O}}
-\label{wey_eq}
-\end{equation}
-
-And the gas flow limits for every pipeline:
-
-\begin{equation}
-{f}^{oij}_{g} =  f^{oij}_{g_+} + {f}^{oij}_{g_-} \quad \forall o \in {\cal{O}}
-\label{fgo}
-\end{equation}
-\begin{equation}
- - \overline{f}^{oij}_{g}  \le f^{oij}_{g} \le  \overline{f}^{oij}_{g}  \quad \forall o \in {\cal{O}}
-\label{fgo_limits}
-\end{equation}
-\begin{equation}
-0 \le f^{oij}_{g_+} \le \delta^{oij} \cdot \overline{f}^{oij}_{g} \quad \forall o \in {\cal{O}}
-\label{fgopos_limits}
-\end{equation}
-\begin{equation}
-- \delta^{oij} \cdot \overline{f}^{oij}_{g} \le f^{oij}_{g_-} \le 0 \quad \forall o \in {\cal{O}}
-\label{fgoneg_limits}
-\end{equation}
-
-
-
-\textbf{Compressors:}\\
-
-The power consumed by the compressors depend on its gas flow:\\
-
-\begin{equation}
-\psi^{c} = {B^{c}}{f}^{cij}_{g} \cdot \left( {\left( \frac{\pi^{j}}{\pi^{i}} \right)}^{Z^{c} / 2} - 1 \right)   \quad \forall c \in {\cal{C}}
-\label{hp_fc}
-\end{equation}
-\begin{equation} 
-{\phi}^{c} = x + y \psi^{c} +  z {\psi^{c}}^{2}  \quad \forall c \in {\cal{C}}_{G}
-\label{g_fc}
-\end{equation}
-\begin{equation}
-0 \le {f}^{cij}_{g} \le \overline{f}^{cij}_{g}  \quad \forall c \in {\cal{C}}
-\label{gfa_limits}
-\end{equation}
-\begin{equation}
-\begin{aligned}
-&\pi^{i} \le \pi^{j} \le \beta^{cij} \pi^{i}\\
-&\beta^{cij} \ge 1 \\
-\end{aligned}
-\quad \forall i,j \in {\cal{N}} \quad \forall c \in {\cal{C}}
-\label{presa_rel}
-\end{equation}
-\\
-
-The equations \ref{overp} and \ref{underp} are the constraints that characterize the quadratic overpressure and underpressure at every node of the system, respectively. 
+The equations \ref{overp} and \ref{underp} are the constraints that characterize the quadratic over-pressure and under-pressure at every node of the system, respectively. 
 
 \begin{equation}
 \begin{array}{l}
@@ -251,11 +168,92 @@ The equations \ref{overp} and \ref{underp} are the constraints that characterize
 \quad \forall k  \in {\cal{N}}\\ 
 \label{underp}
 \end{equation}
-\\
+
+\textbf{Wells}\\
+
+The constraints related to the gas wells injection depends on each well specific characteristics. The injection limits are represented as follows:
+
+\begin{equation}
+\underline{g}^{w} \le g^{w} \le \overline{g}^{w} \quad \forall w \in \cal{W}
+\label{eq:g_limits}
+\end{equation}
+%\vspace{5cm}
+
+\textbf{Pipelines} \\
+
+The gas flow in pipeline $o$, connecting nodes $i$ and $j$, depends of the quadratic pressure difference between such nodes. This behavior is given by Weymouth equation \ref{eq:wey} and the flow is allowed to be bidirectional within a physical limit for maximum daily transportation, the gas flow limits are represented by equation \ref{fgo_limits}. As the transport cost is always positive no matter the direction, variables $f^{oij}_{g+}$ and $f^{oij}_{g-}$ were created to represent the bidirectional flow. Equation \ref{eq:fgo} shows the sum of both directional flow to determine the actual flow in the direction $from$ - $to$. These flow variables are constrained by equations \ref{eq:fgopos_limits} and \ref{eq:fgoneg_limits}, where the positive gas flow is bigger than zero, and lower than the maximum transport capacity multiplied by a width factor as a extra margin for the flow. Analogously, the negative gas flow has the same bounds in the negative side.
+
+
+\begin{equation}
+{f}^{oij}_{g} = {{\kappa}^{oij}} sgn \left(\pi^{i}-\pi^{j}\right) {\sqrt{\left|\pi^{i}-\pi^{j}\right|}} \quad \forall o \in {\cal{O}}
+\label{eq:wey}
+\end{equation}
+\begin{equation}
+ - \overline{f}^{oij}_{g}  \le f^{oij}_{g} \le  \overline{f}^{oij}_{g}  \quad \forall o \in {\cal{O}}
+\label{fgo_limits}
+\end{equation}
+\begin{equation}
+{f}^{oij}_{g} =  f^{oij}_{g_+} + {f}^{oij}_{g_-} \quad \forall o \in {\cal{O}}
+\label{eq:fgo}
+\end{equation}
+\begin{equation}
+0 \le f^{oij}_{g_+} \le \delta^{oij} \cdot \overline{f}^{oij}_{g} \quad \forall o \in {\cal{O}}
+\label{eq:fgopos_limits}
+\end{equation}
+\begin{equation}
+- \delta^{oij} \cdot \overline{f}^{oij}_{g} \le f^{oij}_{g_-} \le 0 \quad \forall o \in {\cal{O}}
+\label{eq:fgoneg_limits}
+\end{equation}
+
+\textbf{Compressors}\\
+
+Compressors allows to recover pressure loss through gas network, but this process demands energy. The power consumption of compressor $c$, between node $i$ of suction and node $j$ of discharge, is given by equation \ref{eq:hp_fc}. It depends of the quadratic pressure ratio of nodes $i$ and $j$, and the gas flow through compressor. Then the gas consumed by gas-fired compressors rely on the power consumed and it is shown in equation \ref{eq:g_fc}. As the gas flow into compressors is restricted to flow in only one way, the gas flow limits of compressor $c$ is given by equation \ref{eq:gfa_limits}. Finally the quadratic pressure at suction and discharge nodes must be inside acceptable margins, as shown in equation \ref{eq:presa_rel}, where $\beta$ is the maximum compressor ratio.\\
+
+\begin{equation}
+\psi^{c} = {B^{c}}{f}^{cij}_{g} \cdot \left( {\left( \frac{\pi^{j}}{\pi^{i}} \right)}^{Z^{c} / 2} - 1 \right)   \quad \forall c \in {\cal{C}}
+\label{eq:hp_fc}
+\end{equation}
+\begin{equation} 
+{\phi}^{c} = x + y \psi^{c} +  z {\psi^{c}}^{2}  \quad \forall c \in {\cal{C}}_{G}
+\label{eq:g_fc}
+\end{equation}
+\begin{equation}
+0 \le {f}^{cij}_{g} \le \overline{f}^{cij}_{g}  \quad \forall c \in {\cal{C}}
+\label{eq:gfa_limits}
+\end{equation}
+\begin{equation}
+\begin{aligned}
+&\pi^{i} \le \pi^{j} \le \beta^{cij} \pi^{i}\\
+&\beta^{cij} \ge 1 \\
+\end{aligned}
+\quad \forall i,j \in {\cal{N}} \quad \forall c \in {\cal{C}}
+\label{eq:presa_rel}
+\end{equation}
+
+\textbf{Storage}\\
+
+The storage outflow difference is the subtraction between the storage outflow and the storage inflow at the storage nodes, this relationship is represented by equation \ref{eq:fs}. Additionally, the outflow storage difference is restricted by the maximum and minimum amount of gas that is allowed to be injected into the network in every storage node, which is formulated in equation \ref{eq:fs_limits}. As the storage can be either an injection or a demand for the network, equations \ref{eq:fs+} and \ref{eq:fs-} represent the behavior of the fluxes as follows. The maximum amount of natural gas that can be injected into the network by the storage, is the difference between the available natural gas and the minimum possible remaining gas. In the same sense, the maximum inflow of natural gas to storage units, is the difference between the maximum remaining natural  and the previously available natural gas.
+
+\begin{equation}
+f_{s}^{k} = f_{s_+}^{k}  - f_{s_-}^{k}\quad \forall k \in \cal{N}
+\label{eq:fs}
+\end{equation}
+\begin{equation}
+\underline{f}^{k}_{s} \le f^{k}_{s} \le \overline{f}^{k}_{s} \quad \forall k \in \cal{N}
+\label{eq:fs_limits}
+\end{equation}
+\begin{equation}
+0 \le f_{s_+}^{i} \le S^{k}_{0}  - \underline{S}^{k} \quad \forall k \in \cal{N}
+\label{eq:fs+}
+\end{equation}
+\begin{equation}
+0 \le f_{s_-}^{i} \le \overline{S}^{k} - S^{k}_{0} \quad \forall k \in \cal{N}
+\label{eq:fs-}
+\end{equation}
 
 \subsection{Power network}
 
-Equation \ref{power_balance} could be explained in an appendix section.
+The power network balance equations of active and reactive power are given by equation \ref{eq:power_balance}. The model also takes into consideration the non-supplied power demand and the power consumed by compressors connected to the power network.
  
 \begin{equation}
 \begin{array}{l}
@@ -264,10 +262,10 @@ g_{q_m}\left(\theta^{tm}, V^{tm}, q_{g}^{te}\right) = 0\\
 \\
 \quad \forall m \in {\cal{B}} \quad \forall t  \in {\cal{T}} \quad \forall c  \in {\cal{C}}_{E}  
 \end{array}
-\label{power_balance}
+\label{eq:power_balance}
 \end{equation}
 
-Variables limits:
+The main variables of the power system are the voltage angle $\theta^{tm}$ and voltage magnitude $V^{tm}$ at every bus $m$ for every period of time $t$, as well as the active generation $p^{te}_{g}$ and reactive generation $g^{te}_{g}$ at every generator $e$ for every period of time $t$. The voltage  limits are represented by equation \ref{eq:v_lims}, and the generation limits are shown by equation \ref{eq:pq_lims}.
 
 \begin{equation}
 \begin{aligned}
@@ -275,7 +273,7 @@ Variables limits:
 &\underline{V}^{tm} \le V^{tm}  \le \overline{V}^{tm}\\
 \end{aligned} 
 \quad \forall m \in {\cal{B}} \quad \forall t  \in {\cal{T}}  
-\label{ang_lims}
+\label{eq:v_lims}
 \end{equation}
 
 \begin{equation}
@@ -283,41 +281,42 @@ Variables limits:
 &\underline{p}_{g}^{e} \le p_{g}^{te}  \le \overline{p}_{g}^{e}\\
 &\underline{q}_{g}^{e} \le q_{g}^{te}  \le \overline{q}_{g}^{e}\\
 \end{aligned} 
-\quad \forall q \in {\cal{E}} \quad \forall t  \in {\cal{T}}  
-\label{power_lims}
+\quad \forall e \in {\cal{E}} \quad \forall t  \in {\cal{T}}  
+\label{eq:pq_lims}
 \end{equation}
 
-Power flow limits:
+The power flow limits are bidirectional and are represented by equation \ref{eq:sft_lims}, where $\mathbb{S}_{fl}$ and $\mathbb{S}_{tl}$ are the power injections at side $from$ and $to$ of line $l$, respectively.
 
 \begin{equation}
 \begin{aligned}
-&|\mathbb{S}_{fl}\left(\theta,V\right) \le \overline{\mathbb{S}}_{fl}\\
+&|\mathbb{S}_{fl}\left(\theta,V\right)| \le \overline{\mathbb{S}}_{fl}\\
 &|\mathbb{S}_{tl}\left(\theta,V\right)| \le \overline{\mathbb{S}}_{tl}\\
 \end{aligned} 
 \quad \forall l \in {\cal{L}}
-\label{power_lims}
+\label{eq:sft_lims}
 \end{equation}
 
-Non-supplied active power limits:
+ The non-supplied active power demand at bus $m$ can not be bigger than the total demand of this bus, as is shown as follows:
+ 
 \begin{equation}
 0 \le \epsilon^{tm} \le D^{tm}_{e} \quad \forall m \in {\cal{B}} \quad \forall t  \in {\cal{T}}  
 \label{nsd_limits}
 \end{equation}
 
-Reserve constraint:
+The model also considers the required spinning reserve for all zones $r$ at every time $t$. This constraint is given by equation \ref{eq:reserve}.
+
 \begin{equation}
-\begin{array}{l}
-\sum_{e \in {\cal{Z}}_{r}}{u^{te} \left( \overline{p}_{g}^{e} - p_{g}^{te} \right)} \ge R^{tr}\\
-{}\\
- \quad \forall r \in {\cal{Z}}_{r} \quad \forall t  \in {\cal{T}}
-\end{array}
-\label{reserve}
+%\begin{array}{l}
+\sum_{e \in {\cal{Z}}_{r}}{u^{te} \left( \overline{p}_{g}^{e} - p_{g}^{te} \right)} \ge R^{tr} \quad \forall r \in {\cal{Z}}_{r} \quad \forall t  \in {\cal{T}}
+%\end{array}
+\label{eq:reserve}
 \end{equation}
 
-Hydro-energy constraint:
+Finally, the model takes into consideration the maximum available energy during a day for certain generators, especially the energy stored in the dams for hydro-power plants. Equation \ref{eq:hydro_e} represents such constraint.
+
 \begin{equation}
 \sum_{t \in {\cal{T}}}{{\tau}^{t} p_{g}^{te}} \le E^{e} \quad \forall e \in {\cal{E}}_{H}
-\label{hidro_energy}
+\label{eq:hydro_e}
 \end{equation}
 
 \newpage

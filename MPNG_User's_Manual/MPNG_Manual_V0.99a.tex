@@ -42,6 +42,8 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% Some configurations %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+
+
 \titleformat{\chapter} % No print chapter headings
 {\Large\bfseries} 
 {}                
@@ -65,6 +67,34 @@
 	xleftmargin=10mm,
 	framesep=5mm,
 	frame=single}
+	
+\usepackage{paralist} %for the environment compactitem with less space between items
+\let\itemize\compactitem
+  \let\enditemize\endcompactitem
+  \let\enumerate\compactenum
+  \let\endenumerate\endcompactenum
+  \let\description\compactdesc
+  \let\enddescription\endcompactdesc
+  \pltopsep=\medskipamount
+  \plitemsep=1pt
+  \plparsep=1pt
+
+\setkomafont{labelinglabel}{\normalfont}%{\ttfamily}
+\setkomafont{labelingseparator}{\normalfont}
+\makeatletter
+\renewenvironment{labeling}[2][]{%
+  \def\sc@septext{#1}%
+  \list{}{\settowidth{\labelwidth}{{%
+        \usekomafont{labelinglabel}{#2%
+          \usekomafont{labelingseparator}{\sc@septext}}%
+      }}%
+    \leftmargin\labelwidth \advance\leftmargin by \labelsep
+    \let\makelabel\labelinglabel
+    \itemsep-4pt% <- Here
+  }%
+}{%
+  \endlist
+}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% Some new commands %%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -98,7 +128,7 @@
 	\listoftables	
 	\include{Chapters/Introduction}
 	\include{Chapters/Getting_started}
-	\include{Chapters/Fundamentals_of_Natural_Gas_Flow}
+	\include{Chapters/Natural_Gas_Flow}
 	\include{Chapters/Formulation}
 	\include{Chapters/Examples}
 	\part*{Appendix}
@@ -125,6 +155,43 @@
 	Abraham~Debebe Woldeyohannes and Mohd Amin~Abd Majid.
 	\newblock Simulation model for natural gas transmission pipeline network
 	system.
-	\newblock {\em Simulation Modelling Practice and Theory}, 19(1):196--212, 2011.		
+	\newblock {\em Simulation Modelling Practice and Theory}, 19(1):196--212, 2011.\\
+	\doi{10.1016/j.simpat.2010.06.006}	
+	
+	\bibitem{Osiadacz2001}
+	Andrzej~J. Osiadacz and Maciej Chaczykowski.
+	\newblock Comparison of isothermal and non-isothermal pipeline gas flow models. 
+	\newblock {\em Chemical Engineering Journal}, 81(1):41 -- 51, 2001.\\
+	\doi{10.1016/S1385-8947(00)00194-7}	
+	
+	\bibitem{Banda2006}
+	Mapundi~K. Banda, Michael Herty, Axel Klar.
+	\newblock Gas flow in pipeline networks.
+	\newblock {\em Networks \& Heterogeneous Media}, 1(1): 41 -- 56, 2006.\\
+	\doi{10.3934/nhm.2006.1.41} 
+	
+	\bibitem{Wolf2000}
+	Daniel de Wolf and Yves Smeers.
+	\newblock The Gas Transmission Problem Solved by an Extension of the Simplex Algorithm.
+	\newblock {\em Management Science}, 59(1): 1454 -- 1465, 2000.\\
+	\doi{10.1287/mnsc.46.11.1454.12087}
+	
+	\bibitem{Shabanpour2016}
+	Amin Shabanpour-Haghighi and Ali Reza Seifi.
+	\newblock Effects of district heating networks on optimal energy flow of multi-carrier systems.
+	\newblock {\em Renewable and Sustainable Energy Reviews}, 46(11): 379 -- 387, 2016.\\
+	\doi{10.1016/j.rser.2015.12.349}
+		
+	\bibitem{Chen2017}
+	S. Cheng, Z. Wei, G. Sun, K.W. Cheung, Y. Sun.
+	\newblock Multi-Linear Probabilistic Energy Flow Analysis of Integrated Electrical and Natural-Gas Systems.
+	\newblock {\em IEEE Transactions on Power Systems}, 32(3): 1970 -- 1979, 2017.\\
+	\doi{10.1109/TPWRS.2016.2597162}
+	
+	\bibitem{Midthun2007}
+	K. T. Midhunt.
+	\newblock Optimization models for liberalized natural gas markets.
+	\newblock {\em Norwegian University of Science and Technology, Faculty of Social Science and Technology Management, Department of Sociology	and Political Science}, 2007.
+	
     \end{thebibliography}	
 \end{document}
