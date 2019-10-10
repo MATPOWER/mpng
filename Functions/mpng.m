@@ -206,11 +206,12 @@ else
 end
 %% connection case
 sr = connect.power.sr;
-[nsr, csr] = size(sr);
-if ~(nsr == nareas) || ~(csr == nt)
-    error('mpng: Spinning reserves zones matrix has wrong dimensions.');
+if ~isempty(sr)
+    [nsr, csr] = size(sr);
+    if ~(nsr == nareas) || ~(csr == nt)
+        error('mpng: Spinning reserves zones matrix has wrong dimensions.');
+    end
 end
-
 % Spinning reserve asked for every period of time must be lower than total
 %	demand.
 
@@ -681,57 +682,59 @@ if ~is_power_tool
     end
     
     %% Spinning reserves related to zones
-    areas = mpc.bus(:,BUS_AREA);
-    areas = sort(unique(areas));    % areas in the power network
-    nareas = length(areas);         % number of areas in the power network
-    
-    sr = connect.power.sr;
-    sr = sr/base;
-    
-    idxpgen = find(mpc.gen(:,PMAX) > 0); % find real generators (non sync non dl non comp)
-    idxpgen = reshape(idxpgen,[length(idxpgen)/nt,nt]);
-    busgen = mpc.gen(idxpgen(:,1),GEN_BUS);
-    areasgen = mpc.bus(busgen,BUS_AREA);
-    pgmax = mpc.gen(idxpgen(:,1),PMAX);
-    pgmax = pgmax/base;
-    
-    for j = 1:nareas
-        idx_area = areasgen==areas(j);
-        pgmax_area(j,1) = sum(pgmax(idx_area));
+    if ~isempty(connect.power.sr)
+        areas = mpc.bus(:,BUS_AREA);
+        areas = sort(unique(areas));    % areas in the power network
+        nareas = length(areas);         % number of areas in the power network
+        
+        sr = connect.power.sr;
+        sr = sr/base;
+        
+        idxpgen = find(mpc.gen(:,PMAX) > 0); % find real generators (non sync non dl non comp)
+        idxpgen = reshape(idxpgen,[length(idxpgen)/nt,nt]);
+        busgen = mpc.gen(idxpgen(:,1),GEN_BUS);
+        areasgen = mpc.bus(busgen,BUS_AREA);
+        pgmax = mpc.gen(idxpgen(:,1),PMAX);
+        pgmax = pgmax/base;
+        
+        for j = 1:nareas
+            idx_area = areasgen==areas(j);
+            pgmax_area(j,1) = sum(pgmax(idx_area));
+        end
+        
+        U_sr = zeros(nt*nareas,1);
+        L_sr = U_sr;
+        A_sr = zeros(nt*nareas,ng);
+        
+        row_sr = areasgen;
+        val_sr = ones(length(areasgen),1);
+        for j = 1:nt
+            U_sr(((j-1)*nareas)+1:j*nareas) = pgmax_area - sr(:,j);
+            col_sr = idxpgen(:,j);
+            A_sr(((j-1)*nareas)+1:j*nareas,:) = sparse(row_sr,col_sr,val_sr,nareas,ng);
+        end
+        om.add_lin_constraint('SR', A_sr, L_sr, U_sr, {'Pg'});
     end
-    
-    U_sr = zeros(nt*nareas,1);
-    L_sr = U_sr;
-    A_sr = zeros(nt*nareas,ng);
-    
-    row_sr = areasgen;
-    val_sr = ones(length(areasgen),1);
-    for j = 1:nt
-        U_sr(((j-1)*nareas)+1:j*nareas) = pgmax_area - sr(:,j);
-        col_sr = idxpgen(:,j);
-        A_sr(((j-1)*nareas)+1:j*nareas,:) = sparse(row_sr,col_sr,val_sr,nareas,ng);
-    end
-    om.add_lin_constraint('SR', A_sr, L_sr, U_sr, {'Pg'});
-    
     %% Energy available for hydro power generators
-    ng_ori = (ng-ndl)/nt;
-    ngenr = size(connect.power.energy,1);
-    genr = connect.power.energy(:,GEN_ID);
-    row = [];
-    val = [];
-    col = [];
-    for i = 1:ngenr
-        row = [row; i*ones(nt,1)];
-        col = [col; (genr(i):ng_ori:genr(i)+((nt-1)*ng_ori))'];
-        val = [val; time'];
+    if ~isempty(connect.power.energy)
+        ng_ori = (ng-ndl)/nt;
+        ngenr = size(connect.power.energy,1);
+        genr = connect.power.energy(:,GEN_ID);
+        row = [];
+        val = [];
+        col = [];
+        for i = 1:ngenr
+            row = [row; i*ones(nt,1)];
+            col = [col; (genr(i):ng_ori:genr(i)+((nt-1)*ng_ori))'];
+            val = [val; time'];
+        end
+        A_ener = sparse(row,col,val,ngenr,ng);
+        maxenergy = connect.power.energy(:,MAX_ENER);
+        maxenergy = maxenergy/base;
+        U_ener = maxenergy;
+        L_ener = zeros(size(U_ener));
+        om.add_lin_constraint('hydro_energy', A_ener, L_ener, U_ener , {'Pg'});    % Max hydro energy
     end
-    A_ener = sparse(row,col,val,ngenr,ng);
-    maxenergy = connect.power.energy(:,MAX_ENER);
-    maxenergy = maxenergy/base;
-    U_ener = maxenergy;
-    L_ener = zeros(size(U_ener));
-    om.add_lin_constraint('hydro_energy', A_ener, L_ener, U_ener , {'Pg'});    % Max hydro energy
-    
 end
 end
 function results = userfcn_mpng_int2ext(results, mpopt,args)
@@ -1170,7 +1173,7 @@ for i = 1:nc
         fprintf(fd,'   %7.3f',psi_p(j));
         fprintf(fd,'       --- ');
         fprintf(fd,'    %5.3f',comp_ratio(i));
-        fprintf(fd,'    %5.2f',fgccost_p(j));
+        fprintf(fd,'   %5.2f',fgccost_p(j));
         j = j + 1;
     end
     if iscomp_g(i)
@@ -1181,7 +1184,7 @@ for i = 1:nc
         fprintf(fd,'   %7.3f',psi_g(k));
         fprintf(fd,'     %6.4f',phi(k));
         fprintf(fd,'    %5.3f',comp_ratio(i));
-        fprintf(fd,'   %7.2f',fgccost_g(k));
+        fprintf(fd,'   %5.2f',fgccost_g(j));
         k = k + 1;
     end    
 
