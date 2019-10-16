@@ -81,6 +81,16 @@ if nargin == 1
     mpopt.opf.ac.solver = 'IPOPT';     % set the default solver
     mpopt.ipopt.opts.max_iter = 1e5;   % default max number of iterations
 end
+nb = size(mpgc.bus,1);
+if nb == 2
+    mpopt.out.sys_sum = 0;
+    mpopt.out.area_sum = 0;
+    mpopt.out.bus = 0;
+    mpopt.out.branch = 0;
+    mpopt.out.lim.pg = 0;
+    mpopt.out.lim.qg = 0;
+%     mpopt.out.suppress_detail = 0;
+end
 verbose = mpopt.verbose;
 %% check for proper gas inputs
 if verbose
@@ -214,6 +224,7 @@ if ~isempty(sr)
 end
 % Spinning reserve asked for every period of time must be lower than total
 %	demand.
+% Check max energy for power plants and matrix dimenssions 
 
 %%
 mgc = mgc_PU(mgc); 
@@ -1010,6 +1021,7 @@ end
 sto_node    = mgc.sto(:,STO_NODE);
 sto         = mgc.sto(:,STO);
 sto_0       = mgc.sto(:,STO_0);
+sto_max     = mgc.sto(:,STOMAX);
 fsto        = mgc.sto(:,FSTO);
 fsto_out	= mgc.sto(:,FSTO_OUT);
 fsto_in     = mgc.sto(:,FSTO_IN);
@@ -1067,6 +1079,9 @@ OUT_FORCE       = mpopt.out.force;
 OUT_RES         = OUT_ALL == 1 || (OUT_ALL == -1 && ~SUPPRESS && (mpopt.out.bus || mpopt.out.gen));
 
 %%
+nb = size(results.bus(:,1));
+is_power_tool = nb == 2; 
+if is_power_tool
 fprintf(fd, '\n================================================================================');
 fprintf(fd, '\n|     Non-supplied power demand [MWh/d]                                        |');
 fprintf(fd, '\n================================================================================');
@@ -1081,6 +1096,7 @@ for i = 1:length(id_dem)
 end
 fprintf(fd, '\n -----  ---------  ---------   --------                              ');
 fprintf(fd, '\n Total  %9.2f  %9.2f %9.2f',sum(e_demanded),sum(e_supplied),sum(e_non));
+end
 %%
 fprintf(fd, '\n================================================================================');
 fprintf(fd, '\n|     Gas system summary                                                       |');
@@ -1159,9 +1175,9 @@ fprintf(fd, '\n');
 fprintf(fd, '\n================================================================================');
 fprintf(fd, '\n|     Compressor Data                                                          |');
 fprintf(fd, '\n================================================================================');
-fprintf(fd, '\n Comp.   Comp.   From    To     Comp.      Power       Gas      Comp.    Comp. ');
-fprintf(fd, '\n   #     Type    Node   Node    Flow      Consumed   Consumed   Ratio    Cost  ');
-fprintf(fd, '\n -----   -----   ----   ----   --------   --------   --------   -----   -------');
+fprintf(fd, '\n Comp.   Comp.   From    To     Comp.      Power       Gas      Comp.    Comp.  ');
+fprintf(fd, '\n   #     Type    Node   Node    Flow      Consumed   Consumed   Ratio    Cost   ');
+fprintf(fd, '\n -----   -----   ----   ----   --------   --------   --------   -----   --------');
 j = 1; k = 1;
 for i = 1:nc
     fprintf(fd,'\n  %2d ',i);
@@ -1169,8 +1185,8 @@ for i = 1:nc
         fprintf(fd,'      P');
         fprintf(fd,'      %2d',from_c(i));
         fprintf(fd,'     %2d',to_c(i));
-        fprintf(fd,'     %7.3f',fgc_p(j));
-        fprintf(fd,'   %7.3f',psi_p(j));
+        fprintf(fd,'    %8.3f',fgc_p(j));
+        fprintf(fd,'   %7.2f',psi_p(j));
         fprintf(fd,'       --- ');
         fprintf(fd,'    %5.3f',comp_ratio(i));
         fprintf(fd,'   %5.2f',fgccost_p(j));
@@ -1180,34 +1196,39 @@ for i = 1:nc
         fprintf(fd,'      G');
         fprintf(fd,'      %2d',from_c(i));
         fprintf(fd,'     %2d',to_c(i));
-        fprintf(fd,'     %7.3f',fgc_g(k));
-        fprintf(fd,'   %7.3f',psi_g(k));
+        fprintf(fd,'    %8.3f',fgc_g(k));
+        fprintf(fd,'   %7.2f',psi_g(k));
         fprintf(fd,'     %6.4f',phi(k));
         fprintf(fd,'    %5.3f',comp_ratio(i));
-        fprintf(fd,'   %5.2f',fgccost_g(j));
+        fprintf(fd,'   %5.2f',fgccost_g(k));
         k = k + 1;
     end    
 
-end 
+end
 fprintf(fd, '\n');
-fprintf(fd, '\n================================================================================');
-fprintf(fd, '\n|     Storage Units Data                                                       |');
-fprintf(fd, '\n================================================================================');
-fprintf(fd, '\n Storage  Initial   Final    Sto.     Sto.     Sto.     Sto.    Outflow   Inflow');
-fprintf(fd, '\n   Node     Sto.    Sto.     Diff.    Out      In       Cost     Cost     Cost  ');
-fprintf(fd, '\n -------  -------  -------  -------  -------  -------  -------  -------  -------');
-for i = 1:ns
-    fprintf(fd,'\n    %2d ',sto_node(i));
-    fprintf(fd,'    %5.1f',sto_0(i));
-    fprintf(fd,'    %5.1f',sto(i));
-    fprintf(fd,'   %6.2f',fsto(i));
-    fprintf(fd,'   %6.2f',fsto_out(i));
-    fprintf(fd,'   %6.2f',fsto_in(i));
-    fprintf(fd,'   %7i',round(sto_cost(i)));
-    fprintf(fd,'  %6i',round(outflow_cost(i)));
-    fprintf(fd,'   %6i',round(inflow_cost(i)));
+
+sto_max_tot = sum(sto_max);
+exist_sto = sto_max_tot ~= 0;
+if exist_sto
+    fprintf(fd, '\n================================================================================');
+    fprintf(fd, '\n|     Storage Units Data                                                       |');
+    fprintf(fd, '\n================================================================================');
+    fprintf(fd, '\n Storage  Initial   Final    Sto.     Sto.     Sto.     Sto.    Outflow   Inflow');
+    fprintf(fd, '\n   Node     Sto.    Sto.     Diff.    Out      In       Cost     Cost     Cost  ');
+    fprintf(fd, '\n -------  -------  -------  -------  -------  -------  -------  -------  -------');
+    for i = 1:ns
+        fprintf(fd,'\n    %2d ',sto_node(i));
+        fprintf(fd,'    %5.1f',sto_0(i));
+        fprintf(fd,'    %5.1f',sto(i));
+        fprintf(fd,'   %6.2f',fsto(i));
+        fprintf(fd,'   %6.2f',fsto_out(i));
+        fprintf(fd,'   %6.2f',fsto_in(i));
+        fprintf(fd,'   %7i',round(sto_cost(i)));
+        fprintf(fd,'  %6i',round(outflow_cost(i)));
+        fprintf(fd,'   %6i',round(inflow_cost(i)));
+    end
+    fprintf(fd, '\n');
 end 
-fprintf(fd, '\n');
 if ~isempty(connect.interc.term)
     fprintf(fd, '\n================================================================================');
     fprintf(fd, '\n|     Gas-fired Generators Data                                                |');
