@@ -25,13 +25,13 @@ All details about the gas case (\code{mgc}) format are provided in the tables be
 			\code{UNP}	& 7	& under-pressure [psia]\\
 			\code{COST\_OVP}	& 8	& over-pressure cost [\$/psia$^2$]\\
 			\code{COST\_UNP}	& 9	& under-pressure cost [\$/psia$^2$]\\
-			\code{GD}	& 10	& full nodal demand [MSCFD]\tnote{\dag}\\
+			\code{GD}	& 10	& full nodal demand [MMSCFD]\tnote{\dag}\\
 			\code{NGD}	& 11	& number of different nodal users (positive integer)\\
 			\bottomrule
 		\end{tabular}
 		\begin{tablenotes}
 			\scriptsize
-			\item [\dag] {MSCFD: Million Standard Cubic Feet Per Day.}
+			\item [\dag] {MMSCFD: Million Standard Cubic Feet Per Day.}
 		\end{tablenotes}
 	\end{threeparttable}
 \end{table}
@@ -47,12 +47,12 @@ All details about the gas case (\code{mgc}) format are provided in the tables be
 			name & column & description \\
 			\midrule
 			\code{WELL\_NODE}	& 1	& well number (positive integer)\\	
-			\code{G}	& 2	& well gas production [MSCFD]\\
+			\code{G}	& 2	& well gas production [MMSCFD]\\
 			\code{PW}	& 3	& known well pressure [psia]\\
-			\code{GMAX}	& 4	& maximum gas injection [MSCFD]\\
-			\code{GMIN}	& 5	& minimum gas injection [MSCFD]\\
+			\code{GMAX}	& 4	& maximum gas injection [MMSCFD]\\
+			\code{GMIN}	& 5	& minimum gas injection [MMSCFD]\\
 			\code{WELL\_STATUS}	& 6	& well status (0 = disable, 1 = enable)\\
-			\code{COST\_G}	& 7	& well production cost [\$/MSCFD]\\			
+			\code{COST\_G}	& 7	& well production cost [\$/MMSCFD]\\			
 			\bottomrule
 		\end{tabular}
 	\end{threeparttable}
@@ -70,13 +70,13 @@ All details about the gas case (\code{mgc}) format are provided in the tables be
 			\midrule
 			\code{F\_NODE}	& 1	& from node number (positive integer)\\	
 			\code{T\_NODE}	& 2	& to node number (positive integer)\\
-			\code{FG\_O}	& 3	& known gas pipeline flow [MSCFD]\\
-			\code{K\_O}	& 4	& Weymouth constant [MSCFD/psia]\\
+			\code{FG\_O}	& 3	& known gas pipeline flow [MMSCFD]\\
+			\code{K\_O}	& 4	& Weymouth constant [MMSCFD/psia]\\
 			\code{DIAM}	& 5	& diameter [inches]\\
 			\code{LNG}	& 6	& longitude [km]\\
-			\code{FMAX\_O}	& 7	& maximum flow [MSCFD]\\
-			\code{FMIN\_O}	& 8	& minimum flow [MSCFD]\\
-			\code{COST\_O}	& 9	& pipeline transportation cost [\$/MSCFD]\\			
+			\code{FMAX\_O}	& 7	& maximum flow [MMSCFD]\\
+			\code{FMIN\_O}	& 8	& minimum flow [MMSCFD]\\
+			\code{COST\_O}	& 9	& pipeline transportation cost [\$/MMSCFD]\\			
 			\bottomrule
 		\end{tabular}
 	\end{threeparttable}
@@ -95,17 +95,17 @@ All details about the gas case (\code{mgc}) format are provided in the tables be
 			\code{F\_NODE}	& 1	& from node number (positive integer)\\	
 			\code{T\_NODE}	& 2	& to node number (positive integer)\\
 			\code{TYPE\_C}	& 3	& compressor type (1 = power-driven, 2 = gas-driven)\\			
-			\code{FG\_C}	& 4	& gas flow through compressor [MSCFD]\\
+			\code{FG\_C}	& 4	& gas flow through compressor [MMSCFD]\\
 			\code{PC\_C}	& 5	& consumed compressor power [MVA]\\
-			\code{GC\_C}	& 6	& gas consumed by the compressor [MSCFD]\tnote{\dag}\\
-			\code{RATIO\_C}	& 7	& compressor ratio\\
-			\code{B\_C}	& 8	& compressor-dependent constant [MVA/MSCFD]\\	
+			\code{GC\_C}	& 6	& gas consumed by the compressor [MMSCFD]\tnote{\dag}\\
+			\code{RATIO\_C}	& 7	& maximum compressor ratio\\
+			\code{B\_C}	& 8	& compressor-dependent constant [MVA/MMSCFD]\\	
 			\code{Z\_C}	& 9	& compresibility factor\\
-			\code{X}	& 10	& independent approximation coefficient [MSCFD]\\
-			\code{Y}	& 11	& linear approximation coefficient [MSCFD/MVA]\\
-			\code{Z}	& 12	& quadratic approximation coefficient [MSCFD/MVA$^2$]\\
-			\code{FMAX\_C}	& 13	& maximum flow through compressor [MSCFD]\\
-			\code{COST\_C}	& 14	& compressor cost [\$/MSCFD]\\		
+			\code{X}	& 10	& independent approximation coefficient [MMSCFD]\\
+			\code{Y}	& 11	& linear approximation coefficient [MMSCFD/MVA]\\
+			\code{Z}	& 12	& quadratic approximation coefficient [MMSCFD/MVA$^2$]\\
+			\code{FMAX\_C}	& 13	& maximum flow through compressor [MMSCFD]\\
+			\code{COST\_C}	& 14	& compressor cost [\$/MMSCFD]\\		
 			\bottomrule
 		\end{tabular}
 		\begin{tablenotes}
@@ -130,15 +130,15 @@ All details about the gas case (\code{mgc}) format are provided in the tables be
 			\code{STO\_0}	& 3	& initial storage level [MSCF]\\			
 			\code{STOMAX}	& 4	& maximum storage [MSCF]\\
 			\code{STOMIN}	& 5	& minimum storage [MSCF]\\
-			\code{FSTO}	& 6	& storage outflow difference [MSCFD]\tnote{\ddag}\\
-			\code{FSTO\_OUT}	& 7	& storage outflow [MSCFD]\\
-			\code{FSTO\_IN}	& 8	& storage inflow [MSCFD]\\	
-			\code{FSTOMAX}	& 9	& maximum storage outflow difference [MSCFD]\\
-			\code{FSTOMIN}	& 10	& minimum storage outflow difference [MSCFD]\\
+			\code{FSTO}	& 6	& storage outflow difference [MMSCFD]\tnote{\ddag}\\
+			\code{FSTO\_OUT}	& 7	& storage outflow [MMSCFD]\\
+			\code{FSTO\_IN}	& 8	& storage inflow [MMSCFD]\\	
+			\code{FSTOMAX}	& 9	& maximum storage outflow difference [MMSCFD]\\
+			\code{FSTOMIN}	& 10	& minimum storage outflow difference [MMSCFD]\\
 			\code{S\_STATUS}	& 11	& storage status \\
 			\code{COST\_STO}	& 12	& storage cost [\$/MSCF]\\
-			\code{COST\_OUT}	& 13	& storage outflow cost [\$/MSCFD]\\
-			\code{COST\_IN}	& 14	& storage inflow cost [\$/MSCFD]\\		
+			\code{COST\_OUT}	& 13	& storage outflow cost [\$/MMSCFD]\\
+			\code{COST\_IN}	& 14	& storage inflow cost [\$/MMSCFD]\\		
 			\bottomrule
 		\end{tabular}
 	\begin{tablenotes}

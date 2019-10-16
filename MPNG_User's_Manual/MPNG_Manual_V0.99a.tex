@@ -38,6 +38,7 @@
 \usepackage{titlesec}
 \usepackage{fancyvrb}
 \usepackage{relsize}
+\usepackage{textcomp}
 \usepackage{threeparttable}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% Some configurations %%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -57,6 +58,8 @@
 {fontsize=\relsize{-1.5},
 	samepage=true,
 	frame=single}
+
+\newcommand{\codeq}[1]{\code{\textquotesingle{}#1\textquotesingle}}  % requires package textcomp
 
 % define my verbatim environment, requires packages fancyvrb & relsize
 \renewcommand{\FancyVerbFormatLine}[1]{\makebox[2mm][l]{}#1}
@@ -131,6 +134,7 @@
 	\include{Chapters/Natural_Gas_Flow}
 	\include{Chapters/Formulation}
 	\include{Chapters/Examples}
+	\include{Chapters/Acknowledgements}
 	\part*{Appendix}
 	\include{Chapters/Appendixes}	
 	
@@ -148,8 +152,12 @@
 	\bibitem{bsd}
 	The BSD 3-Clause License. [Online]. Available: \url{https://opensource.org/licenses/BSD-3-Clause}.
 	
+	\bibitem{mpng2019}
+	S.~García-Marín, W.~González-Vanegas, and C.~E. Murillo-Sánchez, ``MPNG:\matpower{}-Natural Gas,'' 2019.
+	[Online]. Available: \url{\mpngurl}
+		
 	\bibitem{matpower_manual}
-	\matpower{} User's Manual. [Online]. Available: \url{https://matpower.org/doc/manuals/}.
+	\matpower{} User's Manual. [Online]. Available: \url{https://matpower.org/doc/manuals/}.	
 	
 	\bibitem{Woldeyohannes2011}
 	Abraham~Debebe Woldeyohannes and Mohd Amin~Abd Majid.
@@ -191,7 +199,7 @@
 	\bibitem{Midthun2007}
 	K. T. Midhunt.
 	\newblock Optimization models for liberalized natural gas markets.
-	\newblock {\em Norwegian University of Science and Technology, Faculty of Social Science and Technology Management, Department of Sociology	and Political Science}, 2007.
+	\newblock {\em Norwegian University of Science and Technology, Faculty of Social Science and Technology Management, Department of Sociology	and Political Science}, 2007.	
 	
     \end{thebibliography}	
 \end{document}
