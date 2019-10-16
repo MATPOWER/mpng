@@ -1112,7 +1112,7 @@ fprintf(fd, '\n  Power Comp.  %3d           Non-Supplied Demand  %2.2f', nc_p,no
 fprintf(fd, '\nStorage Units  %3d         Gas Stored             %2.2f', ns, sto_tot);
 fprintf(fd, '\n')
 
-fprintf(fd, '\nGas total extration cost =   %5.2f',gcost_tot);
+fprintf(fd, '\nGas total extraction cost =   %5.2f',gcost_tot);
 
 fprintf(fd, '\n================================================================================');
 fprintf(fd, '\n|     Nodes Data                                                               |');

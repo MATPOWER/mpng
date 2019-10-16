@@ -16,7 +16,7 @@ By definition, a node is the location of a natural gas system where one or more 
 \begin{figure}[!ht]
 	\centering
 	\includegraphics[scale=1.2]{Figures/Node}
-	\caption{A natural gas node and some traditional users.}	
+	\caption{A natural gas node and some traditional markets.}	
 	\label{fig:node}
 \end{figure}
 
@@ -36,11 +36,11 @@ Natural gas is extracted from deep underground and injected into the system in w
 \subsection{Pipelines}
 \label{subsec:pipelines}
 
-In general, the flow of gas through pipes is studied using the energy equation of fluid mechanics~\cite{Banda2006}. However, in practice, the relationship between the gas flow in the pipe and the upstream and downstream pressures can be described by various equations. The Weymouth's general flow equation is the frequent option in gas industry applications to model the steady-state flow in pipes in transmission networks~\cite{Woldeyohannes2011}. Figure \ref{fig:pipeline} shows a pipeline where the gas flow from the node $i$ to the node $j$ is represented by $f_{ij}$. The Weymouth's equations states the relationship between $f_{ij}$, $p_i$, and $p_j$ in the following form:
+In general, the flow of gas through pipes is studied using the energy equation of fluid mechanics~\cite{Banda2006}. However, in practice, the relationship between the gas flow in the pipe and the upstream and downstream pressures can be described by various equations. The Weymouth's general flow equation is the frequent option in gas industry applications to model the steady-state flow in pipes in transmission networks~\cite{Woldeyohannes2011}. Figure \ref{fig:pipeline} shows a pipeline $o$ whose gas flow from the node $i$ to the node $j$ is represented by $f_{ij}^o$. The Weymouth's equations states the relationship between $f_{ij}^o$, $p_i$, and $p_j$ in the following form:
 
 \begin{equation}
 	\label{eq:Weymouth_eq1}
-	\text{sgn}(f_{ij})f_{ij}^2 = K_{ij}(p_i^2-p_j^2). 
+	\text{sgn}(f_{ij}^o)(f_{ij}^o)^2 = K_{ij}(p_i^2-p_j^2). 
 	\vspace{0.3cm}
 \end{equation}
 
@@ -51,7 +51,7 @@ In general, the flow of gas through pipes is studied using the energy equation o
 	\label{fig:pipeline}
 \end{figure}
 
-In Equation \ref{eq:Kij}, $\text{sgn}(\cdot)$ represents the sign function, and $K_{ij}$ is the  Weymouth constant\footnote{Measured in Million Standard Cubic Feet per Day (MSCFD) over psia. Different expressions for $K_{ij}$ can be derived depending on the parameters used in the flow equations. See \cite{Woldeyohannes2011} and reference therein for details.} of the pipeline defined in terms of the pipe length and diameter as below~\cite{Wolf2000}:
+In Equation \ref{eq:Kij}, $\text{sgn}(\cdot)$ represents the sign function, and $K_{ij}$ is the  Weymouth constant\footnote{Measured in Million Standard Cubic Feet per Day (MMSCFD) over psia. Different expressions for $K_{ij}$ can be derived depending on the parameters used in the flow equations. See \cite{Woldeyohannes2011} and reference therein for details.} of the pipeline defined in terms of the pipe length and diameter as below~\cite{Wolf2000}:
 
 \begin{equation}
 	\label{eq:Kij}
@@ -82,25 +82,25 @@ For mathematical convenience, we rewrite Equation \ref{eq:Weymouth_eq1} as follo
 
 \begin{equation}
 	\label{eq:Wymouth_eq_2}
-	f_{ij} = K_{ij} \;\text{sgn}(\pi_i - \pi_j)\sqrt{|\pi_i-\pi_j|},
+	f_{ij}^o = K_{ij} \;\text{sgn}(\pi_i - \pi_j)\sqrt{|\pi_i-\pi_j|},
 	\vspace{0.3cm}
 \end{equation}
 
 \noindent where $\pi=p^2$ is defined as the quadratic pressure. 
 
-As seen, the gas flow through a pipeline is a nonlinear function of the quadratic pressures of the initial and final nodes, that is, $f_{ij}=g(\pi_i,\pi_j)$. 
+As seen, the gas flow through a pipeline is a nonlinear function of the quadratic pressures of the initial and final nodes, that is, $f_{ij}^o=g(\pi_i,\pi_j)$. 
 
 \subsection{Compressors}
 \label{subsec:compressors}
-As seen in Equation \ref{eq:Wymouth_eq_2}, there exists a downstream pressure drop when transporting large flows through pipes caused by energy losses. Analogous to the transformer in power systems, compressors are installed in the gas network to compensate pressure drops. Figure \ref{fig:compressor} shows a compressor that increases the discharge pressure $p_j$ with respect to the suction pressure $p_i$ by compressing gas in a way that a flow $f_{ij}$ passes through it. The power demanded by the compressor, $\psi_c$, states the relationship between the flow and the suction and discharge pressures in the following way~\cite{Shabanpour2016}:
+As seen in Equation \ref{eq:Wymouth_eq_2}, there exists a downstream pressure drop when transporting large flows through pipes caused by energy losses. Analogous to the transformer in power systems, compressors are installed in the gas network to compensate pressure drops. Figure \ref{fig:compressor} shows a compressor $c$ that increases the discharge pressure $p_j$ with respect to the suction pressure $p_i$ by compressing gas in a way that a flow $f_{ij}^c$ passes through it. The power demanded by the compressor, $\psi_c$, states the relationship between the flow and the suction and discharge pressures in the following way~\cite{Shabanpour2016}:
 
 \begin{equation}
-	\label{eq:power_comp}
-	\psi_c = B_c\; f_{ij} \left[\left(\frac{\pi_j}{\pi_i}\right)^{\frac{Z_c}{2}}-1\right],
+	\label{eq:comp_flow}
+	f_{ij}^c = \frac{\psi_c}{B_c \left[\left(\frac{\pi_j}{\pi_i}\right)^{\frac{Z_c}{2}}-1\right]},
 	\vspace{0.3cm}
 \end{equation}
 
-where $B_c$ is the compressor constant that describe its construction features, and $Z_c$ is the compressibility factor.
+where $B_c$ is the compressor constant that describes its construction features, $Z_c$ is the compressibility factor, and $\pi=p^2$ is again the quadratic pressure.
 
 \begin{figure}[!ht]
 	\centering
@@ -109,11 +109,11 @@ where $B_c$ is the compressor constant that describe its construction features, 
 	\label{fig:compressor}
 \end{figure}
 
-Moreover, the compressor ratio, $R_c$, is defined as below:
+Moreover, the compressor ratio, $\beta_c$, is defined as below:
 
 \begin{equation}
 	\label{eq:comp_ratio}
-	R_c = \frac{\pi_j}{\pi_i}, \quad R_c\geq 1.
+	\beta_c = \frac{\pi_j}{\pi_i}, \quad \beta_c\geq 1.
 	\vspace{0.3cm}
 \end{equation}
 
@@ -127,8 +127,7 @@ In general, there exists two types of compressors: the power-driven compressors,
 
 where $x,y,z \in \Real$.
 
-Notice that the gas flow through a compressor (and so does the consumed flow for a gas-driven compressor) is a function of the consumed power and the quadratic suction and discharge pressures, that is, $f_{ij}=h(\pi_i,\pi_j,\psi_c)$.  
-
+Notice that the gas flow through a compressor (and so does the consumed flow for a gas-driven compressor) is a function of the consumed power and the quadratic suction and discharge pressures, that is, $f_{ij}^c=h(\pi_i,\pi_j,\psi_c)$. 
 
 \subsection{Storage Units}
 \label{subsec:sto_units}
@@ -149,7 +148,7 @@ Let us consider the transmission natural gas network shown in Figure \ref{fig:no
 
 \begin{equation}
 	\label{eq:balance_eq}
-	f_{inj} - f_{dem} \pm f_s = \sum_{\substack{j=1 \\ j \neq i}}^{m} f_{ij}
+	f_{inj} - f_{dem} \pm f_s = \sum_{\substack{j=1 \\ j \neq i}}^{m} f_{ij},
 \end{equation}
 
 where $f_{dem}$ is the known demand flow, $f_s$ is either the  inflow (negative) or outflow (positive) of the storage unit, and $f_{inj}$ is the injected flow of the well. 
@@ -161,7 +160,9 @@ where $f_{dem}$ is the known demand flow, $f_s$ is either the  inflow (negative)
 	\label{fig:nodal_balance}
 \end{figure}
 
-Notice in equation \ref{eq:balance_eq} that the left hand side is a known value if injection is produced by a constant-flow well. However, for a constant-pressure well, the value of $f_{iny}$ must be determined. Besides, the algebraic sum of the right hand side depends on the nature of the elements connected between nodes $i$ and $j$, such that $f_{ij}$ is $g(\pi_i,\pi_j)$, $h(\pi_i,\pi_j,\psi_c)$, or $h(\pi_i,\pi_j,\psi_c)+\phi_c(\psi_c)$ for a pipeline, a power-driven compressor, and a gas-driven-compressor, respectively.
+Notice in equation \ref{eq:balance_eq} that the left hand side is a known value if injection is produced by a constant-flow well. However, for a constant-pressure well, the value of $f_{iny}$ must be determined. In turn, the algebraic sum of the right hand side depends on the nature of the elements connected between nodes $i$ and $j$ such that $f_{ij}$ takes the form of $f_{ij}^o$ or $f_{ij}^c$, according to Equations \ref{eq:Wymouth_eq_2} and \ref{eq:comp_flow}, for a pipeline or a compressor, respectively. Moreover, for a gas-driven compressor, the additional gas consumption $\phi_c$ must be considered as an outflow in Equation \ref{eq:balance_eq} if node $i$ matches the suction node for compressor $c$.
+
+%such that $f_{ij}$ is $g(\pi_i,\pi_j)$, $h(\pi_i,\pi_j,\psi_c)$, or $h(\pi_i,\pi_j,\psi_c)+\phi_c(\psi_c)$ for a pipeline, a power-driven compressor, and a gas-driven-compressor, respectively.
 
 As a consequence, we can rewrite the balance equation applied at node $i$ in a functional form as follows:
 
@@ -171,7 +172,7 @@ As a consequence, we can rewrite the balance equation applied at node $i$ in a f
 	\vspace{0.3cm}
 \end{equation}
 
-In practice, for a given gas network with $n_n$ nodes, $n_c$ compressors, and $n_{w_p}$ constant-pressure wells, the application of the balance equation for all nodes will produce a set of $n_n$ nonlinear equations with $(n_n-n_{w_p})+n_c+n_{w_g} = n_n+n_c$ unknown variables. To get a squared system with the same number of equations and variables, the $n_c$ missing equations are obtained from the compressor ratios of all compressors. Then, the NGF problem can be formulated as follows:
+In practice, for a given gas network with $n_n$ nodes, $n_c$ compressors, and $n_{w_p}$ constant-pressure wells, the application of the balance equation for all nodes will produce a set of $n_n$ nonlinear equations with a number of $(n_n-n_{w_p})+n_c+n_{w_p} = n_n+n_c$ unknown variables. To get a squared system with the same number of equations and variables, the $n_c$ missing equations are obtained from the compressor ratios of all compressors. Then, the NGF problem can be formulated as follows:
 
 \begin{equation}
 	\label{eq:F_i=0}
@@ -180,11 +181,11 @@ In practice, for a given gas network with $n_n$ nodes, $n_c$ compressors, and $n
 
 \begin{equation}
 	\label{eq:R_c=0}
-	R_c = \frac{\pi_j}{\pi_i}, \quad \forall c\in\mathcal{C}, \;  i,j\in\mathcal{N},
+	\beta_c = \frac{\pi_j}{\pi_i}, \quad \forall c\in\mathcal{C}, \;  i,j\in\mathcal{N},
 	\vspace{0.3cm}
 \end{equation}
 
-where:
+where
 
 \begin{labeling}{alligator}
 	\item [$\qquad \qquad  \mathcal{N}$]  \hspace{0.85cm} Set of gas nodes, $|\mathcal{N}|=n_n$.
