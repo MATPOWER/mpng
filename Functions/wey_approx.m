@@ -25,9 +25,9 @@ function [f,df,d2f] = wey_approx(K,pi,pj,p_approx)
 
 %   MPNG Matpower - Natural Gas
 %   Copyright (c) 2019 - v0.99alpha
-%   Sergio García Marín - Universidad Nacional de Colombia - Sede Manizales
-%   Wilson González Vanegas - Universidad Tecnológica de Pereira
-%   Carlos E. Murillo Sánchez - Universidad Nacional de Colombia - Sede Manizales
+%   Sergio García-Marín - Universidad Nacional de Colombia - Sede Manizales
+%   Wilson González-Vanegas - Universidad Tecnológica de Pereira
+%   Carlos E. Murillo-Sánchez - Universidad Nacional de Colombia - Sede Manizales
 % 
 %   This file is part of MPNG.
 %   Covered by the 3-clause BSD License (see LICENSE file for details).

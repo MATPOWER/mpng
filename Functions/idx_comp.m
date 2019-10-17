@@ -41,9 +41,9 @@ function [COMP_G, COMP_P, F_NODE, T_NODE, TYPE_C, RATIO_C, B_C, Z_C, ALPHA, ...
 
 %   MPNG: Matpower - Natural Gas
 %   Copyright (c) 2019 - v0.99alpha
-%   Sergio García Marín - Universidad Nacional de Colombia - Sede Manizales
-%   Wilson González Vanegas - Universidad Tecnológica de Pereira
-%   Carlos E. Murillo Sánchez - Universidad Nacional de Colombia - Sede Manizales
+%   Sergio García-Marín - Universidad Nacional de Colombia - Sede Manizales
+%   Wilson González-Vanegas - Universidad Tecnológica de Pereira
+%   Carlos E. Murillo-Sánchez - Universidad Nacional de Colombia - Sede Manizales
 % 
 %   This file is part of MPNG.
 %   Covered by the 3-clause BSD License (see LICENSE file for details).  
