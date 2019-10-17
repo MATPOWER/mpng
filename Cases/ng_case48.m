@@ -2,7 +2,7 @@ function mgc = ng_case48
 %% ========================================================================
 % 48-node natural gas system for optimal power & natural gas flow.
 % =========================================================================
-% Authors:  (1) Wilson González Vanegas, M.Sc(c) 
+% Authors:  (1) Wilson González Vanegas, M.Sc 
 %           (2) Sergio García Marín, M.Sc(c)  
 % (1) Automatic Research Group, Universidad Tecnológica de Pereira.
 % (2) GIPEM, Universidad Nacional de Colombia - Sede Manizales.

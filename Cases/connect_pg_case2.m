@@ -2,7 +2,7 @@ function connect = connect_pg_case2
 %% ========================================================================
 % Input necessary to connect power and natural gas systems
 % =========================================================================
-% Authors:  (1) Wilson González Vanegas, M.Sc(c)
+% Authors:  (1) Wilson González Vanegas, M.Sc
 %           (2) Sergio García Marín, M.Sc(c)
 % (1) Automatic Research Group, Universidad Tecnológica de Pereira.
 % (2) GIPEM, Universidad Nacional de Colombia - Sede Manizales.

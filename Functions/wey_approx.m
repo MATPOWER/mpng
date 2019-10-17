@@ -21,7 +21,7 @@ function [f,df,d2f] = wey_approx(K,pi,pj,p_approx)
 %
 %   See also MPNG
 %
-%   Main author: Wilson González Vanegas M.Sc(c)
+%   Main author: Wilson González Vanegas M.Sc
 
 %   MPNG Matpower - Natural Gas
 %   Copyright (c) 2019 - v0.99alpha
