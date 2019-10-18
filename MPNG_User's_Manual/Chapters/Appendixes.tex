@@ -1,0 +1,203 @@
+\begin{appendix}
+	
+\chapter{Appendix A: Gas Case Data File Format}
+\label{app:gas_format}
+
+All details about the gas case (\code{mgc}) format are provided in the tables below. For the sake of convenience and code portability, \code{idx\_node} defines a set of constants (positive integers) to be used as named indices into the columns of the \code{node.info} matrix. Similarly, \code{idx\_well}, \code{idx\_pipe}, \code{idx\_comp}, and \code{idx\_sto} defines names for the columns in \code{well}, \code{pipe}, \code{comp}, and \code{sto}, respectively. On the other hand, \code{mgc\_PU} converts from real to per-unit (P.U) quantities, while \code{mgc\_REAL} converts from P.U to real values. Moreover, the \code{pbase}, \code{fbase}, and \code{wbase} fields are simple scalar values to define the gas system pressure, flow and power bases, respectively. 
+
+
+\begin{table}[!ht]	
+	\centering
+	\begin{threeparttable}
+		\caption{Node Information Data (\code{mgc.node.info})}
+		\label{tab:nodedata}
+		\footnotesize
+		\begin{tabular}{lcl}
+			\toprule
+			name & column & description \\
+			\midrule
+			\code{NODE\_I}	& 1	& node number (positive integer)\\	
+			\code{NODE\_TYPE}	& 2	& node type (1 = demand node, 2 = extraction node)\\
+			\code{PR}	& 3	& pressure [psia]\\
+			\code{PRMAX}	& 4	& maximum pressure [psia]\\
+			\code{PRMIN}	& 5	& minimum pressure [psia]\\
+			\code{OVP}	& 6	& over-pressure [psia]\\
+			\code{UNP}	& 7	& under-pressure [psia]\\
+			\code{COST\_OVP}	& 8	& over-pressure cost [\$/psia$^2$]\\
+			\code{COST\_UNP}	& 9	& under-pressure cost [\$/psia$^2$]\\
+			\code{GD}	& 10	& full nodal demand [MMSCFD]\tnote{\dag}\\
+			\code{NGD}	& 11	& number of different nodal users (positive integer)\\
+			\bottomrule
+		\end{tabular}
+		\begin{tablenotes}
+			\scriptsize
+			\item [\dag] {MMSCFD: Million Standard Cubic Feet Per Day.}
+		\end{tablenotes}
+	\end{threeparttable}
+\end{table}
+
+\begin{table}[!ht]	
+	\centering
+	\begin{threeparttable}
+		\caption{Well Information Data (\code{mgc.well})}
+		\label{tab:welldata}
+		\footnotesize
+		\begin{tabular}{lcl}
+			\toprule
+			name & column & description \\
+			\midrule
+			\code{WELL\_NODE}	& 1	& well number (positive integer)\\	
+			\code{G}	& 2	& well gas production [MMSCFD]\\
+			\code{PW}	& 3	& known well pressure [psia]\\
+			\code{GMAX}	& 4	& maximum gas injection [MMSCFD]\\
+			\code{GMIN}	& 5	& minimum gas injection [MMSCFD]\\
+			\code{WELL\_STATUS}	& 6	& well status (0 = disable, 1 = enable)\\
+			\code{COST\_G}	& 7	& well production cost [\$/MMSCFD]\\			
+			\bottomrule
+		\end{tabular}
+	\end{threeparttable}
+\end{table}
+
+\begin{table}[!ht]	
+	\centering
+	\begin{threeparttable}
+		\caption{Pipeline Information Data (\code{mgc.pipe})}
+		\label{tab:pipedata}
+		\footnotesize
+		\begin{tabular}{lcl}
+			\toprule
+			name & column & description \\
+			\midrule
+			\code{F\_NODE}	& 1	& from node number (positive integer)\\	
+			\code{T\_NODE}	& 2	& to node number (positive integer)\\
+			\code{FG\_O}	& 3	& known gas pipeline flow [MMSCFD]\\
+			\code{K\_O}	& 4	& Weymouth constant [MMSCFD/psia]\\
+			\code{DIAM}	& 5	& diameter [inches]\\
+			\code{LNG}	& 6	& longitude [km]\\
+			\code{FMAX\_O}	& 7	& maximum flow [MMSCFD]\\
+			\code{FMIN\_O}	& 8	& minimum flow [MMSCFD]\\
+			\code{COST\_O}	& 9	& pipeline transportation cost [\$/MMSCFD]\\			
+			\bottomrule
+		\end{tabular}
+	\end{threeparttable}
+\end{table}
+
+\begin{table}[!ht]	
+	\centering
+	\begin{threeparttable}
+		\caption{Compressor Information Data (\code{mgc.comp})}
+		\label{tab:compdata}
+		\footnotesize
+		\begin{tabular}{lcl}
+			\toprule
+			name & column & description \\
+			\midrule
+			\code{F\_NODE}	& 1	& from node number (positive integer)\\	
+			\code{T\_NODE}	& 2	& to node number (positive integer)\\
+			\code{TYPE\_C}	& 3	& compressor type (1 = power-driven, 2 = gas-driven)\\			
+			\code{FG\_C}	& 4	& gas flow through compressor [MMSCFD]\\
+			\code{PC\_C}	& 5	& consumed compressor power [MVA]\\
+			\code{GC\_C}	& 6	& gas consumed by the compressor [MMSCFD]\tnote{\dag}\\
+			\code{RATIO\_C}	& 7	& maximum compressor ratio\\
+			\code{B\_C}	& 8	& compressor-dependent constant [MVA/MMSCFD]\\	
+			\code{Z\_C}	& 9	& compresibility factor\\
+			\code{X}	& 10	& independent approximation coefficient [MMSCFD]\\
+			\code{Y}	& 11	& linear approximation coefficient [MMSCFD/MVA]\\
+			\code{Z}	& 12	& quadratic approximation coefficient [MMSCFD/MVA$^2$]\\
+			\code{FMAX\_C}	& 13	& maximum flow through compressor [MMSCFD]\\
+			\code{COST\_C}	& 14	& compressor cost [\$/MMSCFD]\\		
+			\bottomrule
+		\end{tabular}
+		\begin{tablenotes}
+			\scriptsize
+			\item [\dag] {Only relevant for a gas-driven compressor.}
+		\end{tablenotes}
+	\end{threeparttable}
+\end{table}
+
+\begin{table}[!ht]	
+	\centering
+	\begin{threeparttable}
+		\caption{Storage Information Data (\code{mgc.sto})}
+		\label{tab:storedata}
+		\footnotesize
+		\begin{tabular}{lcl}
+			\toprule
+			name & column & description \\
+			\midrule
+			\code{STO\_NODE}	& 1	& node number (positive integer)\\	
+			\code{STO}	& 2	& end of day storage level [MSCF]\tnote{\dag}\\
+			\code{STO\_0}	& 3	& initial storage level [MSCF]\\			
+			\code{STOMAX}	& 4	& maximum storage [MSCF]\\
+			\code{STOMIN}	& 5	& minimum storage [MSCF]\\
+			\code{FSTO}	& 6	& storage outflow difference [MMSCFD]\tnote{\ddag}\\
+			\code{FSTO\_OUT}	& 7	& storage outflow [MMSCFD]\\
+			\code{FSTO\_IN}	& 8	& storage inflow [MMSCFD]\\	
+			\code{FSTOMAX}	& 9	& maximum storage outflow difference [MMSCFD]\\
+			\code{FSTOMIN}	& 10	& minimum storage outflow difference [MMSCFD]\\
+			\code{S\_STATUS}	& 11	& storage status \\
+			\code{COST\_STO}	& 12	& storage cost [\$/MSCF]\\
+			\code{COST\_OUT}	& 13	& storage outflow cost [\$/MMSCFD]\\
+			\code{COST\_IN}	& 14	& storage inflow cost [\$/MMSCFD]\\		
+			\bottomrule
+		\end{tabular}
+	\begin{tablenotes}
+		\scriptsize
+		\item [\dag] {Volume in Million Standard Cubic Feet (MSCF).}
+		\item[\ddag] {Storage outflow minus storage inflow. See Section \ref{chap:formulation} for more details.}
+	\end{tablenotes}
+	\end{threeparttable}
+\end{table}
+
+
+
+\chapter{Appendix B: Interconnection Case Data File Format}
+\label{app:connect_format}
+
+A detailed description about the interconnection case (\code{connect}) is provided in Table \ref{tab:connectcase}. As seen, some additional information is required for the power system besides the input data given in the \matpower{}-case. For the sake of clarity and readability, we decided to include such an additional information in the interconnection case rather than the \matpower{}-case. In short, different periods that are modeled using an island-based approach are allowed for the power system, where each island defines the network conditions at each period. On the other hand, the power-driven compressors and the gas-fired generator units set the coupling features between the power and natural gas systems. The user could define any of these two coupling options as empty arrays when they are not to be considered for a specific analysis. See Section \ref{chap:examples} for details.
+
+
+\begin{table}[!ht]	
+	\centering
+	\begin{threeparttable}
+		\caption{Connection Data (\code{mpgc.connect})}
+		\label{tab:connectcase}
+		\footnotesize
+		\begin{tabular}{lcp{0.6\textwidth}}
+			\toprule
+			name & domain & description \\
+			\midrule
+			\code{.power.time}	& $\Real^{n_t}$	& vector to define the number of $n_t$ periods to be considered in the power system. Each component in the vector represents the number of hours for each period such that \code{sum(power.time)=24}\tnote{\dag}.\\	
+			\code{.power.demands}	& 	& \\
+			\hspace{2.5cm} \code{.pd}       & $\Real^{n_b\times n_t}$  & matrix to define the active power demand for $n_b$ buses over $n_t$ periods of time.\\
+			\hspace{2.5cm} \code{.qd}       & $\Real^{n_b\times n_t}$  & matrix to define the reactive power demand for $n_b$ buses over $n_t$ periods of time.\\
+			\code{.power.cost} & $\Real^+$ & non-supplied power demand cost.\\
+			\code{.power.sr} & $\Real^{n_a\times n_t}$ & matrix to define the spinning reserve of $n_a$ areas over $n_t$ periods.\\
+			\code{.power.energy} & $\Real^{n_{g_h}\times 2}$ & matrix to define the maximum energy available for the $n_{g_h}\subseteq n_g$ hydroelectric power generators, holding columns as follows:\tnote{\ddag}
+			\begin{tabular}{c @{ -- } p{0.4\textwidth}}
+				column 1  & generator number (positive integer)\\
+				column 2  & maximum energy for hydroelectric unit [MW$\cdot$h]\\
+			\end{tabular}\\	
+			\code{.interc.comp} & $\Real^{n_{c_p}\times 2}$ & index matrix to locate the $n_{c_p}\subseteq n_c$ power-driven compressors at some specific buses, holding columns as below\tnote{\S}:
+			\begin{tabular}{c @{ -- } p{0.4\textwidth}}
+				column 1  & compressor number (positive integer)\\
+				column 2  & bus number to locate the power-driven compressor (positive integer)\\
+			\end{tabular}\\	
+			\code{.interc.term} & $\Real^{n_{g_g}\times 3}$	& matrix to locate the $n_{g_g} \subseteq n_g$ gas-fired generators at some specific nodes and buses, holding the following columns:\tnote{\ddag}
+			\begin{tabular}{c @{ -- } p{0.4\textwidth}}
+				column 1  & bus number to locate the gas-fired unit as generator (positive integer)\\
+				column 2  & node number to locate the gas-fired unit as demand (positive integer)\\
+				column 3  & thermal efficiency of the gas-fired unit (positive real)\\
+			\end{tabular}\\			
+			\bottomrule
+		\end{tabular}
+		\begin{tablenotes}
+			\scriptsize
+			\item [\dag] {The gas temporal resolution is one \textit{day}, while the electrical resolution is in terms of \textit{hours}. See Section \ref{chap:formulation} for more details.}
+			\item [\ddag] {$n_g$ is the number of all power generator units installed in the power system.}
+			\item[\S] {$n_c$ is the number of all compressors installed in the gas system.} 
+		\end{tablenotes}
+	\end{threeparttable}
+\end{table}
+
+\end{appendix}

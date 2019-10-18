@@ -1,0 +1,66 @@
+\normalsize
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+\chapter{Introduction}
+\label{chap:intro}
+
+\section{Background}
+\label{sec:background}
+
+\mpng{} is a \matpower{}-based~\cite{zimmerman2011,matpower} package for solving optimal power and natural gas flow problems. \mpng{} uses the general user nonlinear constraints capability of \matpower{} to model the gas network taking into account gas-fired power generators, storage units, wells, power-and-gas-driven compressors, and nodes with stratified demand (different market segments get different priorities). The \mpng{} source code can be found at:
+
+\bigskip
+~~~~~~~~~~~~~~~~~~~~~~\url{\mpngurl}
+\bigskip
+
+\noindent \mpng{} was developed by Sergio~García-Marín~\footnote[1]{ Universidad Nacional de Colombia - sede Manizales.\label{foot:UNAL}} and Wilson~González-Vanegas~\footnote[2]{ Universidad Tecnológica de Pereira.\label{foot:UTP}} under the direction of Professor Carlos~E.~Murillo-S\'anchez~\footref{foot:UNAL}. The initial need for a \matpower{}-based power and natural gas optimal flow package was born out of a project aimed at analyzing the integrated operation of the Colombian power and natural gas systems.\footnote[3]{ Project number 1110-745-58696 funded by Colciencias, Colombia.}
+
+\section{License and Terms of Use}
+\label{sec:license}
+
+As a \matpower{}-based package, \mpng{} is distributed under the 3-clause BSD license~\cite{bsd}. The full text of the license can be found in the \code{LICENSE} file at the top level of the distribution or at \url{https://github.com/MATPOWER/mpng/blob/master/LICENSE} and reads as follows. 
+
+\begin{Notice}
+Copyright (c) 2019, individual contributors (see AUTHORS file for 
+details). All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+
+1. Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright
+notice, this list of conditions and the following disclaimer in the
+documentation and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its
+contributors may be used to endorse or promote products derived from
+this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+\end{Notice}
+
+\section{Citing MPNG}
+\label{sec:citing_MPNG}
+
+While not required by the terms of the license, we do request that publications derived from the use of \mpng{} explicitly acknowledge that fact by citing this manual~\cite{mpng2019}. In the near future, a journal publication to appear should be cited instead.
+
+\begin{quote}
+	\small
+	S.~García-Marín, W.~González-Vanegas, and C.~E. Murillo-Sánchez, ``MPNG: \matpower{}-Natural Gas,'' 2019.
+	[Online]. Available: \url{\mpngurl}
+\end{quote}

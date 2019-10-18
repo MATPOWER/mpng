@@ -1,0 +1,211 @@
+\documentclass[12pt,a4paper,oneside]{book}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{scrextend}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amsfonts,amssymb,bm,dsfont}	
+\usepackage{amsthm}                         
+\usepackage{graphics}                       
+\usepackage{graphicx}                       
+\usepackage[usenames]{color}
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}  
+\usepackage{xr-hyper}              
+\usepackage{geometry}                      
+\usepackage{rotating}                      
+\usepackage{enumerate}
+\usepackage{textcomp}
+\usepackage{cite}
+\usepackage{subcaption}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\pagestyle{plain} % Do not print headers
+\usepackage{epsfig}
+\usepackage[percent]{overpic}
+\usepackage{listings}
+\usepackage{footmisc}
+\usepackage[pdfstartview=FitB,pdfstartpage=1,backref=true]{hyperref}
+\hypersetup{
+	colorlinks=true,	
+	linkcolor={red},
+	citecolor={LimeGreen},
+	urlcolor={blue}}
+\usepackage{makeidx}
+\usepackage[nottoc,notlot,notlof]{tocbibind} 
+\usepackage{float}
+\usepackage{epsfig}
+\usepackage[percent]{overpic}
+\usepackage{listings}
+\usepackage{titlesec}
+\usepackage{fancyvrb}
+\usepackage{relsize}
+\usepackage{textcomp}
+\usepackage{threeparttable}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% Some configurations %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\titleformat{\chapter} % No print chapter headings
+{\Large\bfseries} 
+{}                
+{0pt}             
+{\huge}
+
+% define my verbatim environment, requires packages fancyvrb & relsize
+\renewcommand{\FancyVerbFormatLine}[1]{\makebox[2mm][l]{}#1}
+\DefineVerbatimEnvironment%
+{Code}{Verbatim}
+{fontsize=\relsize{-1.5},
+	samepage=true,
+	frame=single}
+
+\newcommand{\codeq}[1]{\code{\textquotesingle{}#1\textquotesingle}}  % requires package textcomp
+
+% define my verbatim environment, requires packages fancyvrb & relsize
+\renewcommand{\FancyVerbFormatLine}[1]{\makebox[2mm][l]{}#1}
+\DefineVerbatimEnvironment%
+{Notice}{Verbatim}
+{fontsize=\relsize{-1.5},
+	samepage=true,
+	xleftmargin=10mm,
+	framesep=5mm,
+	frame=single}
+	
+\usepackage{paralist} %for the environment compactitem with less space between items
+\let\itemize\compactitem
+  \let\enditemize\endcompactitem
+  \let\enumerate\compactenum
+  \let\endenumerate\endcompactenum
+  \let\description\compactdesc
+  \let\enddescription\endcompactdesc
+  \pltopsep=\medskipamount
+  \plitemsep=1pt
+  \plparsep=1pt
+
+\setkomafont{labelinglabel}{\normalfont}%{\ttfamily}
+\setkomafont{labelingseparator}{\normalfont}
+\makeatletter
+\renewenvironment{labeling}[2][]{%
+  \def\sc@septext{#1}%
+  \list{}{\settowidth{\labelwidth}{{%
+        \usekomafont{labelinglabel}{#2%
+          \usekomafont{labelingseparator}{\sc@septext}}%
+      }}%
+    \leftmargin\labelwidth \advance\leftmargin by \labelsep
+    \let\makelabel\labelinglabel
+    \itemsep-4pt% <- Here
+  }%
+}{%
+  \endlist
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% Some new commands %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\mpng}[0]{{\tt MPNG}}
+\newcommand{\mpgc}[0]{{\tt MPGC}}
+\newcommand{\mpngpath}[1]{\textsf{\textsl{{\relsize{-1.0}\textless{}\mbox{MPNG}\textgreater{}}}}\code{{#1}}}
+\newcommand{\mpnggitpath}[1]{\textsf{\textsl{{\relsize{-1.0}\textless{}\mbox{\code{E:\textbackslash GITHUB\textbackslash MPNG}}\textgreater{}}}}\code{{#1}}}  
+\newcommand{\mpngcasepath}[1]{\textsf{\textsl{{\relsize{-1.0}\textless{}\mbox{MPNG/Cases}\textgreater{}}}}\code{{#1}}} 
+\newcommand{\mpngexamplepath}[1]{\textsf{\textsl{{\relsize{-1.0}\textless{}\mbox{MPNG/Examples}\textgreater{}}}}\code{{#1}}}
+\newcommand{\mpngurl}[0]{https://github.com/MATPOWER/mpng.git}
+\newcommand{\mpngversion}[0]{0.99a}
+\newcommand{\matlab}[0]{{\sc Matlab}}
+\newcommand{\matpower}[0]{{\sc Matpower}}
+\newcommand{\pserc}[0]{{\sc PSerc}}
+\newcommand{\doi}[1]{doi:~\href{https://doi.org/#1}{#1}}
+\newcommand{\Real}{\mathbb{R}}
+\newcommand{\code}[1]{{\relsize{-0.5}{\tt{{#1}}}}}  % requires package relsize
+% Note: to get straight single quotes in \code you have to use one of the
+%       following: \char13 \char'15 \char"0D \textquotesingle
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% Main document  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\pagenumbering{roman}  
+\begin{document}
+	\include{Chapters/Front_matter}
+	\addtocontents{toc}{\vspace{-4ex}}
+	\tableofcontents                            
+	\listoffigures
+	\listoftables	
+	\include{Chapters/Introduction}
+	\include{Chapters/Getting_started}
+	\include{Chapters/Natural_Gas_Flow}
+	\include{Chapters/Formulation}
+	\include{Chapters/Examples}
+	\include{Chapters/Acknowledgements}
+	\part*{Appendix}
+	\include{Chapters/Appendixes}	
+	
+	\clearpage	
+	\begin{thebibliography}{99}
+	\bibitem{zimmerman2011}
+	R.~D. Zimmerman, C.~E. Murillo-S{\'a}nchez, and R.~J. Thomas, ``\matpower{}: Steady-State Operations, Planning and Analysis Tools for Power Systems Research and Education,'' \emph{Power Systems, IEEE Transactions on}, vol.~26, no.~1, pp.~12--19, Feb.~2011.
+	\doi{10.1109/TPWRS.2010.2051168}
+	
+	\bibitem{matpower}
+	R.~D. Zimmerman, C.~E. Murillo-S{\'a}nchez (2019). \matpower{}\\~
+	[Software]. Available: \url{https://matpower.org}\\
+	\doi{10.5281/zenodo.3236535}
+	
+	\bibitem{bsd}
+	The BSD 3-Clause License. [Online]. Available: \url{https://opensource.org/licenses/BSD-3-Clause}.
+	
+	\bibitem{mpng2019}
+	S.~García-Marín, W.~González-Vanegas, and C.~E. Murillo-Sánchez, ``MPNG:\matpower{}-Natural Gas,'' 2019.
+	[Online]. Available: \url{\mpngurl}
+		
+	\bibitem{matpower_manual}
+	\matpower{} User's Manual. [Online]. Available: \url{https://matpower.org/doc/manuals/}.	
+	
+	\bibitem{Woldeyohannes2011}
+	Abraham~Debebe Woldeyohannes and Mohd Amin~Abd Majid.
+	\newblock Simulation model for natural gas transmission pipeline network
+	system.
+	\newblock {\em Simulation Modelling Practice and Theory}, 19(1):196--212, 2011.\\
+	\doi{10.1016/j.simpat.2010.06.006}	
+	
+	\bibitem{Osiadacz2001}
+	Andrzej~J. Osiadacz and Maciej Chaczykowski.
+	\newblock Comparison of isothermal and non-isothermal pipeline gas flow models. 
+	\newblock {\em Chemical Engineering Journal}, 81(1):41 -- 51, 2001.\\
+	\doi{10.1016/S1385-8947(00)00194-7}	
+	
+	\bibitem{Banda2006}
+	Mapundi~K. Banda, Michael Herty, Axel Klar.
+	\newblock Gas flow in pipeline networks.
+	\newblock {\em Networks \& Heterogeneous Media}, 1(1): 41 -- 56, 2006.\\
+	\doi{10.3934/nhm.2006.1.41} 
+	
+	\bibitem{Wolf2000}
+	Daniel de Wolf and Yves Smeers.
+	\newblock The Gas Transmission Problem Solved by an Extension of the Simplex Algorithm.
+	\newblock {\em Management Science}, 59(1): 1454 -- 1465, 2000.\\
+	\doi{10.1287/mnsc.46.11.1454.12087}
+	
+	\bibitem{Shabanpour2016}
+	Amin Shabanpour-Haghighi and Ali Reza Seifi.
+	\newblock Effects of district heating networks on optimal energy flow of multi-carrier systems.
+	\newblock {\em Renewable and Sustainable Energy Reviews}, 46(11): 379 -- 387, 2016.\\
+	\doi{10.1016/j.rser.2015.12.349}
+		
+	\bibitem{Chen2017}
+	S. Cheng, Z. Wei, G. Sun, K.W. Cheung, Y. Sun.
+	\newblock Multi-Linear Probabilistic Energy Flow Analysis of Integrated Electrical and Natural-Gas Systems.
+	\newblock {\em IEEE Transactions on Power Systems}, 32(3): 1970 -- 1979, 2017.\\
+	\doi{10.1109/TPWRS.2016.2597162}
+	
+	\bibitem{Midthun2007}
+	K. T. Midhunt.
+	\newblock Optimization models for liberalized natural gas markets.
+	\newblock {\em Norwegian University of Science and Technology, Faculty of Social Science and Technology Management, Department of Sociology	and Political Science}, 2007.	
+	
+	\bibitem{Cui2016}
+	H. Cui., F. Li., Q. Hu., L. Bai., and X. Fang.
+	\newblock Day-ahead coordinated operation of utility-scale electricity and natural gas networks considering demand response based virtual power plants.
+	\newblock {\em Applied Energy}, 176: 183 -- 195, 2016.\\
+	\doi{10.1016/j.apenergy.2016.05.007}
+	
+    \end{thebibliography}	
+\end{document}

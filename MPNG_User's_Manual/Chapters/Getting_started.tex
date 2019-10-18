@@ -1,0 +1,149 @@
+\chapter{Getting started}
+\label{chap:get_started}
+
+\section{System Requirements}
+\label{sec:requirements}
+
+\mpng{} has the following software requirements:
+
+\begin{itemize}
+	\item[\checkmark] \matlab{}\textsuperscript{\tiny \textregistered} version 7.3 (R2016b) or later.\footnote{\matlab{} is available from The MathWorks, Inc. (\url{https://www.mathworks.com/}). An R2016b or later \matlab{} version is required as the \mpng{} code uses \matlab{}-files with multiple function declarations.}
+	
+	\item[\checkmark] \matpower{} version 7.0 or later.\footnote{\matpower{} is available thanks to the Power Systems Engineering Research Center (\pserc) (\url{https://matpower.org}). \mpng{} requires \matpower{} version 7.0 or later to be properly installed.}
+\end{itemize}
+
+\section{Getting \mpng{}}
+\label{sec:get_mpng}
+
+You can obtain the \emph{current development version} from the \matpower{} Github repository: \url{https://github.com/MATPOWER/mpng.git}.
+
+\section{Installation}
+\label{sec:install}
+
+Installation and use of \mpng{} requires familiarity with basic operations of \matlab{} and \matpower{}. In short, installing \mpng{} is as simple as adding all the distribution files to the \matlab{} path. The user could either proceed manually with such an addition, or run the quick installer released with the package by opening \matlab{} at the \mpngpath{} directory and typing:\\
+
+\code{~~~~~~~~~~~~~~~~~~~~~~~~~~~~install\_mpng}\\
+
+\noindent A successful installation of a distribution located at the directory \mpnggitpath{} looks like:
+
+\begin{Notice}
+>> install_mpng
+
+---------- MPNG installation routine ---------- 
+
+Adding to the path: E:\GITHUB\MPNG\Functions
+Adding to the path: E:\GITHUB\MPNG\Cases
+Adding to the path: E:\GITHUB\MPNG\Examples
+
+MPNG has been successfully installed!	
+\end{Notice} 
+
+\section{Running a Simulation}
+\label{sec:simulate}
+
+The primary functionality of \mpng{} is to solve optimal power and natural gas flow problems. Running a simulation using \mpng{} requires (1) preparing the natural gas input data, (2) specifying the interconnection input data to couple the gas network to the power system, (3) invoking the function to run the integrated simulation and (4) accessing and viewing the results.
+
+The classical \matpower{} input data is a ``\matpower{}-case'' struct denoted by the variable \code{mpc}\cite{matpower_manual}. To integrate the power and natural gas systems we use the extended Optimal Power Flow (OPF) capability of \matpower{}. Namely, we model the natural gas system and its connection to the power system via general user nonlinear constraints. Then, \mpng{} uses an extended ``\matpower{}-gas case'' struct denoted by the variable \code{mpgc}. In particular, \code{mpgc} is a traditional \matpower{}-case struct with two additional fields, \code{mpgc.mgc} and \code{mpgc.connect} standing for the natural gas case and interconnection case, respectively.
+
+\subsection{Preparing the Natural Gas Case}
+\label{subsec:gas_case}
+
+The input data of the natural gas system are specified in a set of matrices arranged in a \matlab{} struct that we refer to as the ``gas case'' (\code{mpgc.mgc}). The structure of such a case is formatted in a similar way to the \matpower{}-case but holding the natural gas information that comprises nodes (including gas demand), wells, pipelines, compressors, and storage units. See Appendix~\ref{app:gas_format} for more details about the gas case structure.
+
+\subsection{Connecting the Gas Case to the \matpower{} Case}
+\label{subsec:connect_case}
+
+The input data regarding the connection between the power and natural gas systems are declared in a set of matrices packaged as a \matlab{} struct which we call ``interconnection case'' (\code{mpgc.connect}). The structure of this case contains specific information about coupling elements like gas-fired power generators and power-and-gas-driven compressors, according to the optimization model described in section~\ref{chap:formulation}. See Appendix~\ref{app:connect_format} for more details about the interconnection case structure.
+
+\subsection{Solving the Optimal Power\&Gas Flow}
+\label{subsec:solve_OPGF}
+
+Once the \matpower{}-gas case is properly formatted, the solver can be invoked using the (mandatory) \code{mpgc} struct and the traditional (optional) \matpower{} options struct \code{mpopt}. The calling syntax at the \matlab{} prompt could be one of the following:  
+
+\begin{Code}
+>> mpng(mpgc);
+>> mpng(mpgc,mopt);
+>> results = mpng(mpgc);	
+>> results = mpng(mpgc,mpopt);
+\end{Code}
+
+We have included a description for all of \mpng{}'s functions to work properly with the built-in \code{help} command. For instance, to get the help for \code{mpng}, type:
+
+\begin{Code}
+>> help mpng
+\end{Code}
+
+\subsection{Accessing the Results}
+\label{subsec:view_results}
+
+By default, the results of the optimization run are pretty-printed on the screen, displaying the traditional \matpower{} results for the power system\footnote{Including the non-supplied power demand as described in the formulation introduced in section \ref{chap:formulation}.} along with a gas system summary, node data, pipeline data, compressor data, storage data, and the interconnection results concerning gas-fired generators data.   
+
+The optimal results are also stored in a \code{results} struct packaged as the default \matpower{} superset of the input case struct \code{mpgc}. Table \ref{tab:results_struct} shows the solution values included in the \code{results}.
+
+\begin{table}[!ht]
+	%\renewcommand{\arraystretch}{1.2}
+	\centering
+	\begin{threeparttable}
+		\caption{Power and Gas Flow Results}
+		\label{tab:results_struct}
+		\footnotesize
+		\begin{tabular}{ll}
+			\toprule
+			name & description \\
+			\midrule
+			\code{results.success}	& success flag, 1 = succeeded, 0 = failed	\\
+			\code{results.et}	& computation time required for solution	\\
+			\code{results.iterations}	& number of iterations required for solution	\\
+			\code{results.order}	& see \code{ext2int} help for details on this field	\\
+			\code{results.bus(:, VM)}\tnote{\S}	& bus voltage magnitudes	\\
+			\code{results.bus(:, VA)}	& bus voltage angles	\\
+			\code{results.gen(:, PG)}	& generator real power injections	\\
+			\code{results.gen(:, QG)}\tnote{\S}	& generator reactive power injections	\\
+			\code{results.branch(:, PF)}	& real power injected into ``from'' end of branch	\\
+			\code{results.branch(:, PT)}	& real power injected into ``to'' end of branch	\\
+			\code{results.branch(:, QF)}\tnote{\S}	& reactive power injected into ``from'' end of branch	\\
+			\code{results.branch(:, QT)}\tnote{\S}	& reactive power injected into ``to'' end of branch	\\
+			\code{results.f}	& final objective function value	\\
+			\code{results.x}	& final value of optimization variables (internal order)	\\
+			\code{results.om}	& OPF model object\tnote{\dag}	\\
+			\code{results.bus(:, LAM\_P)}	& Lagrange multiplier on real power mismatch	\\
+			\code{results.bus(:, LAM\_Q)}	& Lagrange multiplier on reactive power mismatch	\\
+			\code{results.bus(:, MU\_VMAX)}	& Kuhn-Tucker multiplier on upper voltage limit	\\
+			\code{results.bus(:, MU\_VMIN)}	& Kuhn-Tucker multiplier on lower voltage limit	\\
+			\code{results.gen(:, MU\_PMAX)}	& Kuhn-Tucker multiplier on upper $P_g$ limit	\\
+			\code{results.gen(:, MU\_PMIN)}	& Kuhn-Tucker multiplier on lower $P_g$ limit	\\
+			\code{results.gen(:, MU\_QMAX)}	& Kuhn-Tucker multiplier on upper $Q_g$ limit	\\
+			\code{results.gen(:, MU\_QMIN)}	& Kuhn-Tucker multiplier on lower $Q_g$ limit	\\
+			\code{results.branch(:, MU\_SF)}	& Kuhn-Tucker multiplier on flow limit at ``from'' bus	\\
+			\code{results.branch(:, MU\_ST)}	& Kuhn-Tucker multiplier on flow limit at ``to'' bus	\\
+			\code{results.mu}	& shadow prices of constraints\tnote{\ddag}	\\
+			\code{results.g}	& (optional) constraint values	\\
+			\code{results.dg}	& (optional) constraint 1st derivatives	\\
+			\code{results.raw}	& raw solver output in form returned by MINOS, and more\tnote{\ddag}	\\
+			\code{results.var.val}	& final value of optimization variables, by named subset\tnote{\ddag}	\\
+			\code{results.var.mu}	& shadow prices on variable bounds, by named subset\tnote{\ddag}	\\
+			\code{results.nle}	& shadow prices on nonlinear equality constraints, by named subset\tnote{\ddag}	\\
+			\code{results.nli}	& shadow prices on nonlinear inequality constraints, by named subset\tnote{\ddag}	\\
+			\code{results.lin}	& shadow prices on linear constraints, by named subset\tnote{\ddag}	\\
+			\code{results.cost}	& final value of user-defined costs, by named subset\tnote{\ddag}	\\
+			\bottomrule
+		\end{tabular}
+		\begin{tablenotes}
+			\scriptsize
+			\item [\S] {AC power flow only.}
+			\item [\dag] {See help for \code{opf\_model} and \code{opt\_model} for more details.}
+			\item [\ddag] {See help for \code{opf} for more details.}
+		\end{tablenotes}
+	\end{threeparttable}
+\end{table}
+
+
+
+
+
+
+
+
+
+
+
