@@ -1,17 +1,17 @@
 \chapter{Natural Gas Flow}
 \label{chap:fund_NGF}
 
-The steady-state Natural Gas Flow (NGF) problem for transmission networks aims to find the value for a set of state-variables that satisfy the flow balance in all nodes. We show how the NGF can be derived in a similar way as the Power Flow (PF) problem is introduced for power systems. In  particular, a set of nonlinear equations must be solved where the definition of the state-variables depends on the selected models for all the elements of the system. In this section, we derive the NGF problem and introduce the modeling for the main elements considered in \mpng{}: nodes, wells, pipelines, compressors, and storage units.
+The steady-state Natural Gas Flow (NGF) problem for transmission networks is aimed at finding the value for a set of state-variables that satisfy the flow balance in all nodes. We show how the NGF can be derived in a similar way as the Power Flow (PF) problem is introduced for power systems. In  particular, a set of nonlinear equations must be solved where the definition of the state-variables depends on the selected models for all of the elements of the system. In this section, we derive the NGF problem and introduce the modeling for the main elements considered in \mpng{}: nodes, wells, pipelines, compressors, and storage units.
 
 \section{Modeling}
 \label{sec:gas_modeling}
 
-An exact description of the natural gas flow in transmission networks requires applying the laws of fluid mechanics and thermodynamics \cite{Osiadacz2001}. Complex analyzes provide an accurate description for variables such as temperature, pressure, flow, adiabatic head, among others, for all time instants. However, as the primary concern of \matpower{} (and so does \mpng{}) is the system operation in steady-state, we define some models to describe the main elements of the default natural gas network, as explained below. 
+An exact description of the natural gas flow in transmission networks requires applying the laws of fluid mechanics and thermodynamics \cite{Osiadacz2001}. Complex analyses provide an accurate description for variables such as temperature, pressure, flow, adiabatic head, among others, for all time instants. However, as the primary concern of \matpower{} (and of \mpng{}) is the system operation in steady-state, we define some models to describe the main elements of the default natural gas network, as explained below. 
 
 \subsection{Nodes}
 \label{subsec:nodes}
 
-By definition, a node is the location of a natural gas system where one or more elements are connected. Users are commonly associated with a node where a stratified demand is modeled as different market segments that get different priorities. Figure \ref{fig:node} shows the $i$-th node of a gas network with some traditional markets connected to form the nodal demand $f_{dem}=\sum_{j} f_{\text{dem}_j}$. The primary variable related to a node is pressure $p_i$.
+By definition, a node is the location of a natural gas system where one or more elements are connected. Users are commonly associated with a node where a stratified demand is modeled as different market segments that get different priorities. Figure \ref{fig:node} shows the $i$-th node of a gas network with some traditional markets connected to form the nodal demand $f_{dem}=\sum_{j} f_{\text{dem}_j}$. The primary variable related to a node is pressure $p_i$, although, as explained later, the actual state variable used in \mpng{} is the quadratic pressure. 
 
 \begin{figure}[!ht]
 	\centering
@@ -24,7 +24,7 @@ By definition, a node is the location of a natural gas system where one or more 
 \subsection{Wells}
 \label{subsec:wells}
 
-Natural gas is extracted from deep underground and injected into the system in wells. Depending on the well capacity, injection could be made either at constant pressure, where a control system regulates the amount of gas flow such that pressure behaves constant, or at constant flow, where pressure is adjusted such that injected flow remains constant. Figure \ref{fig:well} shows a well connected to the $i$-th node whose operation depends on two principal variables, the injected gas flow $f_{inj}^w$, and the nodal pressure $p_i$.
+Natural gas is extracted from deep underground and injected into the system from wells. Depending on the well capacity, the injection can be made either at constant pressure, where a control system regulates the amount of gas flow such that pressure behaves constant, or at constant flow, where pressure is adjusted such that injected flow remains constant. Figure \ref{fig:well} shows a well connected to the $i$-th node whose operation depends on two principal variables, the injected gas flow $f_{inj}^w$, and the nodal pressure $p_i$.
 
 \begin{figure}[!ht]
 	\centering
@@ -36,7 +36,7 @@ Natural gas is extracted from deep underground and injected into the system in w
 \subsection{Pipelines}
 \label{subsec:pipelines}
 
-In general, the flow of gas through pipes is studied using the energy equation of fluid mechanics~\cite{Banda2006}. However, in practice, the relationship between the gas flow in the pipe and the upstream and downstream pressures can be described by various equations. The Weymouth's general flow equation is the frequent option in gas industry applications to model the steady-state flow in pipes in transmission networks~\cite{Woldeyohannes2011}. Figure \ref{fig:pipeline} shows a pipeline $o$ whose gas flow from the node $i$ to the node $j$ is represented by $f_{ij}^o$. The Weymouth's equations states the relationship between $f_{ij}^o$, $p_i$, and $p_j$ in the following form:
+In general, the flow of gas through pipes is studied using the energy equation of fluid mechanics~\cite{Banda2006}. However, in practice, the relationship between the gas flow in the pipe and the upstream and downstream pressures can be described by various equations. The Weymouth's general flow equation is a frequent choice in gas industry applications to model the steady-state flow in pipes in gas transports networks~\cite{Woldeyohannes2011}. Figure \ref{fig:pipeline} shows a pipeline $o$ whose gas flow from node $i$ to node $j$ is represented by $f_{ij}^o$. The Weymouth equation states the relationship between $f_{ij}^o$, $p_i$, and $p_j$ in the following form:
 
 \begin{equation}
 	\label{eq:Weymouth_eq1}
@@ -92,7 +92,7 @@ As seen, the gas flow through a pipeline is a nonlinear function of the quadrati
 
 \subsection{Compressors}
 \label{subsec:compressors}
-As seen in Equation \ref{eq:Wymouth_eq_2}, there exists a downstream pressure drop when transporting large flows through pipes caused by energy losses. Analogous to the transformer in power systems, compressors are installed in the gas network to compensate pressure drops. Figure \ref{fig:compressor} shows a compressor $c$ that increases the discharge pressure $p_j$ with respect to the suction pressure $p_i$ by compressing gas in a way that a flow $f_{ij}^c$ passes through it. The power demanded by the compressor, $\psi_c$, states the relationship between the flow and the suction and discharge pressures in the following way~\cite{Shabanpour2016}:
+As seen in Equation \ref{eq:Wymouth_eq_2}, there exists a downstream pressure drop when transporting large flows through pipes caused by energy losses. Analogous to the transformer in power systems, compressors are installed in the gas network to compensate pressure drops. Figure \ref{fig:compressor} shows a compressor $c$ that increases the discharge pressure $p_j$ with respect to the suction pressure $p_i$ by compressing gas in a way that a flow $f_{ij}^c$ passes through it. Assuming an adiabatic process, the power demanded by the compressor, $\psi_c$, states the relationship between the flow and the suction and discharge pressures in the following way~\cite{Shabanpour2016}:
 
 \begin{equation}
 	\label{eq:comp_flow}
@@ -117,7 +117,7 @@ Moreover, the compressor ratio, $\beta_c$, is defined as below:
 	\vspace{0.3cm}
 \end{equation}
 
-In general, there exists two types of compressors: the power-driven compressors, whose demanded energy is supplied from the power system, and the gas-driven compressors, that requires additional gas to operate. In the latter, the additional gas demanded at the suction node, $\phi_c$, can be expressed as a quadratic function of the power as~\cite{Chen2017}:
+In general, there exist two types of compressors: the power-driven compressors, whose demanded energy is supplied from the power system, and the gas-driven compressors, that require additional gas to operate. In the latter, the additional gas demanded at the suction node, $\phi_c$, can be expressed as a quadratic function of the power as~\cite{Chen2017}:
 
 \begin{equation}
 	\label{eq:f_cons_gas_comp}
@@ -127,12 +127,12 @@ In general, there exists two types of compressors: the power-driven compressors,
 
 where $x,y,z \in \Real$.
 
-Notice that the gas flow through a compressor (and so does the consumed flow for a gas-driven compressor) is a function of the consumed power and the quadratic suction and discharge pressures, that is, $f_{ij}^c=h(\pi_i,\pi_j,\psi_c)$. 
+Notice that the gas flow through a compressor (as well as the consumed flow for a gas-driven compressor) is a function of the consumed power and the quadratic suction and discharge pressures, that is, $f_{ij}^c=h(\pi_i,\pi_j,\psi_c)$. 
 
 \subsection{Storage Units}
 \label{subsec:sto_units}
 
-The possibility of storing natural gas provides flexibility with regards to production and transportation decisions~\cite{Midthun2007}. A storage unit is a reservoir that allows both storing and injection of gas. Figure \ref{fig:storage} shows a storage unit located at node $i$ with an associated gas flow $f_s$ that could be either an \textit{outflow} in the case of injection to the system or an \textit{inflow} in the case of storing operation. Then, in a node with a specific demand and injection, the (known) value of $f_s$ could be added to the nodal demand when it is a storage inflow or could be summed to the injection flow of a constant-flow well when it is a storage outflow.
+The possibility of storing natural gas provides flexibility with regards to production and transportation decisions~\cite{Midthun2007}. A storage unit is a reservoir that allows both storing from and injecting gas to the gas network. Figure \ref{fig:storage} shows a storage unit located at node $i$ with an associated gas flow $f_s$ that could be either an \textit{outflow} in the case of injection to the system or an \textit{inflow} in the case of a storing operation. Then, in a node with a specific demand and injection, the (known) value of $f_s$ could be added to the nodal demand when it is a storage inflow or could be summed to the injection flow of a constant-flow well when it is a storage outflow.
 
 \begin{figure}[!ht]
 	\centering
@@ -172,7 +172,7 @@ As a consequence, we can rewrite the balance equation applied at node $i$ in a f
 	\vspace{0.3cm}
 \end{equation}
 
-In practice, for a given gas network with $n_n$ nodes, $n_c$ compressors, and $n_{w_p}$ constant-pressure wells, the application of the balance equation for all nodes will produce a set of $n_n$ nonlinear equations with a number of $(n_n-n_{w_p})+n_c+n_{w_p} = n_n+n_c$ unknown variables. To get a squared system with the same number of equations and variables, the $n_c$ missing equations are obtained from the compressor ratios of all compressors. Then, the NGF problem can be formulated as follows:
+In practice, for a given gas network with $n_n$ nodes, $n_c$ compressors, and $n_{w_p}$ constant-pressure wells, the application of the balance equation for all nodes will produce a set of $n_n$ nonlinear equations with a number of $(n_n-n_{w_p})+n_c+n_{w_p} = n_n+n_c$ unknown variables. To get a square system with the same number of equations and variables, the $n_c$ missing equations are obtained from the compressor ratios of all compressors. Then, the NGF problem can be formulated as follows:
 
 \begin{equation}
 	\label{eq:F_i=0}

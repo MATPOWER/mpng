@@ -5,9 +5,9 @@ In this section, we provide some examples to show the main capabilities of \mpng
 \section{9-bus 8-node Power\&Gas System}
 \label{sec:8-9_gas_power}
 
-We analyze an interconnected system formed by a power system of nine buses  and a natural gas network of eight nodes. As shown in Figure \ref{fig:example1}, they are coupled throughout a gas-fired power plant and a power-driven compressor working with energy coming from the power system. This example aims to show the primary functionalities of \mpng{} as well as how to properly run a simulation. 
+We analyze an interconnected system formed by a power system of nine buses  and a natural gas network of eight nodes. As shown in Figure \ref{fig:example1}, they are coupled through a gas-fired power plant and a power-driven compressor working with energy coming from the power system. This example aims aimed at showing the primary functionalities of \mpng{} as well as how to properly run a simulation. 
 
-The power system consists of the classic \matpower{} nine-bus case, with some modifications thought to fit the requirements of the interconnected network. Some of these changes are related to bus areas, line capability constraints, maximum power generation, and generation costs. For the gas system, we created an eight-node looped case with two compressors connected in series and a loop formed by three pipelines. Tables \ref{tab:ex1_power} and \ref{tab:ex1_gas} summarize the systems information. 
+The power system consists of the classic \matpower{} nine-bus case, with some modifications in order to meet the requirements of the interconnected network. Some of these changes are related to bus areas, line capability constraints, maximum power generation, and generation costs. For the gas system, we created an eight-node looped case with two compressors connected in series and a loop formed by three pipelines. Tables \ref{tab:ex1_power} and \ref{tab:ex1_gas} summarize the system information. 
 
 \begin{figure}[!ht]
 	\centering
@@ -80,7 +80,7 @@ The power system consists of the classic \matpower{} nine-bus case, with some mo
 \end{threeparttable}
 \end{table}
 
-Initially, for the sake of convenience and code portability, we define the constants for the power system\footnote{The default \matpower{} function \code{define\_constants} allows an straightforward indexing of all information via integer variables. See \cite{matpower_manual} for details.}. Similarly, we define constants to easily access the natural gas and interconnection cases, as follows:
+Initially, for the sake of convenience and code portability, we define the column pointers (constants) for the power system\footnote{The default \matpower{} function \code{define\_constants} allows an straightforward indexing of all information via integer variables. See \cite{matpower_manual} for details.}. Similarly, we define column pointers to easily access the natural gas and interconnection cases, as follows:
 
 \begin{Code}
 >> define_constants        % power system constants
@@ -140,7 +140,7 @@ As shown in Figure \ref{fig:example1}, both classes of compressors where include
 >> mgc.comp(2,TYPE_C) = COMP_P;              % concordance with gas case
 \end{Code}
 
-Besides, a gas-fired power plant was considered, and its information must be included in the connection struct holding consistency with the gas and power cases:
+Additionally, a gas-fired power plant was considered, and its information must be included in the connection struct in a manner consistent with the gas and power cases:
 
 \begin{Code}
 >> connect.interc.term = zeros(1,3);       % initialize (one gas-fired plant)
@@ -149,7 +149,7 @@ Besides, a gas-fired power plant was considered, and its information must be inc
 >> connect.interc.term(1,EFF) = 10e-3;     % power plant eff. (MMSCFD/MWh)
 \end{Code}
 
-At this point, we have set all the inputs required to model the different aspects that we pretended for the interconnected power and natural gas system. Now, we need to put all together in a single struct. We call this struct \code{mpgc}, which represents the combination between \code{mpc}, \code{mgc}, and \code{connect}, as shown below:
+At this point, we have set all the inputs required to model the different aspects that we intended for the interconnected power and natural gas system. Now, we need to put all together in a single struct. We call this struct \code{mpgc}, which represents the combination between \code{mpc}, \code{mgc}, and \code{connect}, as shown below:
 
 \begin{Code}
 >> mpgc = mpc;                         % initialize MPNG case
@@ -164,6 +164,8 @@ Finally, we can run the simulation by calling \mpng{} using the \code{mpgc} case
 \end{Code}
 
 The optimal solution values are saved as the \code{results} struct.  See Section \ref{subsec:view_results} for more details about the simulation \code{results}. By default, the \code{results} are pretty-printed. The information related to the natural gas network after running the simulation looks like:\\
+
+\vspace{-0.3cm}
 
 %\begin{tiny}
 %\begin{Code}
@@ -305,7 +307,7 @@ The optimal solution values are saved as the \code{results} struct.  See Section
 \section{48-node Looped Natural Gas Network}
 \label{sec:48_gas}
 
-In this example, we show the capability of \mpng{} for solving looped natural gas systems. We highlight that \mpng{} is also a tool for analyzing independent natural gas networks. In particular, we can use a virtual two-bus power system as the power case just to allow \matpower{} to work properly. The information for the 48-node gas network considered in this example was provided by Cheng at al.~\cite{Chen2017}, whose topology is shown in Figure \ref{fig:ng48}.\\
+In this example, we show the capability of \mpng{} for solving looped natural gas systems. We highlight that \mpng{} is also a tool for analyzing independent natural gas networks. In particular, we can use a virtual two-bus power system as the power case just to allow \matpower{} to work properly. The information for the 48-node gas network considered in this example was provided by Cheng et al.~\cite{Chen2017}, whose topology is shown in Figure \ref{fig:ng48}.\\
 
 \begin{figure}[H]
 \centering
@@ -332,7 +334,7 @@ mpgc.connect = connect;         % adding connection struct
 res_base = mpng(mpgc,mpopt);         % running MPNG
 \end{Code}
 
-Now, we modify the base case to obtain the \textit{contingency case}. Specifically, we reduce the maximum injection capability of one of the wells located at the network center (node 20), forcing the system to extract natural gas from somewhere else to commit the gas demand. Moreover, we set pipeline number 38 (the one that connects nodes 43 and 44) to be out of service, eliminating one of the gas network loops located downstream. This contingency forces the system to supply the demands of nodes 30 to 33 through only two paths, which might cause over-pressures and pipeline congestion. 
+Now, we modify the base case to obtain the \textit{contingency case}. Specifically, we reduce the maximum injection capability of one of the wells located at the network center (node 20), forcing the system to extract natural gas from somewhere else to fulfill the gas demand. Moreover, we set pipeline number 38 (the one that connects nodes 43 and 44) to be out of service, eliminating one of the gas network loops located downstream. This contingency forces the system to supply the demands of nodes 30 to 33 through only two paths, which might cause over-pressures and pipeline congestion. 
 
 To simulate these contingencies, we start again by loading the 48-node gas case. Then, we set the reduced maximum injection for well 9. For eliminating the mentioned pipeline, we remove its whole corresponding row in the field \code{mgc.pipe}. Once the contingencies are properly modeled, we put the entire system together and finally rerun the program:
 

@@ -4,7 +4,7 @@
 \section{System Requirements}
 \label{sec:requirements}
 
-To use \mpng{} you will need the following system requirements:
+\mpng{} has the following software requirements:
 
 \begin{itemize}
 	\item[\checkmark] \matlab{}\textsuperscript{\tiny \textregistered} version 7.3 (R2016b) or later.\footnote{\matlab{} is available from The MathWorks, Inc. (\url{https://www.mathworks.com/}). An R2016b or later \matlab{} version is required as the \mpng{} code uses \matlab{}-files with multiple function declarations.}
@@ -20,11 +20,11 @@ You can obtain the \emph{current development version} from the \matpower{} Githu
 \section{Installation}
 \label{sec:install}
 
-Installation and use of \mpng{} requires familiarity with basic operations of \matlab{}. In short, installing \mpng{} is as simple as adding all the distribution files to the \matlab{} path. The user could either proceed manually with such an addition, or run the quick installer released with the package by opening \matlab{} at the \mpngpath{} directory and typing:\\
+Installation and use of \mpng{} requires familiarity with basic operations of \matlab{} and \matpower{}. In short, installing \mpng{} is as simple as adding all the distribution files to the \matlab{} path. The user could either proceed manually with such an addition, or run the quick installer released with the package by opening \matlab{} at the \mpngpath{} directory and typing:\\
 
 \code{~~~~~~~~~~~~~~~~~~~~~~~~~~~~install\_mpng}\\
 
-\noindent A succeeded installation of a distribution located at the directory \mpnggitpath{} looks like:
+\noindent A successful installation of a distribution located at the directory \mpnggitpath{} looks like:
 
 \begin{Notice}
 >> install_mpng
@@ -43,12 +43,12 @@ MPNG has been successfully installed!
 
 The primary functionality of \mpng{} is to solve optimal power and natural gas flow problems. Running a simulation using \mpng{} requires (1) preparing the natural gas input data, (2) specifying the interconnection input data to couple the gas network to the power system, (3) invoking the function to run the integrated simulation and (4) accessing and viewing the results.
 
-The classical \matpower{} input data is a ``\matpower{}-case'' struct denoted by the variable \code{mpc}\cite{matpower_manual}. To integrate the power and natural gas systems we use the extended Optimal Power Flow (OPF) capability of \matpower{}. Namely, we model the natural gas system and its connection to the power system via general user nonlinear constrains. Then, \mpng{} uses an extended ``\matpower{}-gas case'' struct denoted by the variable \code{mpgc}. In particular, \code{mpgc} is a traditional \matpower{}-case struct with two additional fields, \code{mpgc.mgc} and \code{mpgc.connect} standing for the natural gas case and interconnection case, respectively.
+The classical \matpower{} input data is a ``\matpower{}-case'' struct denoted by the variable \code{mpc}\cite{matpower_manual}. To integrate the power and natural gas systems we use the extended Optimal Power Flow (OPF) capability of \matpower{}. Namely, we model the natural gas system and its connection to the power system via general user nonlinear constraints. Then, \mpng{} uses an extended ``\matpower{}-gas case'' struct denoted by the variable \code{mpgc}. In particular, \code{mpgc} is a traditional \matpower{}-case struct with two additional fields, \code{mpgc.mgc} and \code{mpgc.connect} standing for the natural gas case and interconnection case, respectively.
 
 \subsection{Preparing the Natural Gas Case}
 \label{subsec:gas_case}
 
-The input data of the natural gas system are specified in a set of matrices arranged in a \matlab{} struct that we refer to as the ``gas case'' (\code{mpgc.mgc}). The structure of such a case is formatted in a similar way to the \matpower{}-case but holding the natural gas information that comprise gas bases, nodes, wells, pipelines, compressors, and storage units. See Appendix~\ref{app:gas_format} for more details about the gas case structure.
+The input data of the natural gas system are specified in a set of matrices arranged in a \matlab{} struct that we refer to as the ``gas case'' (\code{mpgc.mgc}). The structure of such a case is formatted in a similar way to the \matpower{}-case but holding the natural gas information that comprises nodes (including gas demand), wells, pipelines, compressors, and storage units. See Appendix~\ref{app:gas_format} for more details about the gas case structure.
 
 \subsection{Connecting the Gas Case to the \matpower{} Case}
 \label{subsec:connect_case}
@@ -67,7 +67,7 @@ Once the \matpower{}-gas case is properly formatted, the solver can be invoked u
 >> results = mpng(mpgc,mpopt);
 \end{Code}
 
-We have included a description for all \mpng{}'s functions to work properly with the built-in \code{help} command. For instance, to get the help for \code{mpng}, type:
+We have included a description for all of \mpng{}'s functions to work properly with the built-in \code{help} command. For instance, to get the help for \code{mpng}, type:
 
 \begin{Code}
 >> help mpng

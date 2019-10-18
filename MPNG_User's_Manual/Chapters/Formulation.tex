@@ -1,6 +1,17 @@
 \chapter{Optimal Power and Natural Gas Flow}
 \label{chap:formulation}
 
+In this chapter, we explain in detail the optimization model behind \mpng{}. We introduce the problem as an interdependent steady-state optimal power and natural flow, where a linear objective function models the overall operational cost, subject to several linear and non-linear constraints coming from both technical and operational conditions.
+
+In practice, the state-variables of a natural gas network change quite slowly in comparison to a power system~\cite{Cui2016}. Then, we consider a window of analysis of one entire day for the gas network. On the other hand, as it is found in most of the simulation tools, the power system is modeled using standard windows of one hour. However, a 24-hour time resolution would introduce too much complexity in terms of computational and mathematical tractability. Therefore, we propose a multi-period window of analysis defined by the user. Figure \ref{fig:periods} shows how the optimization model allows $n$ periods for the power system, whose individual duration is such that $\{t_i\in \mathbb{N}, \; i=1,2,...,n : \sum_i t_i = 24\}$, and one entire day for the natural gas system. The interconnection between systems is always consistent. Namely, each individual period of the power system is precisely linked to the single period of the natural gas network.
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[scale=1.0]{Figures/Time_resolution}
+	\caption{Periods considered in \mpng{}.}
+	\label{fig:periods}
+\end{figure}
+
 \section*{Nomenclature}
 \subsection*{Indexes}
 \begin{labeling}{Longer label\quad}
@@ -123,7 +134,7 @@ C \left( x \right) = & \sum_{w \in \cal{W}}{C^{w}_{G} g^{w}} + \sum_{t \in \cal{
 \vspace{0.3cm}
 \end{equation}
 
-The aim of the Optimal Power and Natural Gas Flow is to minimize the linear objective $C(x)$ subject the constraints explained below.
+The aim of the Optimal Power and Natural Gas Flow is to minimize the linear objective $C(x)$ subject to the constraints explained below.
 
 \section{Constraints}
 
@@ -186,7 +197,7 @@ The constraints related to the gas wells injection depends on each well characte
 
 \noindent \textbf{Pipelines} \\
 
-The gas flow in pipeline $o$, connecting nodes $i$ and $j$, depends on the quadratic pressures of such nodes. This behavior is given by the Weymouth Equation \ref{eq:wey}. In particular, the gas flow is allowed to be bidirectional within a physical limit for a maximum daily transportation according to Equation \ref{fgo_limits}. On the other hand, as the transport cost is always a positive quantity no matter the direction, variables $f^{oij}_{g+}$ and $f^{oij}_{g-}$ support a positive contribution to the objective function. Equation \ref{eq:fgo} shows the sum of both directional flows to determine the actual flow in the direction $from$  node $i$ - $to$ node $j$. These flow variables are constrained by Equations \ref{eq:fgopos_limits} and \ref{eq:fgoneg_limits}. As seen, the positive gas flow must be greater or equal than zero but lower or equal than the maximum transport capacity multiplied by a threshold factor, $\delta^{oij}$, which states an extra flow margin. Analogously, the negative gas flow has similar bounds in the negative side.
+The gas flow in pipeline $o$, connecting nodes $i$ and $j$, depends on the quadratic pressures of such nodes. This behavior is given by the Weymouth Equation \ref{eq:wey}. In particular, the gas flow is allowed to be bidirectional within a physical limit for a maximum daily transportation according to Equation \ref{fgo_limits}. On the other hand, as the transport cost is always a positive quantity no matter the direction, variables $f^{oij}_{g+}$ and $f^{oij}_{g-}$ support a positive contribution to the objective function. Equation \ref{eq:fgo} shows the sum of both directional flows to determine the actual flow in the direction $from$  node $i$ - $to$ node $j$. These flow variables are constrained by Equations \ref{eq:fgopos_limits} and \ref{eq:fgoneg_limits}. As seen, the positive gas flow must be greater than or equal to zero but lower than or equal to the maximum transport capacity multiplied by a threshold factor, $\delta^{oij}$, which states an extra flow margin. Analogously, the negative gas flow has similar bounds in the negative side.
 
 
 \begin{equation}
@@ -212,7 +223,7 @@ The gas flow in pipeline $o$, connecting nodes $i$ and $j$, depends on the quadr
 
 \noindent \textbf{Compressors}\\
 
-Compressors allow to recover pressure losses through the gas network. This process demands energy. The power consumption of compressor $c$ between the suction node $i$ and the discharge node $j$ is given by Equation \ref{eq:hp_fc}. It depends on the quadratic pressure ratio of nodes $i$ and $j$, and the gas flow through the compressor. Moreover, the additional gas required by a gas-driven compressor relies on its power consumed as shown in Equation \ref{eq:g_fc}. As the gas flow through compressors is restricted to flow in one direction, the flow limits of compressor $c$ are fixed according to Equation \ref{eq:gfa_limits}. Finally, the quadratic pressure at suction and discharge nodes must fall within acceptable margins, as presented in Equation \ref{eq:presa_rel}, where $\beta^{cij}$ is the maximum compressor ratio.\\
+Compressors allow recovering from pressure losses through the gas network. This process demands energy. The power consumption of compressor $c$ between the suction node $i$ and the discharge node $j$ is given by Equation \ref{eq:hp_fc}. It depends on the quadratic pressure ratio of nodes $i$ and $j$, and the gas flow through the compressor. Moreover, the additional gas required by a gas-driven compressor relies on its consumed power as shown in Equation \ref{eq:g_fc}. As the gas flow through compressors is restricted to flow in one direction, the flow limits of compressor $c$ are fixed according to Equation \ref{eq:gfa_limits}. Finally, the quadratic pressure at suction and discharge nodes must fall within acceptable margins, as presented in Equation \ref{eq:presa_rel}, where $\beta^{cij}$ is the maximum compressor ratio.\\
 
 \begin{equation}
 \psi^{c} = {B^{c}}{f}^{cij}_{g} \cdot \left[ {\left( \frac{\pi^{j}}{\pi^{i}} \right)}^{\frac{Z^{c}}{2}} - 1 \right],   \quad \forall c \in {\cal{C}}
@@ -292,7 +303,7 @@ The main variables of the power system are the voltage angles $\theta^{tm}$ and 
 \vspace{0.3cm}
 \end{equation}
 
-The power flow limits are bidirectional and are presented in Equation \ref{eq:sft_lims}, where $\mathbb{S}_{fl}$ and $\mathbb{S}_{tl}$ are the power injections at side $from$ and $to$ of line $l$, respectively.
+The power flow limits are bidirectional and are presented in Equation \ref{eq:sft_lims}, where $\mathbb{S}_{fl}$ and $\mathbb{S}_{tl}$ are the complex power injections at side $from$ and $to$ of line $l$, respectively.
 
 \begin{equation}
 \begin{aligned}
