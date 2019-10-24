@@ -1080,7 +1080,7 @@ OUT_RES         = OUT_ALL == 1 || (OUT_ALL == -1 && ~SUPPRESS && (mpopt.out.bus 
 %%
 nb = size(results.bus(:,1));
 is_power_tool = nb == 2; 
-if is_power_tool
+if ~is_power_tool
 fprintf(fd, '\n================================================================================');
 fprintf(fd, '\n|     Non-supplied power demand [MWh/d]                                        |');
 fprintf(fd, '\n================================================================================');
