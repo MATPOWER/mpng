@@ -207,8 +207,16 @@ if is_sto
     sto_min = mgc.sto(:,STOMIN);
     sto_lim_l = (sto0 - sto_min) < -1e-4;
     sto_lim_u = (sto_max - sto0) < -1e-4;
+    sto_lim_l_set_bound = (sto0 - sto_min) >= -1e-4 & (sto0 - sto_min) < 0;
+    sto_lim_u_set_bound = (sto_max - sto0) >= -1e-4 & (sto_max - sto0) < 0;
     if any(sto_lim_l) || any(sto_lim_u)
         error('mpng: Initial storage is not inside the storage limits.');
+    end
+    if any(sto_lim_l_set_bound)
+        mgc.sto(sto_lim_l_set_bound,STO_0) = mgc.sto(sto_lim_l_set_bound,STOMIN);
+    end
+    if any(sto_lim_u_set_bound)
+        mgc.sto(sto_lim_u_set_bound,STO_0) = mgc.sto(sto_lim_u_set_bound,STOMAX);
     end
 else
     mgc.sto = [ 1 	0   0   0   0	0   0   0   0   0   0   0   0   0];
@@ -376,11 +384,11 @@ sto_diffmax = mgc.sto(:,FSTOMAX);
 
 sto_out0 = mgc.sto(:,FSTO_OUT);
 sto_outmin = zeros(ns,1);
-sto_outmax = abs(sto0 - stomin);        % abs is added to avoid lims problems
+sto_outmax = sto0 - stomin;        % abs is added to avoid lims problems
 
 sto_in0 = mgc.sto(:,FSTO_IN);
 sto_inmin = zeros(ns,1);
-sto_inmax = stomax - sto0; 
+sto_inmax = stomax - sto0;         % abs is added to avoid lims problems
 
 Asto_diff = eye(ns);
 Asto_out = -eye(ns);
