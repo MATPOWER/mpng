@@ -1,5 +1,5 @@
 function [GEN_ID, MAX_ENER, COMP_ID, BUS_ID, NODE_ID, EFF] = idx_connect
-%IDX_WELL   Defines constants for named column indices to connect struct.
+%IDX_CONNECT   Defines constants for named column indices to connect struct.
 %   Example:
 %
 %   [GEN_ID, MAX_ENER, COMP_ID, BUS_ID, NODE_ID, EFF] = idx_connect;

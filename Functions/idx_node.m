@@ -9,7 +9,7 @@ function [DEM, WELL, NODE_I, NODE_TYPE, PR, PRMAX, PRMIN, OVP, UNP, COST_OVP, ..
 %   Some examples of usage, after defining the constants using the line above,
 %   are:
 %
-%    gd = bus(4, GD);           % get the total gas demand at node 4
+%    gd = node.info(4, GD);     % get the total gas demand at node 4
 %    node.info(:, PR) = 1200;   % set the max pressure to 1200 at all nodes
 %
 %   The index, name and meaning of each column of the node info matrix is given
