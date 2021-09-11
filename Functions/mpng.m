@@ -196,7 +196,8 @@ end
 ratio_c =  mgc.comp(:,RATIO_C);
 if any(1 > ratio_c)
     error('mpng: Compressors ratio must be greater than 1.');
-elseif any(ratio_c > 2)
+% elseif any(ratio_c > 2)
+elseif any(ratio_c > 4)
     error('mpng: Compressors ratio must be lower than 2.');
 end
 % Check if initial storage is in the range of max and min storage

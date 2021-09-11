@@ -94,6 +94,7 @@ mgc_pu.pipe(:,COST_O) = mgc_pu.pipe(:,COST_O)*fbase;
 mgc_pu.comp(:,FG_C) = mgc_pu.comp(:,FG_C)/fbase;
 mgc_pu.comp(:,PC_C) = mgc_pu.comp(:,PC_C)/wbase;
 mgc_pu.comp(:,GC_C) = mgc_pu.comp(:,GC_C)/fbase;
+mgc_pu.comp(:,RATIO_C) = mgc_pu.comp(:,RATIO_C).^2;
 mgc_pu.comp(:,B_C) = mgc_pu.comp(:,B_C)/(wbase/fbase);
 mgc_pu.comp(:,ALPHA) = mgc_pu.comp(:,ALPHA)/fbase;
 mgc_pu.comp(:,BETA) = mgc_pu.comp(:,BETA)/(fbase/wbase);
