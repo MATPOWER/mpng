@@ -13,6 +13,8 @@ connect.version = '1';
 %% ---------------------- Matpower gas case version ----------------------
 
 connect.power.time =  [24];  % number of hours for each period of time sum()=24
+connect.power.ramp_time =  [];
+connect.power.UC =  [];
 connect.power.demands.pd = [
     0;
     5;

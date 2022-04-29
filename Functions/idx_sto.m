@@ -33,8 +33,8 @@ function [STO_NODE, STO, STO_0, STOMAX, STOMIN, FSTO, FSTO_OUT, FSTO_IN,...
 % 
 %   See also DEFINE_CONSTANTS_GAS.
 
-%   MPNG: Matpower - Natural Gas
-%   Copyright (c) 2019 - v0.99alpha
+%   MPNG: MATPOWER - Natural Gas
+%   Copyright (c) 2019-2022 - v0.99beta
 %   Sergio García-Marín - Universidad Nacional de Colombia - Sede Manizales
 %   Wilson González-Vanegas - Universidad Tecnológica de Pereira
 %   Carlos E. Murillo-Sánchez - Universidad Nacional de Colombia - Sede Manizales

@@ -19,8 +19,8 @@ function mpc = nsd2gen(mpc0,nsdcost)
 %   See also MPC2GAS_PREP
 
 
-%   MPNG Matpower - Natural Gas
-%   Copyright (c) 2019 - v0.99alpha
+%   MPNG: MATPOWER - Natural Gas
+%   Copyright (c) 2019-2022 - v0.99beta
 %   Sergio García-Marín - Universidad Nacional de Colombia - Sede Manizales
 %   Wilson González-Vanegas - Universidad Tecnológica de Pereira
 %   Carlos E. Murillo-Sánchez - Universidad Nacional de Colombia - Sede Manizales
@@ -48,7 +48,7 @@ end
 %% initialize some things
 mpc = mpc0;
 
-[~, cg] = size(mpc0.gen);
+[ng, cg] = size(mpc0.gen);
 mbase = mpc0.baseMVA;
 
 pd = mpc0.bus(:,PD);
@@ -104,4 +104,6 @@ mpc.nsd.original.QD = qd;
 mpc.nsd.N = ndl;
 mpc.bus(:,PD) = 0;
 mpc.bus(:,QD) = 0;
+%% Create new ids for generators
+mpc.genid.dl = ((ng+1):(ng+ndl))';
 end

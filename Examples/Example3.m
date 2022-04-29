@@ -1,14 +1,19 @@
-% MPNG - Example 1. Optimal power and natural gas flow. 8 node natural gas 
-%   system and a 9 bus power system, for 4 equal periods of time during a day
+% MPNG - Example 3. Optimal power and natural gas flow in the 8-node/9-bus
+%                   interconnected system adding features to model 
+%                   turboexpanders. Four equal periods during  
+%                   a day. Experimental setup is:
+%
+%                   i)   Base case: same conditions as Example1.m
+%                   ii)  Turbo case 1: power-driven compresor is set to
+%                                      model a turboexpander (ratio<1)
+%                   iii) Turbo case 2: Bc parameter of turboexpander is
+%                                      tripled to see the effect on the
+%                                      injected power.
+%                                      
 
-%   MPNG Matpower - Natural Gas
-%   Copyright (c) 2019-2022 - v0.99beta
-%   Sergio García-Marín - Universidad Nacional de Colombia - Sede Manizales
-%   Wilson González-Vanegas - Universidad Tecnológica de Pereira
-%   Carlos E. Murillo-Sánchez - Universidad Nacional de Colombia - Sede Manizales
-% 
-%   This file is part of MPNG.
-%   Covered by the 3-clause BSD License (see LICENSE file for details).
+
+%%  --------------------------  Base case --------------------------
+clc; clear all;
 %% Define useful constants
 define_constants                % power system constants
 define_constants_gas            % natural gas system and connect struct constants
@@ -16,7 +21,7 @@ define_constants_gas            % natural gas system and connect struct constant
 mpopt = mpoption;                   % initialize option struct
 mpopt.opf.ac.solver = 'IPOPT';      % current stable sover
 mpopt.ipopt.opts.max_iter = 1e5;    % max iterations
-% mpopt.opf.start = 2;                % Pass the initial point from cases to IPOPT
+mpopt.opf.start = 2;                % Pass the initial point from cases to IPOPT
 %% Load cases
 mpc = loadcase('case9_new');    % 9 bus power system with a little modifications
 mgc = ng_case8;                 % 8 node natural gas system
@@ -48,6 +53,23 @@ connect.interc.term(1,EFF)      =  10e-3;   % power plant efficiency (MMSCFD/MWh
 mpgc = mpc;                         % initialize MPNG case
 mpgc.mgc = mgc;                     % adding gas case
 mpgc.connect = connect;             % adding connection struct
-%% running program 
-res = mpng(mpgc,mpopt);             % running MPNG
+%% running Base case 
+fprintf('\n\n$$$$$$$$$$$$$$$$$$$$$$$$- Base case -$$$$$$$$$$$$$$$$$$$$$$$$\n\n\n')
+res_base = mpng(mpgc,mpopt);             % running MPNG
 
+
+%%  --------------------------  Turbo case 1 --------------------------
+fprintf('\n\n$$$$$$$$$$$$$$$$$$$$$$$$- Turbo case 1 -$$$$$$$$$$$$$$$$$$$$$$$$\n\n\n')
+mgc.comp(1,RATIO_C) = 1.5;           % Uncomment to see the efect of allowing higher ratio for the gas-driven compressor 
+mgc.comp(2,RATIO_C) = 0.7;           % ratio < 1 to indicate operation as turboexpander 
+
+mpgc.mgc = mgc;                       % update the gas case
+res_tur1 = mpng(mpgc,mpopt);          % running Turbo case 1
+
+
+%%  --------------------------  Turbo case 2 --------------------------
+fprintf('\n\n$$$$$$$$$$$$$$$$$$$$$$$$- Turbo case 2 -$$$$$$$$$$$$$$$$$$$$$$$$\n\n\n')
+mgc.comp(2,B_C) = 3*mgc.comp(2,B_C); % Bc is tripled to see the effect on injected power
+
+mpgc.mgc = mgc;                      % update the gas case
+res_tur2 = mpng(mpgc,mpopt);         % running Turbo case 1

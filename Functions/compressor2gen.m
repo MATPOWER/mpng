@@ -14,8 +14,8 @@ function mpgc = compressor2gen(mpgc)
 % 
 %   See also MPC2GAS_PREP
 
-%   MPNG Matpower - Natural Gas
-%   Copyright (c) 2019 - v0.99alpha
+%   MPNG: MATPOWER - Natural Gas
+%   Copyright (c) 2019-2022 - v0.99beta
 %   Sergio García-Marín - Universidad Nacional de Colombia - Sede Manizales
 %   Wilson González-Vanegas - Universidad Tecnológica de Pereira
 %   Carlos E. Murillo-Sánchez - Universidad Nacional de Colombia - Sede Manizales
@@ -63,6 +63,9 @@ gen_comp(:,MBASE) = mpgc.baseMVA;
 gen_comp(:,GEN_STATUS) = 1;
 %%
 gen_comp(:,PMIN) = -inf;
+if any(mgc.comp(idcomp_p,RATIO_C) < 1)                     
+    gen_comp(mgc.comp(idcomp_p,RATIO_C) < 1,PMAX) = inf;
+end   
 gencost_comp = zeros(nc_p,cgcost);
 gencost_comp(:,MODEL) = POLYNOMIAL;
 gencost_comp(:,NCOST) = 1;
@@ -84,4 +87,5 @@ if isfield(mpgc, 'genfuel') && iscell(mpgc.genfuel)
 end
 mpgc.gencomp.N = nc_p;
 mpgc.gencomp.id = (ng+1:ng+nc_p)';
+mpgc.genid.comp = (ng+1:ng+nc_p)';
 

@@ -1,6 +1,14 @@
 %% MPNG - Example 2. Optimal power and natural gas flow. 48 node meshed 
 %   natural gas system without power case
 
+%   MPNG Matpower - Natural Gas
+%   Copyright (c) 2019-2022 - v0.99beta
+%   Sergio García-Marín - Universidad Nacional de Colombia - Sede Manizales
+%   Wilson González-Vanegas - Universidad Tecnológica de Pereira
+%   Carlos E. Murillo-Sánchez - Universidad Nacional de Colombia - Sede Manizales
+% 
+%   This file is part of MPNG.
+%   Covered by the 3-clause BSD License (see LICENSE file for details).
 %% Define useful constants
 define_constants                % power system cosntants
 define_constants_gas            % natural gas system and connect struct constants
@@ -16,6 +24,7 @@ mpgc.connect = connect;             % adding connection struct
 mpopt = mpoption;                   % initialize option struct
 mpopt.opf.ac.solver = 'IPOPT';      % current stable sover
 mpopt.ipopt.opts.max_iter = 1e8;    % max iterations
+% mpopt.opf.start = 2;              % Pass th initial point from cases to IPOPT
 %% running program 
 res_base = mpng(mpgc,mpopt);             % running MPNG
 %% changes in the contingency
