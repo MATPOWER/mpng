@@ -31,8 +31,8 @@ function mpgc = mpc2gas_prep(mpgc0,mpopt)
 %   
 %   See also COMPRESSOR2GEN MULTI_PERIOD NSD2GEN
 
-%   MPNG Matpower - Natural Gas
-%   Copyright (c) 2019 - v0.99alpha
+%   MPNG: MATPOWER - Natural Gas
+%   Copyright (c) 2019-2022 - v0.99beta
 %   Sergio García-Marín - Universidad Nacional de Colombia - Sede Manizales
 %   Wilson González-Vanegas - Universidad Tecnológica de Pereira
 %   Carlos E. Murillo-Sánchez - Universidad Nacional de Colombia - Sede Manizales
@@ -45,10 +45,17 @@ function mpgc = mpc2gas_prep(mpgc0,mpopt)
 [COMP_G, COMP_P, F_NODE, T_NODE, TYPE_C, RATIO_C, B_C, Z_C, ALPHA, BETA, ...
     GAMMA, FMAX_C, COST_C, FG_C, GC_C, PC_C] = idx_comp;
 [GEN_ID, MAX_ENER, COMP_ID, BUS_ID, NODE_ID, EFF] = idx_connect;
+[GEN_BUS, PG, QG, QMAX, QMIN, VG, MBASE, GEN_STATUS, PMAX, PMIN, ...
+    MU_PMAX, MU_PMIN, MU_QMAX, MU_QMIN, PC1, PC2, QC1MIN, QC1MAX, ...
+    QC2MIN, QC2MAX, RAMP_AGC, RAMP_10, RAMP_30, RAMP_Q, APF] = idx_gen;
 if nargin == 2
     verbose = mpopt.verbose;
 end
 mpgc = mpgc0;
+%% Create indexing for generators
+ng = size(mpgc.gen,1);
+mpgc.genid.original = (1:ng)';
+
 %% create extra generators for power power consuption compressors
 iscomp_p = (mpgc.mgc.comp(:,TYPE_C) == COMP_P);         % compressors working with power  
 iscomp_p_matrix = ~isempty(mpgc.connect.interc.comp);
@@ -74,6 +81,7 @@ elseif ~isequal(any(iscomp_p),iscomp_p_matrix)
     error('mpc2gas_prep: power-driven compressors info is not consistent.');
 elseif  ~any(iscomp_p) && ~iscomp_p_matrix && verbose
     fprintf(1, 'There are none.\n');
+    mpgc.genid.comp = [];
 end
 
 %% create multiple power time scenarios
@@ -91,3 +99,14 @@ if verbose
 end
 cost_nsd = mpgc.connect.power.cost;
 mpgc = nsd2gen(mpgc,cost_nsd);
+%% extend generation limits in generators with Unit Commitment
+if ~isempty(mpgc.connect.power.UC)
+    UC = mpgc.connect.power.UC;
+    UC = UC(:);
+    idg_ori = mpgc.genid.original;
+    id_uc = idg_ori(~UC);
+    id_pmax = mpgc.gen(id_uc,PMAX) < 0;
+    id_pmin = mpgc.gen(id_uc,PMIN) > 0;
+    mpgc.gen(id_uc(id_pmax),PMAX) = 0;
+    mpgc.gen(id_uc(id_pmin),PMIN) = 0;
+end

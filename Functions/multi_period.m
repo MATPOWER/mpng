@@ -30,8 +30,8 @@ function mpc_out = multi_period(mpc0,time,pd,qd)
 %   See also MPC2GAS_PREP
 
 
-%   MPNG Matpower - Natural Gas
-%   Copyright (c) 2019 - v0.99alpha
+%   MPNG: MATPOWER - Natural Gas
+%   Copyright (c) 2019-2022 - v0.99beta
 %   Sergio García-Marín - Universidad Nacional de Colombia - Sede Manizales
 %   Wilson González-Vanegas - Universidad Tecnológica de Pereira
 %   Carlos E. Murillo-Sánchez - Universidad Nacional de Colombia - Sede Manizales
@@ -114,8 +114,8 @@ for i = 0:(nt-1)
     branch(((i*nl)+1):j*nl,T_BUS) = tb_temp + nb*i;
     
     gencost(((i*ngen)+1):j*ngen,:) = mpc.gencost;
-    gc_temp = time(j)*gencost(((i*ngen)+1):j*ngen,COST:end);
-    gencost(((i*ngen)+1):j*ngen,COST:end) = gc_temp;
+    gc_temp = modcost(gencost(((i*ngen)+1):j*ngen,:),time(j));
+    gencost(((i*ngen)+1):j*ngen,:) = gc_temp;
     
     if isfield(mpc, 'busnames') && iscell(mpc.busnames)
         busnames((nb*i + 1):(nb*j)) = mpc.busnames;
@@ -144,8 +144,32 @@ end
 if isfield(mpc, 'gennames') && iscell(mpc.gennames)
     mpc_out.gennames = gennames;
 end
+%% Create new ids for generators
+if isfield(mpc, 'genid')
+    idgen_original_old = mpc_out.genid.original;
+    n_original_old = length(idgen_original_old);
+    idgen_original = [];
+    for i = 0:(nt-1)
+        idgen_original((n_original_old*i + 1):(n_original_old*i + n_original_old),1) = (idgen_original_old) + (ng*i);
+    end    
+    mpc_out.genid.original = idgen_original;
+    
+    if isfield(mpc_out.genid,'comp')
+        idgen_comp_old = mpc_out.genid.comp;
+        n_comp_old = length(idgen_comp_old);
+        idgen_comp = [];
+        for i = 0:(nt-1)
+            idgen_comp((n_comp_old*i + 1):(n_comp_old*i + n_comp_old),1) = (idgen_comp_old) + (ng*i);
+        end
+        mpc_out.genid.comp = idgen_comp;
+    end
+end
+%% 
 mpc_out.multi_period.time = time;
 mpc_out.multi_period.status = 1;
+end 
+
+
 % mpc_out.multi_period.original.nb = nb;
 % mpc_out.multi_period.original.ng = ng;
 % mpc_out.multi_period.original.nl = nl;

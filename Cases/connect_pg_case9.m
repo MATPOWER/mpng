@@ -13,6 +13,21 @@ connect.version = '1';
 %% ---------------------- Matpower gas case version ----------------------
 
 connect.power.time =  [6 8 4 6];  % number of hours for each period of time sum()=24
+
+%connect.power.ramp_time =  [2 1 2 2;
+%                             2 1 2 2;
+%                             2 1 2 2;
+%                             ];
+
+connect.power.ramp_time = [];
+
+% connect.power.UC =  [1 1 1 1;
+%                      1 1 1 1;
+%                      1 1 1 1;
+%                      ];
+
+connect.power.UC = [];
+
 connect.power.demands.pd = [     
          0         0         0         0;
          0         0         0         0;
@@ -84,9 +99,9 @@ connect.power.energy = ...
 %% ---------------------- Matpower gas case version ----------------------
 %                   idcomp      bus
 connect.interc.comp =  [2   5];     % compressor connected to bus
-connect.interc.comp =  [];     
+%connect.interc.comp =  [];     
 % connect.interc.comp =  [1   5;      % compressor connected to bus 
-%                         2   7]; 
+%                        2   7]; 
 
 %                   idgen	node    eff    
 connect.interc.term =  [3   7   10e-3];% gas-fired unit connected to node
@@ -96,7 +111,3 @@ connect.interc.term =  [3   7   10e-3];% gas-fired unit connected to node
 %     1   40	10e-3;
 %     3   7   8e-3;
 %     ];
-
-
-             
-                  

@@ -13,8 +13,8 @@ mgc.version = '1';
 %% ------------------------------ Gas bases ------------------------------
 
 mgc.pbase = 500; % base pressure [psia]
-mgc.fbase = 100;  % base flow [MMSCFD]: "Million Standard Cubic Feet per Day" 
-mgc.wbase = 100; % base power [KW]
+mgc.fbase = 100; % base flow [MMSCFD]: "Million Standard Cubic Feet per Day" 
+mgc.wbase = 100; % base power [MW]
 
 %% ------------------------------ Node data ------------------------------
                           
