@@ -15,7 +15,7 @@ Change history for MATPOWER-Natural Gas (MPNG)
 
 - Temporal workaround for allowing compressor ratios to be lower or equal to 1.0 in order to model turboexpanders (i.e compressors with negative power consumption, that is, positive generation). *Thanks to a question from Roman Korab*.
 
-- Minor fix to ensure that actual nodal gas demand in `mgc.node.dem matches` total gas demand in `mgc.node.info(:,GD)`.
+- Minor fix to ensure that actual nodal gas demand in `mgc.node.dem` matches total gas demand in `mgc.node.info(:,GD)`.
 
 - Fixes in per unit conversion of some quantities.
 
