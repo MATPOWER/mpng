@@ -32,13 +32,14 @@ or run the quick installer released with the package by opening MATLAB at the
 Citing MPNG
 -----------
 We do request that publications derived from the use of MPNG explicitly acknowledge 
-that fact by including the following cite:
+that fact by including the following cites:
+
+>   S. García-Marín, W. González-Vanegas and C. E. Murillo-Sánchez, "MPNG: A MATPOWER-Based Tool for Optimal Power and
+    Natural Gas Flow Analyses," in IEEE Transactions on Power Systems, 2022, doi: [10.1109/TPWRS.2022.3195684][5]
 
 >   S.García-Marín, W.González-Vanegas, and C.E. Murillo-Sánchez, "MPNG: MATPOWER-Natural Gas,"
     2019. [Online]. Available: [https://github.com/MATPOWER/mpng][4]
 
-
-See that a journal publication to appear soon should be cited instead.
 
 
 ---- 
@@ -46,3 +47,4 @@ See that a journal publication to appear soon should be cited instead.
  [2]: https://www.mathworks.com/
  [3]: https://github.com/MATPOWER/matpower
  [4]: https://github.com/MATPOWER/mpng
+ [5]: https://doi.org/10.1109/TPWRS.2022.3195684
